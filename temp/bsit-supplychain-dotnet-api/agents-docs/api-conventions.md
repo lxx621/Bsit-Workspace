@@ -41,6 +41,27 @@
 }
 ```
 
+## Controller 文件组织
+
+Controller 按业务模块放入对应子目录：
+
+```
+Controllers/
+├── Auth/
+│   └── AuthController.cs
+├── Customer/
+│   └── CustomerController.cs
+├── Order/
+│   ├── OrderController.cs
+│   └── OrderAuditController.cs      # 同一模块多个控制器
+└── Warehouse/
+    └── WarehouseController.cs
+```
+
+- 命名空间跟随目录：`namespace Bsit.SupplyChain.Api.Controllers.Customer;`
+- 子目录名称使用 PascalCase，与模块名一致
+- 路由由 `[Route]` 特性决定，与物理目录无关
+
 ## Swagger 注解
 
 所有 Controller 必须添加 `[ApiController]` 和 `[Route("api/[controller]")]` 特性。

@@ -1,10 +1,11 @@
 // ============================================================
 // 样板文件：API Controller 完整示例
-// 位置：Api/Controllers/
-// 说明：以"客户(Customer)"为例，展示 RESTful + ApiResult + Swagger + JWT 的标准用法
+// 位置：Api/Controllers/Customer/
+// 说明：以“客户(Customer)”为例，展示 RESTful + ApiResult + Swagger + JWT 的标准用法
+// 规范：Controller 按业务模块子目录组织，命名空间跟随目录
 // ============================================================
 
-namespace Bsit.SupplyChain.Api.Controllers;
+namespace Bsit.SupplyChain.Api.Controllers.Customer;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

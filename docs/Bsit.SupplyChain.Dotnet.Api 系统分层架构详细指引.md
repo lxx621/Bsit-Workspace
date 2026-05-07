@@ -86,11 +86,15 @@ Bsit.SupplyChain.Dotnet.Api.sln
 
 ```
 Bsit.SupplyChain.Api/
-├── Controllers/
-│   ├── AuthController.cs                 # 认证接口（登录、刷新Token）
-│   ├── OrderController.cs                # 订单业务接口（示例）
-│   ├── WarehouseController.cs            # 仓储业务接口（示例）
-│   └── TransportController.cs            # 运输业务接口（示例）
+├── Controllers/                          # API 控制器（按业务模块子目录组织）
+│   ├── Auth/
+│   │   └── AuthController.cs             # 认证接口（登录、刷新Token）
+│   ├── Order/                            # 订单模块（示例）
+│   │   └── OrderController.cs
+│   ├── Warehouse/                        # 仓储模块（示例）
+│   │   └── WarehouseController.cs
+│   └── Transport/                        # 运输模块（示例）
+│       └── TransportController.cs
 ├── Middlewares/
 │   ├── AuditLogMiddleware.cs             # 审计日志中间件（记录请求/响应）
 │   ├── ExceptionMiddleware.cs            # 全局异常处理中间件

@@ -133,7 +133,10 @@ bsit-supplychain-dotnet-api/
 
 ```
 Bsit.SupplyChain.Api/
-├── Controllers/                          # API 控制器（按业务模块组织）
+├── Controllers/                          # API 控制器（按业务模块子目录组织）
+│   ├── Auth/                             # 认证模块
+│   ├── {Module}/                         # 各业务模块（如 Order/、Warehouse/）
+│   └── ...
 ├── Middlewares/                           # 中间件（审计日志、全局异常、请求追踪）
 ├── Filters/                              # 过滤器（模型校验、权限验证）
 ├── Extensions/                           # 扩展方法（服务注册、管道配置、Autofac 容器）
