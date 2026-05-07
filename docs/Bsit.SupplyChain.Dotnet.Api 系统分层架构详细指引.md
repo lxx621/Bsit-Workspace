@@ -184,6 +184,7 @@ Bsit.SupplyChain.Application/
 ```
 Bsit.SupplyChain.Domain/
 ├── Entities/
+│   ├── BaseEntity.cs                      # 聚合根基类（所有聚合根必须继承这个基类）
 │   ├── Order/                              # “订单”聚合（示例）
 │   │   ├── Order.cs                        # 聚合根
 │   │   ├── OrderItem.cs                    # 实体
