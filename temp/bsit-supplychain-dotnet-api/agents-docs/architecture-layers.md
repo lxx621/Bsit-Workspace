@@ -28,6 +28,27 @@ Api（表示层） → Application（应用层） → Domain（领域层） ← 
 - Common 层不可引用任何业务层。
 - 禁止跨层直接调用，必须通过接口依赖注入。
 
+## 业务模块子目录规则
+
+以下目录**必须**按业务模块创建子目录（如 `Order/`、`Warehouse/`），不得将所有文件平铺在同一目录下：
+
+| 层 | 目录 | 子目录示例 | 说明 |
+|----|------|-----------|------|
+| Application | `Interfaces/` | `Auth/`, `Order/` | `ICurrentUser.cs` 等公共接口保留根目录 |
+| Application | `Services/` | `Auth/`, `Order/` | 与 `Interfaces/` 模块名一一对应 |
+| Application | `Dtos/` | `Account/`, `Order/`, `Common/` | `Common/` 放分页基类等 |
+| Application | `Validators/` | `Account/`, `Order/` | 与 `Dtos/` 模块名一一对应 |
+| Application | `Mappings/` | `Account/`, `Order/` | 每个模块一个 Profile |
+| Application | `EventHandlers/` | `Order/`, `Warehouse/` | 按事件所属模块分组 |
+| Domain | `Entities/` | `Order/`, `Warehouse/` | 按聚合分组 |
+| Domain | `Events/` | `Order/`, `Warehouse/` | 按事件所属模块分组 |
+| Domain | `Interfaces/` | `Order/`, `Account/` | `IUnitOfWork.cs`、`IRepository.cs` 保留根目录 |
+| Infrastructure | `Repositories/` | `Order/`, `Account/` | `BaseRepository.cs` 保留根目录 |
+| Api | `Controllers/` | `Auth/`, `Order/` | 按业务模块分组 |
+
+**不需要按模块分子目录的**（横切关注点）：
+- `Middlewares/`、`Filters/`、`Extensions/`、`Behaviors/`、`Enums/`、`Constants/`、`Helpers/`
+
 ## BaseEntity 基类
 
 所有聚合根必须继承 `BaseEntity`，提供：

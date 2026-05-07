@@ -10,7 +10,7 @@
 namespace Bsit.SupplyChain.Domain.Entities.Customer;
 
 using SqlSugar;
-using Bsit.SupplyChain.Domain.Events;
+using Bsit.SupplyChain.Domain.Events.Customer;
 
 /// <summary>
 /// 客户聚合根

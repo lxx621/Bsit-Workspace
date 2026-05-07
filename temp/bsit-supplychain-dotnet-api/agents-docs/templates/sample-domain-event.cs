@@ -1,14 +1,14 @@
 // ============================================================
 // 样板文件：领域事件定义 + EventHandler 完整示例
-// 事件定义位置：Domain/Events/
-// 处理程序位置：Application/EventHandlers/
+// 事件定义位置：Domain/Events/Customer/
+// 处理程序位置：Application/EventHandlers/Customer/
 // 说明：以"客户已创建(CustomerCreated)"事件为例
 // ============================================================
 
 // ─────────────────────────────────────────────────────────────
-// 文件 1：Domain/Events/CustomerCreatedEvent.cs（领域事件定义）
+// 文件 1：Domain/Events/Customer/CustomerCreatedEvent.cs（领域事件定义）
 // ─────────────────────────────────────────────────────────────
-namespace Bsit.SupplyChain.Domain.Events;
+namespace Bsit.SupplyChain.Domain.Events.Customer;
 
 using MediatR;
 
@@ -29,13 +29,13 @@ public record CustomerCreatedEvent(
 ) : INotification;
 
 // ─────────────────────────────────────────────────────────────
-// 文件 2：Application/EventHandlers/CustomerCreatedEventHandler.cs
+// 文件 2：Application/EventHandlers/Customer/CustomerCreatedEventHandler.cs
 // ─────────────────────────────────────────────────────────────
-namespace Bsit.SupplyChain.Application.EventHandlers;
+namespace Bsit.SupplyChain.Application.EventHandlers.Customer;
 
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Bsit.SupplyChain.Domain.Events;
+using Bsit.SupplyChain.Domain.Events.Customer;
 
 /// <summary>
 /// 客户已创建事件处理程序

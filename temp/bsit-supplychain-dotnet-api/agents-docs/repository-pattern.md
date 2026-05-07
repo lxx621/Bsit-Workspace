@@ -2,13 +2,15 @@
 
 ## 仓储接口（Domain 层）
 
-- 通用接口 `IRepository<T>` 定义在 `Domain/Interfaces/`，约束 `T : BaseEntity, new()`。
+- 通用接口 `IRepository<T>` 定义在 `Domain/Interfaces/`（根目录），约束 `T : BaseEntity, new()`。
 - 每个聚合一个专用仓储接口（如 `IOrderRepository`），继承 `IRepository<T>` 并扩展特有查询。
+- 仓储接口按业务模块子目录存放：`Domain/Interfaces/{Module}/I{Module}Repository.cs`
 - 仓储接口仅定义数据访问契约，不包含实现细节。
 
 ## 仓储实现（Infrastructure 层）
 
-- 通用基类 `BaseRepository<T>` 封装 SqlSugar CRUD 操作。
+- 通用基类 `BaseRepository<T>` 存放在 `Infrastructure/Repositories/`（根目录），封装 SqlSugar CRUD 操作。
+- 具体仓储按业务模块子目录存放：`Infrastructure/Repositories/{Module}/{Module}Repository.cs`
 - 具体仓储继承 `BaseRepository<T>` 并添加聚合特有查询。
 - 通过 Autofac 按约定自动注册（类名以 `Repository` 结尾）。
 

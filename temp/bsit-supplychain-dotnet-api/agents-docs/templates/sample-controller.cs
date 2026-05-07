@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Bsit.SupplyChain.Application.Dtos.Customer;
 using Bsit.SupplyChain.Application.Dtos.Common;
-using Bsit.SupplyChain.Application.Interfaces;
+using Bsit.SupplyChain.Application.Interfaces.Customer;
 using Bsit.SupplyChain.Common.Models;
 
 /// <summary>

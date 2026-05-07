@@ -133,35 +133,49 @@ Bsit.SupplyChain.Application/
 │   └── Common/
 │       ├── PagedRequestDto.cs            # 分页请求参数基类（PageIndex, PageSize, SortField, SortOrder）
 │       └── PagedResultDto.cs             # 分页结果基类（Items, TotalCount, PageIndex, PageSize）
-├── Interfaces/
-│   ├── IAuthService.cs                   # 认证服务接口
-│   ├── IOrderService.cs                  # 订单业务服务接口（示例）
-│   ├── IWarehouseService.cs              # 仓储业务服务接口（示例）
-│   ├── ITransportService.cs             # 运输业务服务接口（示例）
-│   ├── IAuditLogService.cs              # 审计日志业务服务接口（供中间件调用）
-│   └── ICurrentUser.cs                  # 当前登录用户信息接口（从 JWT Claims 提取）
-├── Services/
-│   ├── AuthService.cs                    # 认证服务实现
-│   ├── OrderService.cs                   # 订单业务服务实现（示例）
-│   ├── WarehouseService.cs               # 仓储业务服务实现（示例）
-│   ├── TransportService.cs              # 运输业务服务实现（示例）
-│   └── AuditLogService.cs               # 审计日志服务实现（调用仓储保存）
+├── Interfaces/                            # 应用服务接口（按业务模块子目录组织）
+│   ├── ICurrentUser.cs                    # 跨模块公共接口（当前用户信息，从 JWT Claims 提取）
+│   ├── Auth/
+│   │   └── IAuthService.cs               # 认证服务接口
+│   ├── Order/                             # 订单模块（示例）
+│   │   └── IOrderService.cs
+│   ├── Warehouse/                         # 仓储模块（示例）
+│   │   └── IWarehouseService.cs
+│   ├── Transport/                         # 运输模块（示例）
+│   │   └── ITransportService.cs
+│   └── Audit/
+│       └── IAuditLogService.cs            # 审计日志业务服务接口
+├── Services/                              # 应用服务实现（按业务模块子目录组织，与 Interfaces 对应）
+│   ├── Auth/
+│   │   └── AuthService.cs                # 认证服务实现
+│   ├── Order/                             # 订单模块（示例）
+│   │   └── OrderService.cs
+│   ├── Warehouse/                         # 仓储模块（示例）
+│   │   └── WarehouseService.cs
+│   ├── Transport/                         # 运输模块（示例）
+│   │   └── TransportService.cs
+│   └── Audit/
+│       └── AuditLogService.cs             # 审计日志服务实现
 ├── Validators/                            # FluentValidation 验证器（按业务模块组织）
 │   ├── Account/
 │   │   ├── LoginRequestDtoValidator.cs   # 登录请求参数验证
 │   │   └── RefreshTokenRequestDtoValidator.cs
 │   └── Order/
 │       └── OrderCreateDtoValidator.cs    # 订单创建参数验证（示例）
-├── Mappings/                              # AutoMapper 映射配置（按业务模块拆分）
-│   ├── AccountMappingProfile.cs          # 账户相关映射（User <-> LoginResultDto 等）
-│   ├── OrderMappingProfile.cs            # 订单相关映射（Order <-> OrderDetailDto 等）（示例）
-│   └── AuditMappingProfile.cs            # 审计日志映射
+├── Mappings/                              # AutoMapper 映射配置（按业务模块子目录组织）
+│   ├── Account/
+│   │   └── AccountMappingProfile.cs      # 账户相关映射（User <-> LoginResultDto 等）
+│   ├── Order/
+│   │   └── OrderMappingProfile.cs        # 订单相关映射（示例）
+│   └── Audit/
+│       └── AuditMappingProfile.cs        # 审计日志映射
 ├── Behaviors/                             # MediatR Pipeline Behaviors（横切关注点）
 │   ├── LoggingBehavior.cs                # 请求/响应日志记录行为
 │   └── ValidationBehavior.cs             # FluentValidation 自动验证行为
-├── EventHandlers/
-│   ├── OrderCreatedEventHandler.cs       # 领域事件处理程序（示例）
-│   └── OrderShippedEventHandler.cs       # 领域事件处理程序（示例）
+├── EventHandlers/                         # 领域事件处理程序（按业务模块子目录组织）
+│   └── Order/                             # 订单模块（示例）
+│       ├── OrderCreatedEventHandler.cs
+│       └── OrderShippedEventHandler.cs
 └── AutofacModule.cs                      # Autofac 模块：注册本层服务、验证器、事件处理程序
 ```
 
@@ -202,25 +216,33 @@ Bsit.SupplyChain.Domain/
 │   └── Audit/                              # 审计日志聚合
 │       └── AuditLog.cs
 │
-├── Events/                                 # 领域事件定义
-│   ├── OrderCreatedEvent.cs                # 示例
-│   ├── OrderShippedEvent.cs               # 示例
-│   ├── InventoryReservedEvent.cs           # 示例
-│   └── WaybillCreatedEvent.cs             # 示例
+├── Events/                                 # 领域事件定义（按业务模块子目录组织）
+│   ├── Order/                              # 订单模块（示例）
+│   │   ├── OrderCreatedEvent.cs
+│   │   └── OrderShippedEvent.cs
+│   ├── Warehouse/                          # 仓储模块（示例）
+│   │   └── InventoryReservedEvent.cs
+│   └── Transport/                          # 运输模块（示例）
+│       └── WaybillCreatedEvent.cs
 │
 ├── Enums/                                  # 全局共享的枚举
 │   ├── ShipMethod.cs
 │   ├── PaymentStatus.cs
 │   └── UserRole.cs
 │
-├── Interfaces/                             # 仓储接口 + 工作单元接口
-│   ├── IUnitOfWork.cs                      # 工作单元接口（事务协调、事件分发）
-│   ├── IOrderRepository.cs                 # 示例
-│   ├── IWarehouseRepository.cs             # 示例
-│   ├── ITransportRepository.cs            # 示例
-│   ├── IUserRepository.cs
-│   ├── IAuditLogRepository.cs
-│   └── IRepository.cs                      # 通用仓储接口（泛型 CRUD 基类）
+├── Interfaces/                             # 仓储接口 + 工作单元接口（按业务模块子目录组织）
+│   ├── IUnitOfWork.cs                      # 跨模块公共接口（事务协调、事件分发）
+│   ├── IRepository.cs                      # 跨模块公共接口（泛型 CRUD 基类）
+│   ├── Order/                              # 订单模块（示例）
+│   │   └── IOrderRepository.cs
+│   ├── Warehouse/                          # 仓储模块（示例）
+│   │   └── IWarehouseRepository.cs
+│   ├── Transport/                          # 运输模块（示例）
+│   │   └── ITransportRepository.cs
+│   ├── Account/
+│   │   └── IUserRepository.cs
+│   └── Audit/
+│       └── IAuditLogRepository.cs
 │
 ├── DomainServices/                         # 领域服务（跨聚合的业务逻辑）
 │   └── ShipmentRoutingService.cs           # 示例
@@ -236,13 +258,18 @@ Bsit.SupplyChain.Domain/
 Bsit.SupplyChain.Infrastructure/
 ├── DbContext/
 │   └── SqlSugarSetup.cs                  # SqlSugarClient 配置（连接字符串、实体映射、全局过滤器）
-├── Repositories/
-│   ├── OrderRepository.cs                # IOrderRepository 实现（示例）
-│   ├── WarehouseRepository.cs            # 示例
-│   ├── TransportRepository.cs           # 示例
-│   ├── UserRepository.cs                 # IUserRepository 实现
-│   ├── AuditLogRepository.cs             # IAuditLogRepository 实现
-│   └── BaseRepository.cs                 # 通用仓储基类（可选）
+├── Repositories/                        # 仓储实现（按业务模块子目录组织，与 Domain/Interfaces 对应）
+│   ├── BaseRepository.cs                # 通用仓储基类（泛型 CRUD 封装）
+│   ├── Order/                            # 订单模块（示例）
+│   │   └── OrderRepository.cs
+│   ├── Warehouse/                        # 仓储模块（示例）
+│   │   └── WarehouseRepository.cs
+│   ├── Transport/                        # 运输模块（示例）
+│   │   └── TransportRepository.cs
+│   ├── Account/
+│   │   └── UserRepository.cs
+│   └── Audit/
+│       └── AuditLogRepository.cs
 ├── UnitOfWork/
 │   └── UnitOfWork.cs                     # 工作单元（协调事务与领域事件分发）
 ├── SeedData/

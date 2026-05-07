@@ -1,14 +1,14 @@
 // ============================================================
 // 样板文件：仓储接口 + 仓储实现 完整示例
-// 接口位置：Domain/Interfaces/
-// 实现位置：Infrastructure/Repositories/
+// 接口位置：Domain/Interfaces/Customer/
+// 实现位置：Infrastructure/Repositories/Customer/
 // 说明：以"客户(Customer)"为例
 // ============================================================
 
 // ─────────────────────────────────────────────────────────────
-// 文件 1：Domain/Interfaces/ICustomerRepository.cs（仓储接口）
+// 文件 1：Domain/Interfaces/Customer/ICustomerRepository.cs（仓储接口）
 // ─────────────────────────────────────────────────────────────
-namespace Bsit.SupplyChain.Domain.Interfaces;
+namespace Bsit.SupplyChain.Domain.Interfaces.Customer;
 
 using Bsit.SupplyChain.Domain.Entities.Customer;
 
@@ -46,13 +46,13 @@ public interface ICustomerRepository : IRepository<Customer>
 }
 
 // ─────────────────────────────────────────────────────────────
-// 文件 2：Infrastructure/Repositories/CustomerRepository.cs（仓储实现）
+// 文件 2：Infrastructure/Repositories/Customer/CustomerRepository.cs（仓储实现）
 // ─────────────────────────────────────────────────────────────
-namespace Bsit.SupplyChain.Infrastructure.Repositories;
+namespace Bsit.SupplyChain.Infrastructure.Repositories.Customer;
 
 using SqlSugar;
 using Bsit.SupplyChain.Domain.Entities.Customer;
-using Bsit.SupplyChain.Domain.Interfaces;
+using Bsit.SupplyChain.Domain.Interfaces.Customer;
 
 /// <summary>
 /// 客户仓储实现

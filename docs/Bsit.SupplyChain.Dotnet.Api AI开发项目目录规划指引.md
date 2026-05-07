@@ -156,12 +156,15 @@ Bsit.SupplyChain.Application/
 │   ├── Account/
 │   ├── Common/                           # 分页请求/结果基类
 │   └── {Module}/
-├── Interfaces/                           # 应用服务接口
-├── Services/                             # 应用服务实现
+├── Interfaces/                           # 应用服务接口（按业务模块子目录）
+│   ├── ICurrentUser.cs                   # 跨模块公共接口
+│   └── {Module}/                         # 各业务模块（如 Auth/、Order/）
+├── Services/                             # 应用服务实现（按业务模块子目录，与 Interfaces 对应）
+│   └── {Module}/
 ├── Validators/                           # FluentValidation 验证器（按模块子目录）
-├── Mappings/                             # AutoMapper 映射配置（按模块拆分）
-├── Behaviors/                            # MediatR Pipeline Behaviors
-├── EventHandlers/                        # 领域事件处理程序
+├── Mappings/                             # AutoMapper 映射配置（按模块子目录）
+├── Behaviors/                            # MediatR Pipeline Behaviors（横切关注点，不分模块）
+├── EventHandlers/                        # 领域事件处理程序（按模块子目录）
 └── AutofacModule.cs                      # Autofac 模块注册
 ```
 
@@ -175,9 +178,13 @@ Bsit.SupplyChain.Domain/
 │       ├── {EntityName}.cs               # 实体
 │       ├── ValueObjects/                 # 值对象子目录
 │       └── {AggregateName}Constants.cs   # 聚合常量
-├── Events/                               # 领域事件定义
+├── Events/                               # 领域事件定义（按模块子目录）
+│   └── {Module}/
 ├── Enums/                                # 全局共享枚举
-├── Interfaces/                           # 仓储接口 + 工作单元接口
+├── Interfaces/                           # 仓储接口 + 工作单元接口（按模块子目录）
+│   ├── IUnitOfWork.cs                    # 跨模块公共接口
+│   ├── IRepository.cs                    # 跨模块公共接口
+│   └── {Module}/                         # 各业务模块（如 Order/IOrderRepository.cs）
 ├── DomainServices/                       # 领域服务（跨聚合业务逻辑）
 └── Constants/                            # 全局业务常量
 ```
@@ -187,7 +194,9 @@ Bsit.SupplyChain.Domain/
 ```
 Bsit.SupplyChain.Infrastructure/
 ├── DbContext/                            # SqlSugar 配置（连接、拦截器、全局过滤器）
-├── Repositories/                         # 仓储接口实现
+├── Repositories/                         # 仓储实现（按业务模块子目录，与 Domain/Interfaces 对应）
+│   ├── BaseRepository.cs                 # 跨模块公共基类
+│   └── {Module}/                         # 各业务模块
 ├── UnitOfWork/                           # 工作单元实现
 ├── SeedData/                             # 种子数据
 ├── Extensions/                           # SqlSugar 扩展方法

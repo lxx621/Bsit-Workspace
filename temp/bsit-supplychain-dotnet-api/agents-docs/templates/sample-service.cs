@@ -1,14 +1,14 @@
 // ============================================================
 // 样板文件：Application Service 接口 + 实现 完整示例
-// 接口位置：Application/Interfaces/
-// 实现位置：Application/Services/
+// 接口位置：Application/Interfaces/Customer/
+// 实现位置：Application/Services/Customer/
 // 说明：以"客户(Customer)"为例，展示 UnitOfWork + AutoMapper + ICurrentUser 的标准用法
 // ============================================================
 
 // ─────────────────────────────────────────────────────────────
-// 文件 1：Application/Interfaces/ICustomerService.cs
+// 文件 1：Application/Interfaces/Customer/ICustomerService.cs
 // ─────────────────────────────────────────────────────────────
-namespace Bsit.SupplyChain.Application.Interfaces;
+namespace Bsit.SupplyChain.Application.Interfaces.Customer;
 
 using Bsit.SupplyChain.Application.Dtos.Customer;
 using Bsit.SupplyChain.Application.Dtos.Common;
@@ -58,20 +58,21 @@ public interface ICustomerService
 }
 
 // ─────────────────────────────────────────────────────────────
-// 文件 2：Application/Services/CustomerService.cs
+// 文件 2：Application/Services/Customer/CustomerService.cs
 // ─────────────────────────────────────────────────────────────
-namespace Bsit.SupplyChain.Application.Services;
+namespace Bsit.SupplyChain.Application.Services.Customer;
 
 using AutoMapper;
 using Microsoft.Extensions.Logging;
 using Bsit.SupplyChain.Application.Dtos.Customer;
 using Bsit.SupplyChain.Application.Dtos.Common;
-using Bsit.SupplyChain.Application.Interfaces;
+using Bsit.SupplyChain.Application.Interfaces.Customer;
 using Bsit.SupplyChain.Common.Exceptions;
 using Bsit.SupplyChain.Common.Models;
 using Bsit.SupplyChain.Domain.Entities.Customer;
 using Bsit.SupplyChain.Domain.Entities.Customer.ValueObjects;
 using Bsit.SupplyChain.Domain.Interfaces;
+using Bsit.SupplyChain.Domain.Interfaces.Customer;
 
 /// <summary>
 /// 客户业务服务实现

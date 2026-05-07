@@ -2,7 +2,7 @@
 
 ## 事件定义（Domain 层）
 
-- 位于 `Domain/Events/` 目录
+- 位于 `Domain/Events/{Module}/` 目录（按业务模块子目录组织）
 - 使用 `record` 类型 + 实现 `INotification` 接口
 - 命名使用过去式（如 `OrderCreatedEvent`）
 - 保证不可变性
@@ -21,7 +21,7 @@ public record OrderCreatedEvent(Guid OrderId, string CustomerId, decimal Total, 
 
 - Service 层执行仓储操作后调用 `_unitOfWork.CollectEvents(entity)`
 - `CommitAsync()` 提交事务成功后，逐一发布领域事件
-- 事件处理程序位于 `Application/EventHandlers/`
+- 事件处理程序位于 `Application/EventHandlers/{Module}/`（按业务模块子目录组织）
 
 ## MediatR 注册
 

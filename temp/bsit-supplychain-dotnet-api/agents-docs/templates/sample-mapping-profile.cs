@@ -1,10 +1,10 @@
 // ============================================================
 // 样板文件：AutoMapper Profile 完整示例
-// 位置：Application/Mappings/
+// 位置：Application/Mappings/Customer/
 // 说明：以"客户(Customer)"为例，展示 Entity ↔ DTO 的标准映射配置
 // ============================================================
 
-namespace Bsit.SupplyChain.Application.Mappings;
+namespace Bsit.SupplyChain.Application.Mappings.Customer;
 
 using AutoMapper;
 using Bsit.SupplyChain.Domain.Entities.Customer;
