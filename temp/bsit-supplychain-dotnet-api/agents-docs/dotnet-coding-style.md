@@ -53,3 +53,27 @@ public async Task<ApiResult<OrderDetailDto>> GetByIdAsync(Guid id)
 ## 文件编码
 
 - 所有文件统一使用无 BOM 的 UTF-8 编码。
+
+## JSON 序列化规范
+
+- **统一引擎**：全项目使用 `Newtonsoft.Json`，**禁止**使用 `System.Text.Json`。
+- **禁用 Unicode 转义**：`StringEscapeHandling = StringEscapeHandling.Default`，确保中文等非 ASCII 字符直接输出（不转为 `\uXXXX`）。
+- **命名策略**：`CamelCasePropertyNamesContractResolver`，与前端 JS 对象命名一致。
+- **日期格式**：`yyyy-MM-dd HH:mm:ss`，避免 ISO 8601 带 T 格式。
+- **循环引用**：`ReferenceLoopHandling.Ignore`，防止导航属性序列化死循环。
+- **手动序列化**：使用 `Common/Helpers/JsonHelper.cs` 中的静态方法，禁止直接 `new JsonSerializerSettings()`。
+- **NuGet 包**：
+  - Api 层：`Microsoft.AspNetCore.Mvc.NewtonsoftJson`
+  - Common 层：`Newtonsoft.Json`
+
+```csharp
+// Program.cs 全局配置
+builder.Services.AddControllers()
+    .AddNewtonsoftJson(options =>
+    {
+        options.SerializerSettings.StringEscapeHandling = StringEscapeHandling.Default;
+        options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+        options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
+        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+    });
+```

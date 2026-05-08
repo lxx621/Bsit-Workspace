@@ -59,6 +59,25 @@
 - [ ] Swagger 注解 `[ProducesResponseType]` 完整
 - [ ] RESTful URL：名词复数、小写、连字符分隔
 
+## 后台服务（如涉及）
+
+- [ ] 放置在 `Api/BackgroundServices/` 目录下
+- [ ] 继承 `BackgroundService` 基类
+- [ ] 通过 `IServiceProvider.CreateScope()` 获取 Scoped 服务（禁止直接注入 Scoped 服务）
+- [ ] 循环体内有 `try-catch`，防止单次异常终止服务
+- [ ] 正确响应 `CancellationToken`（`stoppingToken`），支持优雅停止
+- [ ] 执行间隔等参数从 `appsettings.json` 读取（通过 `IOptions<T>`）
+- [ ] 启动、每次执行完毕、异常、停止均有日志记录
+- [ ] 业务逻辑委托给 Application 层服务，后台服务类仅负责调度
+- [ ] 在 `Program.cs` 中通过 `AddHostedService<T>()` 注册
+
+## JSON 序列化
+
+- [ ] 使用 Newtonsoft.Json，未引用 `System.Text.Json` 进行序列化
+- [ ] 全局配置 `StringEscapeHandling = StringEscapeHandling.Default`（禁用 Unicode 转义）
+- [ ] 手动序列化场景使用 `Common/Helpers/JsonHelper.cs`，禁止直接 `new JsonSerializerSettings()`
+- [ ] ExceptionMiddleware 中使用 `JsonHelper.Serialize()` 而非 `System.Text.Json`
+
 ## 测试（如涉及）
 
 - [ ] 测试类命名：`{被测类名}Tests.cs`

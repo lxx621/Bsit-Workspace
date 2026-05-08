@@ -83,6 +83,7 @@
 | 是否有新的基础设施依赖？ | 如引入 Redis、消息队列 | 新增 `agents-docs/redis-usage.md` 等 |
 | 是否有新的 API 模式？ | 如文件上传、批量操作 | 更新 `agents-docs/api-conventions.md` |
 | 是否有新的验证模式？ | 如需查库校验唯一性 | 更新 `agents-docs/validation-rules.md` 示例 |
+| 是否需要后台服务？ | 如定时任务、队列消费、数据同步 | 参考 `agents-docs/background-services.md`，后台服务放 Api 层 `BackgroundServices/` |
 | 错误码是否需要扩展？ | 新增业务特有错误码 | 更新 `docs/api/error-codes.md` |
 
 **通常不需要改的**：
@@ -229,6 +230,7 @@ feat(supplier): 新增供应商管理模块
 | Application | `src/.../Application/Services/{模块}Service.cs` | 服务实现 |
 | Application | `src/.../Application/EventHandlers/` | 事件处理程序 |
 | Api | `src/.../Api/Controllers/{模块}Controller.cs` | 控制器 |
+| Api | `src/.../Api/BackgroundServices/{功能}Service.cs` | 后台服务（如需定时/后台任务） |
 | Tests | `src/tests/.../` | 单元/集成测试 |
 
 ### 可能修改的文件
@@ -237,6 +239,8 @@ feat(supplier): 新增供应商管理模块
 |------|----------|
 | `docs/api/error-codes.md` | 新增模块特有错误码 |
 | `agents-docs/` 下某规则文件 | 新需求引入新的技术模式 |
+| `appsettings.json` | 新增后台服务配置（如启用开关、执行间隔） |
+| `Program.cs` | 注册新的后台服务 `AddHostedService<T>()` |
 | `docs/specs/openapi.yaml` | 新增 API 接口定义 |
 
 ---

@@ -11,6 +11,7 @@
 1. 捕获 `AppException` → 记录 Warning 日志 → 返回对应状态码的 ApiResult
 2. 捕获未处理 `Exception` → 记录 Error 日志 → 返回 500 ApiResult
 3. 所有异常响应统一为 `ApiResult` JSON 格式
+4. JSON 序列化使用 `JsonHelper.Serialize(result)`（Newtonsoft.Json），**禁止**使用 `System.Text.Json`
 
 ## 统一返回模型（ApiResult）
 

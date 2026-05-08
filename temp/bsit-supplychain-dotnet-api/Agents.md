@@ -14,10 +14,10 @@
 
 ## 2. 项目概述
 
-- 技术栈：.NET 10 WebAPI / Autofac / SqlSugar / AutoMapper / FluentValidation / MediatR / NLog / MSSQL
+- 技术栈：.NET 10 WebAPI / Autofac / SqlSugar / AutoMapper / FluentValidation / MediatR / NLog / Newtonsoft.Json / MSSQL
 - 前端仓库：`bsit-supplychain-web`（Vue3 + Vite + Pinia）
 - 架构模式：领域驱动设计（DDD）+ 依赖倒置 + 四层架构
-- 核心特性：Swagger 接口文档、JWT 认证（Access Token + Refresh Token）、请求审计日志、NLog 系统日志（文件+MSSQL）、统一返回格式、AutoMapper 对象映射、FluentValidation 请求验证、领域事件（MediatR）、CORS 跨域、软删除与审计字段、单元测试与集成测试、SqlSugar 工具链
+- 核心特性：Swagger 接口文档、JWT 认证（Access Token + Refresh Token）、请求审计日志、NLog 系统日志（文件+MSSQL）、统一返回格式、AutoMapper 对象映射、FluentValidation 请求验证、领域事件（MediatR）、CORS 跨域、软删除与审计字段、后台服务（Background Services）、Newtonsoft.Json 序列化（禁用 Unicode 转义）、单元测试与集成测试、SqlSugar 工具链
 
 ## 3. 目录说明
 
@@ -48,6 +48,7 @@
 | 新建领域事件 + Handler | `agents-docs/domain-events.md` | `agents-docs/templates/sample-domain-event.cs` |
 | 创建完整业务模块（端到端） | **执行工作流** `.windsurf/workflows/new-module.md` | 所有样板 |
 | 排查异常 / 日志问题 | `agents-docs/error-handling.md` → `logging-guide.md` | — |
+| 新建后台服务 | `agents-docs/background-services.md` → `architecture-layers.md` | `agents-docs/templates/sample-background-service.cs` |
 | 编写 / 修改测试 | `agents-docs/testing.md` | — |
 
 > **规则**：执行任务前，必须先读取对应的规则文件和样板文件，禁止凭记忆生成代码。
@@ -64,6 +65,8 @@
 - **对象映射**：必须使用 AutoMapper，禁止将 Entity 直接暴露给 Api 层（参考 `agents-docs/automapper-rules.md`）。
 - **日志系统**：只用 `ILogger<T>`，不直接依赖 NLog（参考 `agents-docs/logging-guide.md`）。
 - **认证鉴权**：JWT 认证参考 `agents-docs/auth-jwt.md`。
+- **JSON 序列化**：统一使用 Newtonsoft.Json，禁止 System.Text.Json；禁用 Unicode 转义，中文直接输出（参考 `agents-docs/json-serialization.md`）。
+- **后台服务**：放置在 `Api/BackgroundServices/`，继承 `BackgroundService`，必须通过 `CreateScope()` 获取 Scoped 服务（参考 `agents-docs/background-services.md`）。
 - **自检**：代码生成完毕后，必须对照 `agents-docs/checklist.md` 逐项核实。
 
 ## 6. 分层依赖规则

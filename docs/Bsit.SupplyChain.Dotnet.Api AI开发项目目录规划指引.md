@@ -14,7 +14,7 @@
 |------|------|
 | **公司业务** | 物流管理、供应链管理、仓储管理一站式软件解决方案 |
 | **系统名称** | Bsit.SupplyChain.Api（后端 WebAPI） |
-| **技术栈** | .NET 10 WebAPI / Autofac / SqlSugar / AutoMapper / FluentValidation / MediatR / NLog / MSSQL |
+| **技术栈** | .NET 10 WebAPI / Autofac / SqlSugar / AutoMapper / FluentValidation / MediatR / NLog / Newtonsoft.Json / MSSQL |
 | **架构风格** | 前后端分离 + 领域驱动设计(DDD) 四层架构 |
 | **前端仓库** | `bsit-supplychain-web`（Vue3 + Vite + Pinia） |
 | **开发环境** | Windows，所有文件统一无 BOM 的 UTF-8 编码 |
@@ -117,7 +117,7 @@ bsit-supplychain-dotnet-api/
 
 | 层（项目） | 职责 | 允许依赖 |
 |------------|------|----------|
-| **Api** (表示层) | 接收HTTP请求，路由分发，认证鉴权，Swagger配置，审计中间件，全局异常处理 | App, Infra, Common |
+| **Api** (表示层) | 接收HTTP请求，路由分发，认证鉴权，Swagger配置，审计中间件，全局异常处理，后台服务 | App, Infra, Common |
 | **Application** (应用层) | 业务用例编排，DTO转换，调用仓储接口，领域事件处理 | Domain, Common |
 | **Domain** (领域层) | 聚合根、实体、值对象、领域事件、仓储接口、领域服务 | Common（可选） |
 | **Infrastructure** (基础设施层) | 实现仓储接口，封装SqlSugar操作，数据库上下文管理 | Domain, Common |
@@ -137,6 +137,7 @@ Bsit.SupplyChain.Api/
 │   ├── Auth/                             # 认证模块
 │   ├── {Module}/                         # 各业务模块（如 Order/、Warehouse/）
 │   └── ...
+├── BackgroundServices/                   # 后台服务（定时任务/后台任务，继承 BackgroundService）
 ├── Middlewares/                           # 中间件（审计日志、全局异常、请求追踪）
 ├── Filters/                              # 过滤器（模型校验、权限验证）
 ├── Extensions/                           # 扩展方法（服务注册、管道配置、Autofac 容器）
@@ -250,10 +251,10 @@ tests/
 - 当前开发项目文件夹：src/main
 
 ## 2. 项目概述
-- 技术栈：.NET 10 WebAPI / Autofac / SqlSugar / AutoMapper / FluentValidation / MediatR / NLog / MSSQL
+- 技术栈：.NET 10 WebAPI / Autofac / SqlSugar / AutoMapper / FluentValidation / MediatR / NLog / Newtonsoft.Json / MSSQL
 - 前端仓库：`bsit-supplychain-web`（Vue3 + Vite + Pinia）
 - 架构模式：领域驱动设计（DDD）+ 依赖倒置 + 四层架构
-- 核心特性：Swagger 接口文档、JWT 认证、请求审计日志、NLog 日志、统一返回格式、CORS 跨域
+- 核心特性：Swagger 接口文档、JWT 认证、请求审计日志、NLog 日志、统一返回格式、后台服务（Background Services）、Newtonsoft.Json 序列化（禁用 Unicode 转义）、CORS 跨域
 
 ## 3. 目录说明
 - `src/main/`：核心 DDD 分层项目（Api / Application / Domain / Infrastructure / Common）
@@ -276,6 +277,7 @@ tests/
 | 新建领域事件 + Handler | `agents-docs/domain-events.md` | `agents-docs/templates/sample-domain-event.cs` |
 | 创建完整业务模块（端到端） | **执行工作流** `.windsurf/workflows/new-module.md` | 所有样板 |
 | 排查异常 / 日志问题 | `agents-docs/error-handling.md` → `logging-guide.md` | — |
+| 新建后台服务 | `agents-docs/background-services.md` → `architecture-layers.md` | `agents-docs/templates/sample-background-service.cs` |
 | 编写 / 修改测试 | `agents-docs/testing.md` | — |
 
 > **规则**：执行任务前，必须先读取对应的规则文件和样板文件，禁止凭记忆生成代码。
@@ -325,7 +327,7 @@ tests/
 
 | 文件 | 核心内容 |
 |:---|:---|
-| `dotnet-coding-style.md` | 命名规范（PascalCase public / camelCase private），async/await 模式，using 排序，中文注释要求（用途、参数、返回值、核心逻辑、异常）。 |
+| `dotnet-coding-style.md` | 命名规范（PascalCase public / camelCase private），async/await 模式，using 排序，中文注释要求，JSON 序列化规范（Newtonsoft.Json、禁用 Unicode 转义）。 |
 | `architecture-layers.md` | 依赖方向（Api → Application → Domain ← Infrastructure），禁止跨层调用，每层允许的依赖，BaseEntity 基类规范。 |
 | `repository-pattern.md` | 仓储接口设计（泛型 IRepository<T>），聚合根加载策略，UnitOfWork 模式（BeginTran → CollectEvents → CommitAsync）。 |
 | `api-conventions.md` | URL 命名（名词复数），HTTP 方法对应操作，状态码标准，Swagger 注解规范。 |
@@ -336,9 +338,11 @@ tests/
 | `automapper-rules.md` | Profile 按模块拆分，Entity→DTO / DTO→Entity 映射方向，ID/审计字段/领域事件必须 Ignore，写入推荐工厂方法。 |
 | `logging-guide.md` | NLog 双目标配置（文件+MSSQL），各层使用 ILogger<T>，日志级别规范，数据库表结构。 |
 | `auth-jwt.md` | JWT 认证流程，Token 生成/刷新，ICurrentUser 服务，Swagger 集成 Bearer 认证。 |
+| `background-services.md` | 后台服务规范（BackgroundService 放置位置、Scope 管理、异常处理、配置化、日志要求）。 |
+| `json-serialization.md` | JSON 序列化规范（Newtonsoft.Json、禁用 Unicode 转义、camelCase、日期格式、JsonHelper 工具类）。 |
 | `testing.md` | xUnit 测试组织，按层分目录，Application/Domain/Common 单元测试，Repository/Api 集成测试。 |
-| `checklist.md` | AI 代码生成自检清单（30+ 检查项），涵盖通用规则、分层架构、Domain/Infrastructure/Application/Api 各层、测试。 |
-| `templates/` | 完整代码样板目录（7 个 .cs 文件），以"客户(Customer)"模块为具体示例，AI 照葫芦画瓢生成新模块代码。 |
+| `checklist.md` | AI 代码生成自检清单（30+ 检查项），涵盖通用规则、分层架构、Domain/Infrastructure/Application/Api 各层、后台服务、JSON 序列化、测试。 |
+| `templates/` | 完整代码样板目录（8 个 .cs 文件），以“客户(Customer)”模块为具体示例，含后台服务样板，AI 照葫芦画瓢生成新模块代码。 |
 
 ### 6.1 规则文件通用性说明
 
@@ -362,6 +366,7 @@ tests/
 | `sample-dto-validator.cs` | Create/Update/Detail/Query 四种 DTO + 两个 Validator | 新建 DTO 时参考 |
 | `sample-mapping-profile.cs` | AutoMapper Profile（含值对象展开和 Ignore 示例） | 新建映射时参考 |
 | `sample-domain-event.cs` | 领域事件定义（record + INotification） + EventHandler | 新建领域事件时参考 |
+| `sample-background-service.cs` | 后台服务样板（定时任务 + Scope 管理 + 异常处理） | 新建后台服务时参考 |
 
 ### 6.3 AI 工作流目录（.windsurf/workflows/）
 

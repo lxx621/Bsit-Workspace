@@ -8,9 +8,9 @@
 |------|------|
 | **公司业务** | 物流管理、供应链管理、仓储管理一站式软件解决方案 |
 | **系统名称** | Bsit.SupplyChain.Api（后端 WebAPI） |
-| **技术栈** | .NET 10 WebAPI / Autofac / SqlSugar / AutoMapper / FluentValidation / MediatR / NLog / Vue3 / MSSQL |
+| **技术栈** | .NET 10 WebAPI / Autofac / SqlSugar / AutoMapper / FluentValidation / MediatR / NLog / Newtonsoft.Json / Vue3 / MSSQL |
 | **架构风格** | 前后端分离 + 领域驱动设计(DDD) 四层架构 |
-| **核心特性** | Swagger 接口文档、JWT 认证（Access Token + Refresh Token）、请求审计日志、NLog 系统日志（文件+MSSQL）、统一返回格式、AutoMapper 对象映射、FluentValidation 请求验证、领域事件（MediatR）、CORS 跨域、软删除与审计字段、单元测试与集成测试、SqlSugar 工具链 |
+| **核心特性** | Swagger 接口文档、JWT 认证（Access Token + Refresh Token）、请求审计日志、NLog 系统日志（文件+MSSQL）、统一返回格式、AutoMapper 对象映射、FluentValidation 请求验证、领域事件（MediatR）、CORS 跨域、软删除与审计字段、后台服务（Background Services）、Newtonsoft.Json 序列化（禁用 Unicode 转义）、单元测试与集成测试、SqlSugar 工具链 |
 
 > **说明**：本文档聚焦于后端 WebAPI 项目的分层架构设计，是 `Bsit.SupplyChain` 系统中后端部分的详细指引。示例中出现的 `Order`（订单）、`Warehouse`（仓储）、`Transport`（运输）、`Account`（账户）等业务模块**仅为演示分层组织方式而列举的典型示例**，实际项目开发中需根据真实业务需求进行裁剪、扩展或重命名。
 
@@ -50,7 +50,7 @@
 
 | 层（项目） | 职责 | 允许依赖 |
 |------------|------|----------|
-| **Api** (表示层) | 接收HTTP请求，路由分发，认证鉴权，Swagger配置，审计中间件，全局异常处理，集成 NLog | App, Infra, Common |
+| **Api** (表示层) | 接收HTTP请求，路由分发，认证鉴权，Swagger配置，审计中间件，全局异常处理，集成 NLog，后台服务（定时任务/后台任务） | App, Infra, Common |
 | **Application** (应用层) | 业务用例流程编排，DTO转换，调用仓储接口，领域事件处理，返回统一结果 | Domain, Common |
 | **Domain** (领域层) | 定义聚合根、实体、值对象、领域事件、仓储接口、领域服务、业务常量 | Common（可选） |
 | **Infrastructure** (基础设施层) | 实现Domain层定义的仓储接口，封装SqlSugar操作，数据库上下文管理，领域事件持久化与分发 | Domain, Common |
@@ -95,6 +95,9 @@ Bsit.SupplyChain.Api/
 │   │   └── WarehouseController.cs
 │   └── Transport/                        # 运输模块（示例）
 │       └── TransportController.cs
+├── BackgroundServices/                   # 后台服务（定时任务/后台任务）
+│   ├── SampleTimedService.cs             # 定时执行任务示例
+│   └── SampleQueuedService.cs            # 队列后台任务示例（可选）
 ├── Middlewares/
 │   ├── AuditLogMiddleware.cs             # 审计日志中间件（记录请求/响应）
 │   ├── ExceptionMiddleware.cs            # 全局异常处理中间件
@@ -1515,10 +1518,285 @@ app.UseCors("AllowVueApp");
 | **审计字段** | `CreatedAt`/`UpdatedAt` 由 SqlSugar `Aop.DataExecuting` 自动赋值 |
 | **并发控制** | `RowVersion` 由 SqlSugar 自动管理 |
 | **CORS** | 必须配置，允许源从 `appsettings.json` 读取 |
+| **JSON 序列化** | 统一使用 Newtonsoft.Json，禁止 System.Text.Json；禁用 Unicode 转义，中文直接输出 |
+| **后台服务** | 放置在 `Api/BackgroundServices/`，继承 `BackgroundService`，必须通过 `CreateScope()` 获取 Scoped 服务 |
 
 ---
 
-## 十五、总结
+## 十五、后台服务（Background Services）
+
+### 15.1 概述
+
+系统中需要**定时执行**或**后台异步执行**的任务（如定时数据同步、队列消费、过期数据清理等），统一使用 .NET 内置的 `BackgroundService`（继承自 `IHostedService`）实现。
+
+### 15.2 放置位置
+
+后台服务放置在 **Api 层**（表示层）的 `BackgroundServices/` 目录下：
+
+```
+Bsit.SupplyChain.Api/
+├── BackgroundServices/                   # 后台服务目录
+│   ├── OrderExpireCleanupService.cs      # 定时清理过期订单（示例）
+│   ├── DataSyncTimedService.cs           # 定时数据同步（示例）
+│   └── QueueProcessingService.cs         # 队列消费后台任务（示例）
+├── Controllers/
+├── Middlewares/
+└── ...
+```
+
+**原因**：
+- `BackgroundService` 是宿主（Host）级别的服务，需在 `Program.cs` 中通过 `builder.Services.AddHostedService<T>()` 注册
+- Api 项目是应用启动入口（Host），后台服务的**注册和生命周期管理**天然属于此层
+- 后台服务中的**业务逻辑**仍应调用 Application 层的服务接口，保持分层职责清晰
+
+### 15.3 分层职责划分
+
+| 关注点 | 所在层 | 说明 |
+|--------|--------|------|
+| **后台服务宿主类** | Api (`BackgroundServices/`) | 继承 `BackgroundService`，控制执行周期和生命周期 |
+| **业务逻辑** | Application (`Services/`) | 后台服务调用的具体业务逻辑，通过接口注入 |
+| **数据访问** | Infrastructure (`Repositories/`) | 业务逻辑所需的数据库操作 |
+| **配置项** | Common (`Configurations/`) 或 `appsettings.json` | 定时间隔、开关等配置 |
+
+### 15.4 定时任务示例
+
+```csharp
+// Api/BackgroundServices/OrderExpireCleanupService.cs
+namespace Bsit.SupplyChain.Api.BackgroundServices;
+
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+
+/// <summary>
+/// 定时清理过期订单后台服务
+/// 每隔指定时间间隔执行一次过期订单清理逻辑
+/// </summary>
+public class OrderExpireCleanupService : BackgroundService
+{
+    private readonly IServiceProvider _serviceProvider;
+    private readonly ILogger<OrderExpireCleanupService> _logger;
+    private readonly TimeSpan _interval = TimeSpan.FromMinutes(30); // 可从配置读取
+
+    /// <summary>
+    /// 构造函数
+    /// </summary>
+    /// <param name="serviceProvider">服务提供者（用于创建 Scope 获取 Scoped 服务）</param>
+    /// <param name="logger">日志记录器</param>
+    public OrderExpireCleanupService(IServiceProvider serviceProvider, ILogger<OrderExpireCleanupService> logger)
+    {
+        _serviceProvider = serviceProvider;
+        _logger = logger;
+    }
+
+    /// <summary>
+    /// 后台任务执行主体
+    /// </summary>
+    /// <param name="stoppingToken">取消令牌，应用关闭时触发</param>
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        _logger.LogInformation("订单过期清理服务已启动，执行间隔：{Interval}", _interval);
+
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            try
+            {
+                // ★ 必须创建新的 Scope 来获取 Scoped 服务（Repository、DbContext 等）
+                using var scope = _serviceProvider.CreateScope();
+                var orderService = scope.ServiceProvider.GetRequiredService<Application.Interfaces.Order.IOrderService>();
+
+                await orderService.CleanupExpiredOrdersAsync(stoppingToken);
+
+                _logger.LogInformation("订单过期清理执行完毕");
+            }
+            catch (Exception ex) when (ex is not OperationCanceledException)
+            {
+                _logger.LogError(ex, "订单过期清理执行异常");
+            }
+
+            await Task.Delay(_interval, stoppingToken);
+        }
+
+        _logger.LogInformation("订单过期清理服务已停止");
+    }
+}
+```
+
+### 15.5 注册方式（Program.cs）
+
+```csharp
+// Program.cs 中注册后台服务
+builder.Services.AddHostedService<OrderExpireCleanupService>();
+builder.Services.AddHostedService<DataSyncTimedService>();
+```
+
+### 15.6 关键规范
+
+| 规则 | 说明 |
+|------|------|
+| **目录位置** | `Api/BackgroundServices/`，不分子目录（属于横切关注点） |
+| **命名** | `{功能描述}Service.cs`，如 `OrderExpireCleanupService`、`DataSyncTimedService` |
+| **Scope 管理** | 后台服务是 Singleton 生命周期，**必须**通过 `IServiceProvider.CreateScope()` 获取 Scoped 服务（如 Repository、SqlSugarClient） |
+| **异常处理** | 循环体内必须 `try-catch`，防止单次异常终止整个服务；记录 Error 日志 |
+| **取消令牌** | 必须响应 `CancellationToken`（`stoppingToken`），确保应用关闭时优雅停止 |
+| **配置化** | 执行间隔、开关等参数从 `appsettings.json` 读取，通过 `IOptions<T>` 注入 |
+| **日志** | 启动、每次执行完毕、异常、停止均需记录日志 |
+| **业务逻辑分离** | 后台服务类仅负责调度（定时/触发），具体业务逻辑委托给 Application 层服务 |
+
+### 15.7 配置示例（appsettings.json）
+
+```json
+{
+  "BackgroundServices": {
+    "OrderExpireCleanup": {
+      "Enabled": true,
+      "IntervalMinutes": 30
+    },
+    "DataSync": {
+      "Enabled": true,
+      "CronExpression": "0 */5 * * * ?"
+    }
+  }
+}
+```
+
+### 15.8 配置选项类（Common 层）
+
+```csharp
+// Common/Configurations/BackgroundServiceSettings.cs
+namespace Bsit.SupplyChain.Common.Configurations;
+
+/// <summary>
+/// 后台服务配置选项基类
+/// </summary>
+public class BackgroundServiceSettings
+{
+    /// <summary>是否启用该后台服务</summary>
+    public bool Enabled { get; set; } = true;
+
+    /// <summary>执行间隔（分钟）</summary>
+    public int IntervalMinutes { get; set; } = 30;
+}
+```
+
+---
+
+## 十六、JSON 序列化规范（Newtonsoft.Json）
+
+### 16.1 概述
+
+系统统一使用 **Newtonsoft.Json** 作为 JSON 序列化/反序列化引擎，**禁止**使用 `System.Text.Json`。核心配置要求：**禁用 Unicode 转义**，确保中文等非 ASCII 字符直接输出而不是转为 `\uXXXX` 格式。
+
+### 16.2 NuGet 包
+
+| 项目 | 包名 | 说明 |
+|------|------|------|
+| **Api** | `Microsoft.AspNetCore.Mvc.NewtonsoftJson` | ASP.NET Core MVC 集成 Newtonsoft.Json |
+| **Common** | `Newtonsoft.Json` | 公共层工具类中使用（如手动序列化场景） |
+
+### 16.3 全局配置（Program.cs）
+
+```csharp
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+
+// 替换默认 JSON 序列化器为 Newtonsoft.Json
+builder.Services.AddControllers()
+    .AddNewtonsoftJson(options =>
+    {
+        // ★ 禁用 Unicode 转义，中文等字符直接输出
+        options.SerializerSettings.StringEscapeHandling = StringEscapeHandling.Default;
+
+        // 使用 camelCase 属性命名（与前端 JS 约定一致）
+        options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+
+        // 日期格式化（避免 ISO 8601 带 T 格式）
+        options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
+
+        // 忽略循环引用
+        options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+
+        // 忽略 null 值属性（可选，按需开启）
+        // options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+
+        // 枚举序列化为字符串（可选）
+        // options.SerializerSettings.Converters.Add(new StringEnumConverter());
+    });
+```
+
+### 16.4 手动序列化场景（Common 层工具）
+
+当需要在非 Controller 场景（如中间件、后台服务、日志记录）中手动序列化 JSON 时，统一使用以下配置：
+
+```csharp
+// Common/Helpers/JsonHelper.cs
+namespace Bsit.SupplyChain.Common.Helpers;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+
+/// <summary>
+/// JSON 序列化/反序列化工具类
+/// 统一配置：禁用 Unicode 转义、camelCase 命名、标准日期格式
+/// </summary>
+public static class JsonHelper
+{
+    /// <summary>全局共享的序列化配置（只读，线程安全）</summary>
+    public static readonly JsonSerializerSettings DefaultSettings = new()
+    {
+        // ★ 禁用 Unicode 转义，中文直接输出
+        StringEscapeHandling = StringEscapeHandling.Default,
+        ContractResolver = new CamelCasePropertyNamesContractResolver(),
+        DateFormatString = "yyyy-MM-dd HH:mm:ss",
+        ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+    };
+
+    /// <summary>
+    /// 将对象序列化为 JSON 字符串
+    /// </summary>
+    /// <param name="obj">待序列化对象</param>
+    /// <returns>JSON 字符串（中文直接输出，不转义）</returns>
+    public static string Serialize(object? obj)
+    {
+        return JsonConvert.SerializeObject(obj, DefaultSettings);
+    }
+
+    /// <summary>
+    /// 将 JSON 字符串反序列化为指定类型
+    /// </summary>
+    /// <typeparam name="T">目标类型</typeparam>
+    /// <param name="json">JSON 字符串</param>
+    /// <returns>反序列化后的对象</returns>
+    public static T? Deserialize<T>(string json)
+    {
+        return JsonConvert.DeserializeObject<T>(json, DefaultSettings);
+    }
+}
+```
+
+### 16.5 ExceptionMiddleware 中使用
+
+全局异常中间件中的 JSON 响应也必须使用 Newtonsoft.Json：
+
+```csharp
+// 替换 System.Text.Json.JsonSerializer.Serialize
+await context.Response.WriteAsync(JsonHelper.Serialize(result));
+```
+
+### 16.6 使用规范
+
+| 规则 | 说明 |
+|------|------|
+| **统一引擎** | 全项目使用 Newtonsoft.Json，**禁止**使用 `System.Text.Json` |
+| **禁用 Unicode 转义** | `StringEscapeHandling = StringEscapeHandling.Default`，确保中文直接输出 |
+| **命名策略** | `CamelCasePropertyNamesContractResolver`，与前端 JS 对象命名一致 |
+| **日期格式** | `yyyy-MM-dd HH:mm:ss`，避免前端解析 ISO 8601 格式的兼容问题 |
+| **手动序列化** | 使用 `Common/Helpers/JsonHelper.cs` 中的静态方法，禁止直接 `new JsonSerializerSettings()` |
+| **循环引用** | `ReferenceLoopHandling.Ignore`，防止导航属性序列化死循环 |
+
+---
+
+## 十七、总结
 
 本架构以整洁架构与 DDD 分层思想为基础，专为 **Bsit.SupplyChain.Api** 后端 WebAPI 量身定制。核心组件协作如下：
 
@@ -1529,8 +1807,10 @@ app.UseCors("AllowVueApp");
 | **FluentValidation** | 请求参数验证，集中管理 |
 | **MediatR** | 领域事件发布/订阅，解耦业务 |
 | **NLog** | 系统日志（文件 + MSSQL） |
+| **Newtonsoft.Json** | JSON 序列化（禁用 Unicode 转义，中文直接输出） |
 | **SqlSugar** | ORM 数据访问 |
 | **JWT** | 认证鉴权 |
+| **BackgroundService** | 后台定时任务 / 异步任务 |
 | **全局异常中间件** | 统一异常响应 |
 
 > **重要提醒**：架构中的具体业务模块仅为展示分层组织方式而设，**实际项目的聚合划分、实体定义、服务接口等必须严格依据真实业务需求进行**，切勿生硬照搬示例结构。

@@ -14,7 +14,7 @@ Api（表示层） → Application（应用层） → Domain（领域层） ← 
 
 | 层 | 项目名 | 职责 | 允许依赖 |
 |----|--------|------|----------|
-| 表示层 | `Bsit.SupplyChain.Api` | 控制器、中间件、过滤器、Swagger、认证 | Application, Infrastructure, Common |
+| 表示层 | `Bsit.SupplyChain.Api` | 控制器、中间件、过滤器、Swagger、认证、后台服务 | Application, Infrastructure, Common |
 | 应用层 | `Bsit.SupplyChain.Application` | 业务用例编排、DTO、服务、验证器、映射、事件处理 | Domain, Common |
 | 领域层 | `Bsit.SupplyChain.Domain` | 聚合根、实体、值对象、领域事件、仓储接口、领域服务 | Common（可选） |
 | 基础设施层 | `Bsit.SupplyChain.Infrastructure` | 仓储实现、SqlSugar 配置、UnitOfWork、种子数据 | Domain, Common |
@@ -45,9 +45,10 @@ Api（表示层） → Application（应用层） → Domain（领域层） ← 
 | Domain | `Interfaces/` | `Order/`, `Account/` | `IUnitOfWork.cs`、`IRepository.cs` 保留根目录 |
 | Infrastructure | `Repositories/` | `Order/`, `Account/` | `BaseRepository.cs` 保留根目录 |
 | Api | `Controllers/` | `Auth/`, `Order/` | 按业务模块分组 |
+| Api | `BackgroundServices/` | — | 后台服务，不分子目录（横切关注点） |
 
 **不需要按模块分子目录的**（横切关注点）：
-- `Middlewares/`、`Filters/`、`Extensions/`、`Behaviors/`、`Enums/`、`Constants/`、`Helpers/`
+- `Middlewares/`、`Filters/`、`Extensions/`、`Behaviors/`、`Enums/`、`Constants/`、`Helpers/`、`BackgroundServices/`
 
 ## BaseEntity 基类
 
