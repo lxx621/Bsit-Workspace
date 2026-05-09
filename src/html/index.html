@@ -211,7 +211,8 @@ a { text-decoration: none; color: inherit; }
   width: 28px; height: 40px; display: none; align-items: center; justify-content: center;
   flex-shrink: 0; cursor: pointer; color: rgba(0,0,0,.6); transition: color .2s;
 }
-.tab-scroll-btn:hover { color: rgba(0,0,0,.88); }
+.tab-scroll-btn:not(.disabled):hover { color: rgba(0,0,0,.88); }
+.tab-scroll-btn.disabled { cursor: not-allowed; color: rgba(0,0,0,.25); }
 .tab-scroll-btn svg { width: 14px; height: 14px; fill: currentColor; stroke: none; }
 .tab-bar.scrollable .tab-scroll-btn { display: flex; }
 
@@ -582,18 +583,35 @@ function toggleSecondaryCollapse() {
   secondaryCollapsed = !secondaryCollapsed;
   renderSecondary();
 }
-/* Tab滚动：检测是否溢出，溢出时显示左右按钮 */
+/* Tab滚动：检测是否溢出，溢出时显示左右按钮并更新disabled状态 */
 function checkTabOverflow() {
   const bar = document.getElementById('tabBar');
   const body = document.getElementById('tabBody');
   if (!bar || !body) return;
   const isOverflow = body.scrollWidth > body.clientWidth;
   bar.classList.toggle('scrollable', isOverflow);
+  if (isOverflow) updateTabScrollBtns();
+  /* 监听scroll事件实时更新按钮状态 */
+  body.onscroll = updateTabScrollBtns;
+}
+/* 更新左右滚动按钮的disabled状态 */
+function updateTabScrollBtns() {
+  const body = document.getElementById('tabBody');
+  if (!body) return;
+  const leftBtn = document.querySelector('.tab-scroll-left');
+  const rightBtn = document.querySelector('.tab-scroll-right');
+  if (!leftBtn || !rightBtn) return;
+  /* 滚动到最左时禁用左按钮 */
+  leftBtn.classList.toggle('disabled', body.scrollLeft <= 0);
+  /* 滚动到最右时禁用右按钮（1px容差） */
+  rightBtn.classList.toggle('disabled', body.scrollLeft + body.clientWidth >= body.scrollWidth - 1);
 }
 /* Tab滚动：点击左右按钮平滑滚动 */
 function scrollTabs(dir) {
   const body = document.getElementById('tabBody');
   if (!body) return;
+  const btn = dir < 0 ? document.querySelector('.tab-scroll-left') : document.querySelector('.tab-scroll-right');
+  if (btn?.classList.contains('disabled')) return;
   body.scrollBy({ left: dir * 200, behavior: 'smooth' });
 }
 /* Tab滚动：确保激活的tab可见 */
