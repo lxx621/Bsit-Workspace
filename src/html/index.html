@@ -93,7 +93,7 @@ a { text-decoration: none; color: inherit; }
 .side-secondary.collapsed { width: 0; overflow: hidden; opacity: 0; border-right: none; }
 .side-secondary-title {
   height: 54px; display: flex; align-items: center; padding: 0 16px;
-  font-size: 18px; font-weight: 600; color: rgba(0,0,0,.88);
+  font-size: 16px; font-weight: 500; color: rgba(0,0,0,.88);
   border-bottom: 1px solid #f0f0f0; flex-shrink: 0; white-space: nowrap;
 }
 .side-secondary-menus {
@@ -118,7 +118,11 @@ a { text-decoration: none; color: inherit; }
 .ss-item .ss-dot { color: #ff4d4f; font-size: 10px; margin-left: 4px; }
 
 /* 三级菜单 */
-.ss-group { padding-left: 0; background: rgba(0,0,0,.02); }
+.ss-group {
+  padding-left: 0; background: rgba(0,0,0,.02);
+  overflow: hidden; max-height: 0; transition: max-height .3s ease;
+}
+.ss-group.open { max-height: 400px; }
 .ss-sub-item {
   display: flex; align-items: center; padding: 0 16px 0 40px; height: 40px; gap: 8px;
   cursor: pointer; font-size: 14px; color: rgba(0,0,0,.55);
@@ -322,7 +326,7 @@ a { text-decoration: none; color: inherit; }
         </div>
       </div>
       <div class="breadcrumb" id="breadcrumb">
-        <span>Dashboard</span><span class="bc-sep">/</span><span class="bc-current">工作台</span><span class="bc-sep">/</span>
+        <span>Dashboard</span><span class="bc-sep">/</span><span class="bc-current">工作台</span>
       </div>
       <div class="header-spacer"></div>
       <div class="header-right">
@@ -340,6 +344,9 @@ a { text-decoration: none; color: inherit; }
           <div class="user-avatar"><img src="https://cdn.eleadmin.com/20200610/avatar.jpg" onerror="this.style.display='none';this.parentElement.style.background='#e6f7ff';this.parentElement.innerHTML='管';" style="width:100%;height:100%;object-fit:cover;"/></div>
           <span class="user-name">管理员</span>
           <span class="user-arrow"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17 24 31 38 17"/></svg></span>
+        </div>
+        <div class="header-tool" title="主题">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="24" r="10"/><path d="M24 2V6M24 42V46M2 24H6M42 24H46M7.5 7.5L10.3 10.3M37.7 37.7L40.5 40.5M40.5 7.5L37.7 10.3M10.3 37.7L7.5 40.5"/></svg>
         </div>
         <div class="header-tool" title="设置" style="position:relative;">
           <svg viewBox="0 0 48 48" fill="currentColor" stroke="none"><circle cx="24" cy="8" r="4"/><circle cx="24" cy="24" r="4"/><circle cx="24" cy="40" r="4"/></svg>
@@ -454,9 +461,9 @@ function renderSecondary() {
     const hasSub = c.children&&c.children.length;
     const isExp = c.expanded;
     let dot = c.dot ? '<span class="ss-dot">●</span>' : '';
-    html += `<div class="ss-item ${isActive?'active':''} ${isExp?'expanded':''}" onclick="${hasSub?`toggleGroup('${c.key}')`:`clickSecondary('${c.key}')`}"><span class="ss-icon">${I[c.icon]||I.page}</span><span>${c.label}</span>${dot}${hasSub?'<span class="ss-arrow"><svg viewBox="0 0 48 48"><path d="M10 17 24 31 38 17"/></svg></span>':''}</div>`;
+    html += `<div class="ss-item ${isActive?'active':''} ${isExp?'expanded':''}" data-key="${c.key}" onclick="${hasSub?`toggleGroup('${c.key}')`:`clickSecondary('${c.key}')`}"><span class="ss-icon">${I[c.icon]||I.page}</span><span>${c.label}</span>${dot}${hasSub?'<span class="ss-arrow"><svg viewBox="0 0 48 48"><path d="M10 17 24 31 38 17"/></svg></span>':''}</div>`;
     if (hasSub) {
-      html += `<div class="ss-group" style="${isExp?'':'display:none'}">`;
+      html += `<div class="ss-group ${isExp?'open':''}" data-group="${c.key}">`;
       c.children.forEach(sub => {
         html += `<div class="ss-sub-item ${sub.key===curSecondary?'active':''}" onclick="clickSecondary('${sub.key}')"><span class="ss-icon">${I[sub.icon]||I.page}</span><span>${sub.label}</span></div>`;
       });
@@ -488,13 +495,25 @@ function renderTabs() {
 /* ==================== 渲染面包屑 ==================== */
 function renderBreadcrumb() {
   const p = menuData.find(x=>x.key===curPrimary);
-  let cLabel = curSecondary;
+  let parts = [p ? p.label : ''];
   if (p&&p.children) {
     const c = p.children.find(x=>x.key===curSecondary);
-    if (c) cLabel = c.label;
-    else p.children.forEach(c2 => { if(c2.children) { const t=c2.children.find(x=>x.key===curSecondary); if(t) cLabel=t.label; }});
+    if (c) { parts.push(c.label); }
+    else {
+      /* 三级菜单：找到父级二级菜单 + 当前三级菜单 */
+      p.children.forEach(c2 => {
+        if(c2.children) {
+          const t = c2.children.find(x=>x.key===curSecondary);
+          if(t) { parts.push(c2.label); parts.push(t.label); }
+        }
+      });
+    }
   }
-  document.getElementById('breadcrumb').innerHTML = `<span>${p?p.label:''}</span><span class="bc-sep">/</span><span class="bc-current">${cLabel}</span><span class="bc-sep">/</span>`;
+  let html = parts.map((s, i) => i < parts.length - 1
+    ? `<span>${s}</span><span class="bc-sep">/</span>`
+    : `<span class="bc-current">${s}</span>`
+  ).join('');
+  document.getElementById('breadcrumb').innerHTML = html;
 }
 
 /* ==================== 渲染内容 ==================== */
@@ -528,8 +547,13 @@ function toggleGroup(key) {
   const m = menuData.find(x=>x.key===curPrimary);
   if(!m) return;
   const c = m.children.find(x=>x.key===key);
-  if(c) c.expanded = !c.expanded;
-  renderSecondary();
+  if(!c) return;
+  c.expanded = !c.expanded;
+  /* 直接操作DOM实现动画，避免重新渲染丢失过渡效果 */
+  const groupEl = document.querySelector(`.ss-group[data-group="${key}"]`);
+  const itemEl = document.querySelector(`.ss-item[data-key="${key}"]`);
+  if (groupEl) groupEl.classList.toggle('open', c.expanded);
+  if (itemEl) itemEl.classList.toggle('expanded', c.expanded);
 }
 function togglePrimaryCollapse() {
   primaryCollapsed = !primaryCollapsed;
