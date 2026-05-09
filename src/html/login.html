@@ -68,29 +68,25 @@ body {
   margin-bottom: 18px;
 }
 .login-tabs {
-  display: inline-flex;
-  background: #f5f5f5;
-  border-radius: 4px;
-  padding: 3px;
+  display: flex;
   margin-bottom: 18px;
-  position: relative;
+  border-bottom: 2px solid #f0f0f0;
 }
 .login-tabs .tab {
-  padding: 4px 12px;
+  padding: 8px 0;
+  margin-right: 32px;
   cursor: pointer;
-  font-size: 14px;
-  color: rgba(0,0,0,.65);
-  border-radius: 4px;
+  font-size: 15px;
+  color: rgba(0,0,0,.6);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
   transition: all .3s;
-  position: relative;
-  z-index: 1;
   user-select: none;
 }
 .login-tabs .tab.active {
-  color: rgba(0,0,0,.92);
-  background: #fff;
-  box-shadow: 0 1px 3px rgba(0,0,0,.08);
-  font-weight: 400;
+  color: #2f54eb;
+  border-bottom-color: #2f54eb;
+  font-weight: 500;
 }
 /* 扫码登录面板 */
 .qr-panel {
@@ -123,10 +119,16 @@ body {
   margin-bottom: 20px;
   position: relative;
 }
+.form-group { display: flex; align-items: center; }
+.form-group .input-icon {
+  position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+  width: 16px; height: 16px; color: rgba(0,0,0,.3); pointer-events: none; z-index: 1;
+}
+.form-group .input-icon svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 4; stroke-linejoin: round; }
 .form-group input {
   width: 100%;
   height: 40px;
-  padding: 0 12px;
+  padding: 0 12px 0 36px;
   border: 1px solid #d9d9d9;
   border-radius: 6px;
   font-size: 14px;
@@ -230,12 +232,15 @@ body {
     </div>
     <form id="loginForm" class="login-panel">
       <div class="form-group">
+        <span class="input-icon"><svg viewBox="0 0 48 48"><path d="M42 44C42 34 34 26 24 26 14 26 6 34 6 44M24 26C29.5 26 35 21 35 15 35 9 30 4 24 4 18 4 13 9 13 15 13 21 18.5 26 24 26Z"/></svg></span>
         <input type="text" id="username" placeholder="请输入登录账号" value="admin">
       </div>
       <div class="form-group">
+        <span class="input-icon"><svg viewBox="0 0 48 48" stroke-linecap="round"><path d="M6 20H42V44H6ZM14 20V14C14 8 19 4 24 4 29 4 34 8 34 14V20"/><path d="M24 29V35"/></svg></span>
         <input type="password" id="password" placeholder="请输入登录密码" value="admin">
       </div>
       <div class="form-group captcha-row">
+        <span class="input-icon"><svg viewBox="0 0 48 48" stroke-linecap="round"><path d="M6 10 24 4 42 10V20C42 31 35 41 24 45 13 41 6 31 6 20Z"/><path d="M15 23L22 30L34 18"/></svg></span>
         <input type="text" id="captcha" placeholder="请输入验证码" value="sbnm6">
         <div class="captcha-img" id="captchaImg" title="点击刷新">sbnm6</div>
       </div>
@@ -250,7 +255,7 @@ body {
         <svg viewBox="0 0 180 180" id="qrSvg"></svg>
       </div>
       <div class="qr-refresh" onclick="refreshQR()">
-        <svg viewBox="0 0 48 48" stroke-linecap="round" stroke-linejoin="round"><path d="M42 8v12H30"/><path d="M6 24a18 18 0 0130.7-12.7L42 17"/><path d="M6 40V28h12"/><path d="M42 24a18 18 0 01-30.7 12.7L6 31"/></svg>
+        <svg viewBox="0 0 48 48" stroke-linecap="round" stroke-linejoin="round"><path d="M42 30C40 35 34 43 24 43 14 43 5 34 5 24 5 14 14 5 24 5 31 5 36 9 40 14M40 6V14L32 14"/></svg>
         刷新二维码
       </div>
     </div>
