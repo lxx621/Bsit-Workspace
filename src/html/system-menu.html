@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>菜单管理</title>
+<link rel="stylesheet" href="common.css">
+</head>
+<body style="background:#f7f7f9;">
+<div class="content-panel">
+  <div class="search-bar">
+    <div class="search-field"><label>菜单名称</label><input type="text" placeholder="菜单名称" class="input-field"></div>
+    <div class="search-field"><label>菜单地址</label><input type="text" placeholder="菜单地址" class="input-field"></div>
+    <div class="search-field"><label>权限标识</label><input type="text" placeholder="权限标识" class="input-field"></div>
+    <div class="search-actions">
+      <button class="btn btn-primary">搜索</button>
+      <button class="btn btn-default">重置</button>
+    </div>
+  </div>
+  <div class="toolbar">
+    <button class="btn btn-primary">+ 添加</button>
+    <button class="btn btn-default" onclick="expandAllTreeTable()">展开全部</button>
+    <button class="btn btn-default" onclick="collapseAllTreeTable()">折叠全部</button>
+    <div class="toolbar-right">
+      <button class="btn btn-icon">🔄</button>
+      <button class="btn btn-icon">⚙️</button>
+    </div>
+  </div>
+  <div class="table-container">
+    <table class="data-table">
+      <thead><tr><th>菜单名称</th><th>路由地址</th><th>排序</th><th>可见</th><th>类型</th><th class="col-action">操作</th></tr></thead>
+      <tbody>
+        <tr data-level="0"><td><span class="tree-table-toggle" onclick="toggleTreeTable(this,0)">▼</span> Dashboard</td><td>/dashboard</td><td>0</td><td><span class="tag tag-success">是</span></td><td><span class="tag tag-primary">目录</span></td><td class="actions"><a class="link-btn">添加</a><a class="link-btn">修改</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr data-level="1"><td><span class="tree-table-indent"></span><span class="tree-table-indent"></span>工作台</td><td>/dashboard/workplace</td><td>1</td><td><span class="tag tag-success">是</span></td><td><span class="tag tag-info">菜单</span></td><td class="actions"><a class="link-btn">添加</a><a class="link-btn">修改</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr data-level="1"><td><span class="tree-table-indent"></span><span class="tree-table-indent"></span>分析页</td><td>/dashboard/analysis</td><td>2</td><td><span class="tag tag-success">是</span></td><td><span class="tag tag-info">菜单</span></td><td class="actions"><a class="link-btn">添加</a><a class="link-btn">修改</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr data-level="1"><td><span class="tree-table-indent"></span><span class="tree-table-indent"></span>监控页</td><td>/dashboard/monitor</td><td>3</td><td><span class="tag tag-success">是</span></td><td><span class="tag tag-info">菜单</span></td><td class="actions"><a class="link-btn">添加</a><a class="link-btn">修改</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr data-level="0"><td><span class="tree-table-toggle" onclick="toggleTreeTable(this,0)">▼</span> 系统管理</td><td>/system</td><td>1</td><td><span class="tag tag-success">是</span></td><td><span class="tag tag-primary">目录</span></td><td class="actions"><a class="link-btn">添加</a><a class="link-btn">修改</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr data-level="1"><td><span class="tree-table-indent"></span><span class="tree-table-toggle" onclick="toggleTreeTable(this,1)">▼</span> 用户管理</td><td>/system/user</td><td>1</td><td><span class="tag tag-success">是</span></td><td><span class="tag tag-info">菜单</span></td><td class="actions"><a class="link-btn">添加</a><a class="link-btn">修改</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr data-level="2"><td><span class="tree-table-indent"></span><span class="tree-table-indent"></span><span class="tree-table-indent"></span>查询用户</td><td></td><td>1</td><td><span class="tag tag-success">是</span></td><td><span class="tag tag-warning">按钮</span></td><td class="actions"><a class="link-btn">修改</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr data-level="2"><td><span class="tree-table-indent"></span><span class="tree-table-indent"></span><span class="tree-table-indent"></span>添加用户</td><td></td><td>2</td><td><span class="tag tag-success">是</span></td><td><span class="tag tag-warning">按钮</span></td><td class="actions"><a class="link-btn">修改</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr data-level="2"><td><span class="tree-table-indent"></span><span class="tree-table-indent"></span><span class="tree-table-indent"></span>修改用户</td><td></td><td>3</td><td><span class="tag tag-success">是</span></td><td><span class="tag tag-warning">按钮</span></td><td class="actions"><a class="link-btn">修改</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr data-level="2"><td><span class="tree-table-indent"></span><span class="tree-table-indent"></span><span class="tree-table-indent"></span>删除用户</td><td></td><td>4</td><td><span class="tag tag-success">是</span></td><td><span class="tag tag-warning">按钮</span></td><td class="actions"><a class="link-btn">修改</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr data-level="1"><td><span class="tree-table-indent"></span><span class="tree-table-indent"></span>角色管理</td><td>/system/role</td><td>2</td><td><span class="tag tag-success">是</span></td><td><span class="tag tag-info">菜单</span></td><td class="actions"><a class="link-btn">添加</a><a class="link-btn">修改</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr data-level="1"><td><span class="tree-table-indent"></span><span class="tree-table-indent"></span>菜单管理</td><td>/system/menu</td><td>3</td><td><span class="tag tag-success">是</span></td><td><span class="tag tag-info">菜单</span></td><td class="actions"><a class="link-btn">添加</a><a class="link-btn">修改</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr data-level="1"><td><span class="tree-table-indent"></span><span class="tree-table-indent"></span>机构管理</td><td>/system/organization</td><td>4</td><td><span class="tag tag-success">是</span></td><td><span class="tag tag-info">菜单</span></td><td class="actions"><a class="link-btn">添加</a><a class="link-btn">修改</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr data-level="1"><td><span class="tree-table-indent"></span><span class="tree-table-indent"></span>字典管理</td><td>/system/dictionary</td><td>5</td><td><span class="tag tag-success">是</span></td><td><span class="tag tag-info">菜单</span></td><td class="actions"><a class="link-btn">添加</a><a class="link-btn">修改</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr data-level="1"><td><span class="tree-table-indent"></span><span class="tree-table-indent"></span>文件管理</td><td>/system/file</td><td>6</td><td><span class="tag tag-success">是</span></td><td><span class="tag tag-info">菜单</span></td><td class="actions"><a class="link-btn">添加</a><a class="link-btn">修改</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr data-level="1"><td><span class="tree-table-indent"></span><span class="tree-table-indent"></span>登录日志</td><td>/system/login-record</td><td>7</td><td><span class="tag tag-success">是</span></td><td><span class="tag tag-info">菜单</span></td><td class="actions"><a class="link-btn">添加</a><a class="link-btn">修改</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr data-level="1"><td><span class="tree-table-indent"></span><span class="tree-table-indent"></span>操作日志</td><td>/system/operation-record</td><td>8</td><td><span class="tag tag-success">是</span></td><td><span class="tag tag-info">菜单</span></td><td class="actions"><a class="link-btn">添加</a><a class="link-btn">修改</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr data-level="0"><td><span class="tree-table-toggle" onclick="toggleTreeTable(this,0)">▶</span> 表单页面</td><td>/form</td><td>2</td><td><span class="tag tag-success">是</span></td><td><span class="tag tag-primary">目录</span></td><td class="actions"><a class="link-btn">添加</a><a class="link-btn">修改</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr data-level="0"><td><span class="tree-table-toggle" onclick="toggleTreeTable(this,0)">▶</span> 列表页面</td><td>/list</td><td>3</td><td><span class="tag tag-success">是</span></td><td><span class="tag tag-primary">目录</span></td><td class="actions"><a class="link-btn">添加</a><a class="link-btn">修改</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr data-level="0"><td><span class="tree-table-toggle" onclick="toggleTreeTable(this,0)">▶</span> 结果页面</td><td>/result</td><td>4</td><td><span class="tag tag-success">是</span></td><td><span class="tag tag-primary">目录</span></td><td class="actions"><a class="link-btn">添加</a><a class="link-btn">修改</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<script src="common.js"></script>
+</body>
+</html>

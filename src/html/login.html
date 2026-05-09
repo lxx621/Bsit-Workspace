@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>登录 - Ele Admin Plus</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, Roboto, Arial, Helvetica, "Segoe UI", "Noto Sans", sans-serif;
+  background: linear-gradient(135deg, #f0f3ff 0%, #e8ecfb 50%, #dfe6f5 100%);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgba(0,0,0,.88);
+  font-size: 14px;
+}
+.login-container {
+  display: flex;
+  width: 980px;
+  min-height: 520px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 30px rgba(47,84,235,.08);
+  overflow: hidden;
+}
+.login-left {
+  flex: 1;
+  background: linear-gradient(135deg, #2f54eb 0%, #1d39c4 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 40px;
+  color: #fff;
+}
+.login-left h1 {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  letter-spacing: 1px;
+}
+.login-left h4 {
+  font-size: 14px;
+  font-weight: 400;
+  opacity: 0.85;
+  text-align: center;
+  line-height: 1.6;
+}
+.login-left .logo-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  font-size: 36px;
+  font-weight: bold;
+}
+.login-right {
+  width: 420px;
+  padding: 60px 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.login-right .title {
+  font-size: 20px;
+  font-weight: 600;
+  color: rgba(0,0,0,.92);
+  margin-bottom: 24px;
+}
+.login-tabs {
+  display: flex;
+  margin-bottom: 28px;
+  border-bottom: 2px solid #f0f0f0;
+}
+.login-tabs .tab {
+  padding: 8px 0;
+  margin-right: 32px;
+  cursor: pointer;
+  font-size: 15px;
+  color: rgba(0,0,0,.6);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: all .3s;
+}
+.login-tabs .tab.active {
+  color: #2f54eb;
+  border-bottom-color: #2f54eb;
+  font-weight: 500;
+}
+.form-group {
+  margin-bottom: 20px;
+  position: relative;
+}
+.form-group input {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color .2s;
+  color: rgba(0,0,0,.88);
+}
+.form-group input:focus {
+  border-color: #2f54eb;
+  box-shadow: 0 0 0 2px rgba(47,84,235,.1);
+}
+.form-group input::placeholder {
+  color: rgba(0,0,0,.36);
+}
+.captcha-row {
+  display: flex;
+  gap: 12px;
+}
+.captcha-row input {
+  flex: 1;
+}
+.captcha-row .captcha-img {
+  width: 120px;
+  height: 40px;
+  border-radius: 6px;
+  background: #f5f5f5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: bold;
+  color: #2f54eb;
+  letter-spacing: 4px;
+  cursor: pointer;
+  user-select: none;
+  border: 1px solid #e8e8e8;
+}
+.remember-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+  font-size: 14px;
+}
+.remember-row input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  accent-color: #2f54eb;
+}
+.login-btn {
+  width: 100%;
+  height: 42px;
+  background: #2f54eb;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background .3s;
+  letter-spacing: 2px;
+}
+.login-btn:hover {
+  background: #1d39c4;
+}
+.login-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  text-align: center;
+  padding: 16px;
+  color: rgba(0,0,0,.36);
+  font-size: 13px;
+}
+.login-footer a {
+  color: rgba(0,0,0,.5);
+  text-decoration: none;
+  margin: 0 12px;
+}
+.login-footer a:hover {
+  color: #2f54eb;
+}
+</style>
+</head>
+<body>
+<div class="login-container">
+  <div class="login-left">
+    <div class="logo-icon">
+      <svg viewBox="0 0 40 40" fill="none" width="48" height="48">
+        <circle cx="20" cy="20" r="18" fill="url(#loginLogoGrad)"/>
+        <path d="M13 11h5v18h-5z M20 11h5v8h-5z M20 21h7v8h-7z" fill="#fff" opacity="0.9"/>
+        <defs><linearGradient id="loginLogoGrad" x1="0" y1="0" x2="40" y2="40"><stop offset="0%" stop-color="#4e8ef7"/><stop offset="100%" stop-color="#f46b45"/></linearGradient></defs>
+      </svg>
+    </div>
+    <h1>Ele Admin Plus</h1>
+    <h4>界面美观组件丰富的中后台前端解决方案</h4>
+  </div>
+  <div class="login-right">
+    <div class="title">用户登录</div>
+    <div class="login-tabs">
+      <div class="tab active">密码登录</div>
+      <div class="tab">扫码登录</div>
+    </div>
+    <form id="loginForm">
+      <div class="form-group">
+        <input type="text" id="username" placeholder="请输入登录账号" value="admin">
+      </div>
+      <div class="form-group">
+        <input type="password" id="password" placeholder="请输入登录密码" value="admin">
+      </div>
+      <div class="form-group captcha-row">
+        <input type="text" id="captcha" placeholder="请输入验证码" value="sbnm6">
+        <div class="captcha-img" id="captchaImg" title="点击刷新">sbnm6</div>
+      </div>
+      <div class="remember-row">
+        <input type="checkbox" id="remember" checked>
+        <label for="remember">记住密码</label>
+      </div>
+      <button type="button" class="login-btn" onclick="doLogin()">登 录</button>
+    </form>
+  </div>
+</div>
+<div class="login-footer">
+  <a href="#">官网</a>
+  <a href="#">文档</a>
+  <a href="#">授权</a>
+  <br>
+  <span style="margin-top:8px;display:inline-block;">Copyright © 2025 武汉易云智科技有限公司</span>
+</div>
+<script>
+/* 登录按钮点击 → 跳转后台首页 */
+function doLogin() {
+  window.location.href = 'index.html';
+}
+/* 切换登录Tab */
+document.querySelectorAll('.login-tabs .tab').forEach(tab => {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.login-tabs .tab').forEach(t => t.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+/* 刷新验证码 */
+document.getElementById('captchaImg').addEventListener('click', function() {
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  let code = '';
+  for (let i = 0; i < 5; i++) code += chars[Math.floor(Math.random() * chars.length)];
+  this.textContent = code;
+  document.getElementById('captcha').value = code;
+});
+</script>
+</body>
+</html>

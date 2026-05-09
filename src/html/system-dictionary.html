@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>字典管理</title>
+<link rel="stylesheet" href="common.css">
+</head>
+<body style="background:#f7f7f9;">
+<div class="page-wrapper">
+  <!-- 左侧字典列表 -->
+  <div class="left-tree-panel">
+    <div class="tree-search">
+      <input type="text" placeholder="输入字典名称搜索" class="input-field" style="width:100%">
+    </div>
+    <div style="padding:8px 12px;display:flex;gap:4px;">
+      <button class="btn btn-primary" style="flex:1;font-size:12px;height:28px;">添加</button>
+      <button class="btn btn-default" style="flex:1;font-size:12px;height:28px;">修改</button>
+      <button class="btn btn-danger" style="flex:1;font-size:12px;height:28px;">删除</button>
+    </div>
+    <div class="tree-container" id="dictList">
+      <div class="tree-node active"><span class="tree-indent"></span><span class="tree-label">用户性别 (sex)</span></div>
+      <div class="tree-node"><span class="tree-indent"></span><span class="tree-label">机构类型 (organization_type)</span></div>
+      <div class="tree-node"><span class="tree-indent"></span><span class="tree-label">状态 (status)</span></div>
+    </div>
+  </div>
+  <!-- 右侧字典数据 -->
+  <div class="right-content-panel">
+    <div class="search-bar">
+      <div class="search-field"><label>字典数据名</label><input type="text" placeholder="字典数据名" class="input-field"></div>
+      <div class="search-field"><label>字典数据值</label><input type="text" placeholder="字典数据值" class="input-field"></div>
+      <div class="search-actions">
+        <button class="btn btn-primary">搜索</button>
+        <button class="btn btn-default">重置</button>
+      </div>
+    </div>
+    <div class="toolbar">
+      <button class="btn btn-primary">+ 添加</button>
+      <button class="btn btn-danger">删除</button>
+      <div class="toolbar-right"><button class="btn btn-icon">🔄</button><button class="btn btn-icon">⚙️</button></div>
+    </div>
+    <div class="table-container">
+      <table class="data-table">
+        <thead><tr>
+          <th class="col-check"><input type="checkbox"></th>
+          <th class="col-index">#</th>
+          <th>字典数据名</th><th>字典数据值</th><th>排序号</th><th>创建时间</th><th class="col-action">操作</th>
+        </tr></thead>
+        <tbody>
+          <tr><td><input type="checkbox"></td><td>1</td><td>男</td><td>1</td><td>1</td><td>2020-03-15 09:12:51</td>
+            <td class="actions"><a class="link-btn">修改</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+          <tr><td><input type="checkbox"></td><td>2</td><td>女</td><td>2</td><td>2</td><td>2020-03-15 09:12:51</td>
+            <td class="actions"><a class="link-btn">修改</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pagination">
+      <span class="page-total">共 2 条</span>
+      <button class="page-btn" disabled>‹</button>
+      <button class="page-btn active">1</button>
+      <button class="page-btn" disabled>›</button>
+      <select class="page-size"><option>20条/页</option></select>
+    </div>
+  </div>
+</div>
+<script src="common.js"></script>
+</body>
+</html>

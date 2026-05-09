@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>用户管理</title>
+<link rel="stylesheet" href="common.css">
+</head>
+<body style="background:#f7f7f9;padding:0;margin:0;">
+<div class="page-wrapper">
+  <div class="left-tree-panel">
+    <div class="tree-search">
+      <input type="text" placeholder="输入机构名称搜索" class="input-field" id="treeSearch">
+    </div>
+    <div class="tree-container" id="orgTree">
+      <div class="tree-node level-0 expanded" data-id="1">
+        <span class="tree-toggle" onclick="toggleTree(this)">▼</span>
+        <span class="tree-label">XXX公司</span>
+        <div class="tree-children">
+          <div class="tree-node level-1 expanded" data-id="2">
+            <span class="tree-toggle" onclick="toggleTree(this)">▼</span>
+            <span class="tree-label">研发部</span>
+            <div class="tree-children">
+              <div class="tree-node level-2"><span class="tree-indent"></span><span class="tree-label">研发一组</span></div>
+              <div class="tree-node level-2"><span class="tree-indent"></span><span class="tree-label">研发二组</span></div>
+              <div class="tree-node level-2"><span class="tree-indent"></span><span class="tree-label">研发三组</span></div>
+              <div class="tree-node level-2"><span class="tree-indent"></span><span class="tree-label">研发四组</span></div>
+            </div>
+          </div>
+          <div class="tree-node level-1"><span class="tree-indent"></span><span class="tree-label">测试部</span></div>
+          <div class="tree-node level-1"><span class="tree-indent"></span><span class="tree-label">设计部</span></div>
+          <div class="tree-node level-1"><span class="tree-indent"></span><span class="tree-label">市场部</span></div>
+          <div class="tree-node level-1"><span class="tree-indent"></span><span class="tree-label">运维部</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="right-content-panel">
+    <!-- 搜索栏 -->
+    <div class="search-bar">
+      <div class="search-field">
+        <label>用户账号</label>
+        <input type="text" placeholder="用户账号" class="input-field">
+      </div>
+      <div class="search-field">
+        <label>用户名</label>
+        <input type="text" placeholder="用户名" class="input-field">
+      </div>
+      <div class="search-field">
+        <label>性别</label>
+        <select class="input-field select-field">
+          <option value="">请选择</option>
+          <option value="1">男</option>
+          <option value="2">女</option>
+        </select>
+      </div>
+      <div class="search-actions">
+        <button class="btn btn-primary">搜索</button>
+        <button class="btn btn-default">重置</button>
+      </div>
+    </div>
+    <!-- 工具栏 -->
+    <div class="toolbar">
+      <button class="btn btn-primary" onclick="openDialog('addUserDialog')">+ 添加</button>
+      <button class="btn btn-danger">删除</button>
+      <button class="btn btn-default">导入</button>
+      <div class="toolbar-right">
+        <button class="btn btn-icon" title="刷新">🔄</button>
+        <button class="btn btn-icon" title="列设置">⚙️</button>
+        <button class="btn btn-icon" title="密度">☰</button>
+      </div>
+    </div>
+    <!-- 数据表格 -->
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th class="col-check"><input type="checkbox"></th>
+            <th class="col-index">#</th>
+            <th>用户账号</th>
+            <th>用户名</th>
+            <th>性别</th>
+            <th>角色</th>
+            <th>创建时间</th>
+            <th>状态</th>
+            <th class="col-action">操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><input type="checkbox"></td>
+            <td>1</td>
+            <td>user03</td>
+            <td>用户三</td>
+            <td>女</td>
+            <td>普通用户</td>
+            <td>2020-09-15 17:50:51</td>
+            <td><label class="switch checked"><span class="switch-slider"></span></label></td>
+            <td class="actions">
+              <a class="link-btn" onclick="openDialog('addUserDialog')">修改</a>
+              <div class="dropdown-wrap">
+                <a class="link-btn" onclick="toggleDropdown(this)">更多 ▾</a>
+                <div class="dropdown-menu">
+                  <div class="dropdown-item">重置密码</div>
+                  <div class="dropdown-item danger">删除用户</div>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><input type="checkbox"></td>
+            <td>2</td>
+            <td>user02</td>
+            <td>用户二</td>
+            <td>男</td>
+            <td>普通用户</td>
+            <td>2020-09-15 17:50:20</td>
+            <td><label class="switch checked"><span class="switch-slider"></span></label></td>
+            <td class="actions">
+              <a class="link-btn">修改</a>
+              <div class="dropdown-wrap">
+                <a class="link-btn" onclick="toggleDropdown(this)">更多 ▾</a>
+                <div class="dropdown-menu">
+                  <div class="dropdown-item">重置密码</div>
+                  <div class="dropdown-item danger">删除用户</div>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><input type="checkbox"></td>
+            <td>3</td>
+            <td>user01</td>
+            <td>用户一</td>
+            <td>女</td>
+            <td>普通用户</td>
+            <td>2020-09-15 17:49:37</td>
+            <td><label class="switch checked"><span class="switch-slider"></span></label></td>
+            <td class="actions">
+              <a class="link-btn">修改</a>
+              <div class="dropdown-wrap">
+                <a class="link-btn" onclick="toggleDropdown(this)">更多 ▾</a>
+                <div class="dropdown-menu">
+                  <div class="dropdown-item">重置密码</div>
+                  <div class="dropdown-item danger">删除用户</div>
+                </div>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td><input type="checkbox"></td>
+            <td>4</td>
+            <td>admin</td>
+            <td>管理员</td>
+            <td>女</td>
+            <td>管理员</td>
+            <td>2020-01-13 14:43:52</td>
+            <td><label class="switch checked"><span class="switch-slider"></span></label></td>
+            <td class="actions">
+              <a class="link-btn">修改</a>
+              <div class="dropdown-wrap">
+                <a class="link-btn" onclick="toggleDropdown(this)">更多 ▾</a>
+                <div class="dropdown-menu">
+                  <div class="dropdown-item">重置密码</div>
+                  <div class="dropdown-item danger">删除用户</div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- 分页器 -->
+    <div class="pagination">
+      <span class="page-total">共 4 条</span>
+      <button class="page-btn" disabled>‹</button>
+      <button class="page-btn active">1</button>
+      <button class="page-btn" disabled>›</button>
+      <select class="page-size">
+        <option>20条/页</option>
+        <option>50条/页</option>
+        <option>100条/页</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<!-- 添加用户弹窗 -->
+<div class="dialog-overlay" id="addUserDialog">
+  <div class="dialog" style="width:600px;">
+    <div class="dialog-header">
+      <span class="dialog-title">添加用户</span>
+      <span class="dialog-close" onclick="closeDialog('addUserDialog')">×</span>
+    </div>
+    <div class="dialog-body">
+      <div class="form-row">
+        <label class="form-label">所属机构</label>
+        <div class="form-control"><select class="input-field select-field" style="width:100%"><option>XXX公司</option></select></div>
+      </div>
+      <div class="form-row">
+        <label class="form-label required">用户账号</label>
+        <div class="form-control"><input type="text" class="input-field" placeholder="请输入用户账号" style="width:100%"></div>
+      </div>
+      <div class="form-row">
+        <label class="form-label required">用户名</label>
+        <div class="form-control"><input type="text" class="input-field" placeholder="请输入用户名" style="width:100%"></div>
+      </div>
+      <div class="form-row">
+        <label class="form-label required">性别</label>
+        <div class="form-control"><select class="input-field select-field" style="width:100%"><option>请选择性别</option><option>男</option><option>女</option></select></div>
+      </div>
+      <div class="form-row">
+        <label class="form-label required">角色</label>
+        <div class="form-control"><select class="input-field select-field" style="width:100%"><option>请选择角色</option><option>管理员</option><option>普通用户</option><option>游客</option></select></div>
+      </div>
+      <div class="form-row">
+        <label class="form-label">邮箱</label>
+        <div class="form-control"><input type="email" class="input-field" placeholder="请输入邮箱" style="width:100%"></div>
+      </div>
+      <div class="form-row">
+        <label class="form-label required">手机号</label>
+        <div class="form-control"><input type="text" class="input-field" placeholder="请输入手机号" style="width:100%"></div>
+      </div>
+      <div class="form-row">
+        <label class="form-label">出生日期</label>
+        <div class="form-control"><input type="date" class="input-field" style="width:100%"></div>
+      </div>
+      <div class="form-row">
+        <label class="form-label required">登录密码</label>
+        <div class="form-control"><input type="password" class="input-field" placeholder="请输入登录密码" style="width:100%"></div>
+      </div>
+      <div class="form-row">
+        <label class="form-label">状态</label>
+        <div class="form-control">
+          <label class="radio-item"><input type="radio" name="status" checked> 正常</label>
+          <label class="radio-item"><input type="radio" name="status"> 冻结</label>
+        </div>
+      </div>
+      <div class="form-row">
+        <label class="form-label">个人简介</label>
+        <div class="form-control"><textarea class="input-field" rows="3" placeholder="请输入个人简介" style="width:100%;resize:vertical;"></textarea></div>
+      </div>
+    </div>
+    <div class="dialog-footer">
+      <button class="btn btn-default" onclick="closeDialog('addUserDialog')">取消</button>
+      <button class="btn btn-primary" onclick="closeDialog('addUserDialog')">保存</button>
+    </div>
+  </div>
+</div>
+
+<script src="common.js"></script>
+</body>
+</html>

@@ -30,7 +30,7 @@
 执行方案：
 1. 初始阶段：使用Chrome DevTools mcp手动探索登录流程及核心页面结构，记录关键DOM节点、CSS类名及交互事件
 2. 进阶阶段：基于手动探索结果，使用Playwright编写自动化脚本，批量采集所有页面的结构信息、交互逻辑及视觉样式
-3. 评估优化：对初步分析结果进行效果评估，如存在信息缺失或不准确情况，调整为完全使用Playwright进行系统性分析
+3. 评估优化：对初步分析结果进行效果评估，如存在信息缺失或不准确情况，调整为完全使用Playwright进行系统性分析，或才你有更好的办法也可以。
 
 交付要求：
 - 在后台首页，使用website-to-design-md技能提取https://plus.eleadmin.com/login into design.md and design-preview.html.

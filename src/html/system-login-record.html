@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>登录日志</title>
+<link rel="stylesheet" href="common.css">
+</head>
+<body style="background:#f7f7f9;">
+<div class="content-panel">
+  <div class="search-bar">
+    <div class="search-field"><label>用户账号</label><input type="text" placeholder="用户账号" class="input-field"></div>
+    <div class="search-field"><label>用户名</label><input type="text" placeholder="用户名" class="input-field"></div>
+    <div class="search-field">
+      <label>登录时间</label>
+      <div style="display:flex;gap:4px;align-items:center;">
+        <input type="date" class="input-field" style="min-width:130px">
+        <span style="color:rgba(0,0,0,.36)">-</span>
+        <input type="date" class="input-field" style="min-width:130px">
+      </div>
+    </div>
+    <div class="search-actions">
+      <button class="btn btn-primary">搜索</button>
+      <button class="btn btn-default">重置</button>
+    </div>
+  </div>
+  <div class="toolbar">
+    <button class="btn btn-default">导出</button>
+    <div class="toolbar-right"><button class="btn btn-icon">🔄</button><button class="btn btn-icon">⚙️</button></div>
+  </div>
+  <div class="table-container">
+    <table class="data-table">
+      <thead><tr>
+        <th class="col-index">#</th>
+        <th>账号</th><th>用户名</th><th>IP地址</th><th>设备型号</th><th>操作系统</th><th>浏览器</th><th>操作类型</th><th>备注</th><th>登录时间</th>
+      </tr></thead>
+      <tbody>
+        <tr><td>1</td><td>admin</td><td>管理员</td><td>219.141.180.86</td><td>Windows 10</td><td>Windows</td><td>MSEdge</td><td><span class="tag tag-success">登录成功</span></td><td></td><td>2026-05-09 15:05:04</td></tr>
+        <tr><td>2</td><td>admin</td><td>管理员</td><td>112.48.18.128</td><td>Windows 10</td><td>Windows</td><td>Chrome</td><td><span class="tag tag-success">登录成功</span></td><td></td><td>2026-05-09 15:04:53</td></tr>
+        <tr><td>3</td><td>admin</td><td>管理员</td><td>112.48.18.128</td><td>Windows 10</td><td>Windows</td><td>MSEdge</td><td><span class="tag tag-success">登录成功</span></td><td></td><td>2026-05-09 15:04:33</td></tr>
+        <tr><td>4</td><td>admin</td><td>管理员</td><td>220.200.65.36</td><td>Windows 10</td><td>Windows</td><td>Chrome</td><td><span class="tag tag-success">登录成功</span></td><td></td><td>2026-05-09 15:01:58</td></tr>
+        <tr><td>5</td><td>admin</td><td>管理员</td><td>113.92.159.94</td><td>Windows 10</td><td>Windows</td><td>Chrome</td><td><span class="tag tag-success">登录成功</span></td><td></td><td>2026-05-09 15:00:06</td></tr>
+        <tr><td>6</td><td>admin</td><td>管理员</td><td>111.162.175.227</td><td>Windows 10</td><td>Windows</td><td>MSEdge</td><td><span class="tag tag-success">登录成功</span></td><td></td><td>2026-05-09 14:49:11</td></tr>
+        <tr><td>7</td><td>admin</td><td>管理员</td><td>153.37.92.132</td><td>Windows 10</td><td>Windows</td><td>Chrome</td><td><span class="tag tag-success">登录成功</span></td><td></td><td>2026-05-09 14:47:24</td></tr>
+        <tr><td>8</td><td>admin</td><td>管理员</td><td>111.53.227.40</td><td>Windows 10</td><td>Windows</td><td>MSEdge</td><td><span class="tag tag-success">登录成功</span></td><td></td><td>2026-05-09 14:31:50</td></tr>
+        <tr><td>9</td><td>admin</td><td>管理员</td><td>113.57.29.71</td><td>Windows 10</td><td>Windows</td><td>Chrome</td><td><span class="tag tag-success">登录成功</span></td><td></td><td>2026-05-09 14:31:16</td></tr>
+        <tr><td>10</td><td>admin</td><td>管理员</td><td>27.193.250.89</td><td>Windows 10</td><td>Windows</td><td>Chrome</td><td><span class="tag tag-success">登录成功</span></td><td></td><td>2026-05-09 14:27:18</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="pagination">
+    <span class="page-total">共 1215 条</span>
+    <button class="page-btn" disabled>‹</button>
+    <button class="page-btn active">1</button>
+    <button class="page-btn">2</button>
+    <button class="page-btn">3</button>
+    <button class="page-btn">...</button>
+    <button class="page-btn">61</button>
+    <button class="page-btn">›</button>
+    <select class="page-size"><option>20条/页</option><option>50条/页</option><option>100条/页</option></select>
+  </div>
+</div>
+<script src="common.js"></script>
+</body>
+</html>

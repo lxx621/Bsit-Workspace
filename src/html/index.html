@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>工作台 - Ele Admin Plus</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; overflow: hidden; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, "Noto Sans", sans-serif; font-size: 14px; color: rgba(0,0,0,.88); background: #f5f5f5; }
+a { text-decoration: none; color: inherit; }
+
+/* ==================== 整体布局: 一级侧栏 + 二级侧栏 + 主区域 ==================== */
+.layout { display: flex; height: 100vh; }
+
+/* ==================== 一级侧栏(80px) ==================== */
+.side-primary {
+  width: 80px; background: #fff; border-right: 1px solid #f0f0f0;
+  display: flex; flex-direction: column; align-items: center; flex-shrink: 0;
+  z-index: 20; transition: width .3s;
+}
+.side-primary.collapsed { width: 64px; }
+.side-primary::-webkit-scrollbar { width: 0; }
+
+.side-logo {
+  width: 100%; height: 54px; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; cursor: pointer; border-bottom: 1px solid #f0f0f0;
+}
+.side-logo svg { width: 30px; height: 30px; }
+
+.side-primary-menus {
+  flex: 1; width: 100%; overflow-y: auto; overflow-x: hidden; padding: 4px 6px;
+}
+.side-primary-menus::-webkit-scrollbar { width: 0; }
+
+.side-primary-item {
+  width: 68px; height: 60px; padding: 12px 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 4px;
+  cursor: pointer; color: rgba(0,0,0,.92); border-radius: 6px;
+  transition: border-color .3s, background-color .3s, color .3s; position: relative;
+}
+.side-primary-item:hover { color: rgba(0,0,0,.92); background: #f5f5f5; }
+.side-primary-item.active { color: #2f54eb; background: #eaeefd; }
+.side-primary-item .sp-icon { width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; }
+.side-primary-item .sp-icon svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+.side-primary-item .sp-label { font-size: 12px; line-height: 1; white-space: nowrap; }
+.side-primary.collapsed .sp-label { display: none; }
+.side-primary-item .sp-badge {
+  position: absolute; top: 6px; right: 10px;
+  font-size: 9px; background: #ff4d4f; color: #fff;
+  padding: 0 3px; border-radius: 6px; line-height: 14px;
+}
+.side-primary-item .sp-dot {
+  position: absolute; top: 10px; right: 16px;
+  width: 6px; height: 6px; background: #ff4d4f; border-radius: 50%;
+}
+
+/* 底部折叠按钮 */
+.side-primary-bottom {
+  padding: 12px 0; border-top: 1px solid #f0f0f0; width: 100%;
+  display: flex; justify-content: center; flex-shrink: 0;
+}
+.side-collapse-btn {
+  width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+  border-radius: 6px; cursor: pointer; color: rgba(0,0,0,.4); transition: all .2s;
+}
+.side-collapse-btn:hover { background: #f5f5f5; color: rgba(0,0,0,.8); }
+.side-collapse-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 3; }
+
+/* ==================== 二级侧栏(160px) ==================== */
+.side-secondary {
+  width: 160px; background: #fff; border-right: 1px solid #f0f0f0;
+  display: flex; flex-direction: column; flex-shrink: 0; z-index: 10;
+  transition: width .3s, opacity .3s;
+}
+.side-secondary.collapsed { width: 0; overflow: hidden; opacity: 0; border-right: none; }
+.side-secondary-title {
+  height: 54px; display: flex; align-items: center; padding: 0 16px;
+  font-size: 18px; font-weight: 600; color: rgba(0,0,0,.88);
+  border-bottom: 1px solid #f0f0f0; flex-shrink: 0; white-space: nowrap;
+}
+.side-secondary-menus {
+  flex: 1; overflow-y: auto; padding: 4px 0 0;
+}
+.side-secondary-menus::-webkit-scrollbar { width: 4px; }
+.side-secondary-menus::-webkit-scrollbar-thumb { background: #e0e0e0; border-radius: 2px; }
+
+.ss-item {
+  display: flex; align-items: center; padding: 0 16px; height: 40px; gap: 8px;
+  cursor: pointer; font-size: 14px; color: rgba(0,0,0,.65);
+  transition: background-color .3s, color .3s; white-space: nowrap;
+  border-radius: 6px; margin: 3px 6px 6px;
+}
+.ss-item:hover { color: #2f54eb; background: #f5f5f5; }
+.ss-item.active { color: #2f54eb; font-weight: 500; background: #eaeefd; }
+.ss-item .ss-icon { width: 16px; height: 16px; display: flex; align-items: center; }
+.ss-item .ss-icon svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 3; stroke-linejoin: round; }
+.ss-item .ss-arrow { margin-left: auto; color: rgba(0,0,0,.25); transition: transform .3s; display: flex; align-items: center; }
+.ss-item .ss-arrow svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+.ss-item.expanded .ss-arrow { transform: rotate(180deg); }
+.ss-item .ss-dot { color: #ff4d4f; font-size: 10px; margin-left: 4px; }
+
+/* 三级菜单 */
+.ss-group { padding-left: 0; }
+.ss-sub-item {
+  display: flex; align-items: center; padding: 0 16px 0 40px; height: 40px; gap: 8px;
+  cursor: pointer; font-size: 14px; color: rgba(0,0,0,.55);
+  transition: background-color .3s, color .3s; white-space: nowrap;
+  border-radius: 6px; margin: 3px 6px 6px;
+}
+.ss-sub-item:hover { color: #2f54eb; background: #f5f5f5; }
+.ss-sub-item.active { color: #2f54eb; font-weight: 500; background: #eaeefd; }
+.ss-sub-item .ss-icon svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 3; }
+
+/* ==================== 主区域 ==================== */
+.main-area { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+
+/* ==================== 顶部Header(54px) ==================== */
+.header {
+  height: 54px; background: #fff; border-bottom: 1px solid #f0f0f0;
+  display: flex; align-items: center; padding: 0 12px; flex-shrink: 0;
+}
+.header-left { display: flex; align-items: center; flex-shrink: 0; }
+.header-tool {
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 12px; height: 38px; min-width: 38px;
+  border-radius: 6px; cursor: pointer; color: rgba(0,0,0,.55);
+  transition: color .2s, background-color .2s;
+}
+.header-tool:hover { background: #f5f5f5; color: rgba(0,0,0,.88); }
+.header-tool svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+
+/* 面包屑 */
+.breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 14px; color: rgba(0,0,0,.45); flex-shrink: 0; margin-left: 4px; }
+.breadcrumb .bc-sep { color: rgba(0,0,0,.25); }
+.breadcrumb .bc-current { color: rgba(0,0,0,.65); }
+
+/* Header中间空白区 */
+.header-spacer { flex: 1; }
+
+/* Header右侧工具 */
+.header-right { display: flex; align-items: center; flex-shrink: 0; }
+.header-right .header-tool { position: relative; }
+.noti-badge {
+  position: absolute; top: 2px; right: 2px;
+  background: #ff4d4f; color: #fff; font-size: 10px;
+  padding: 0 4px; border-radius: 8px; line-height: 14px; min-width: 14px; text-align: center;
+}
+.user-tool {
+  display: flex; align-items: center; gap: 4px; padding: 0 12px; height: 38px;
+  border-radius: 6px; cursor: pointer; transition: color .2s, background-color .2s;
+}
+.user-tool:hover { background: #f5f5f5; }
+.user-avatar {
+  width: 28px; height: 28px; border-radius: 50%; overflow: hidden; flex-shrink: 0;
+}
+.user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.user-name { font-size: 14px; color: rgba(0,0,0,.65); margin-left: 4px; line-height: 1.5; }
+.user-arrow { margin-left: 2px; }
+.user-arrow svg { width: 12px; height: 12px; }
+
+/* ==================== Tab标签栏(40px) - 精确复刻 ==================== */
+.tab-bar {
+  height: 40px; background: #fff; box-shadow: #e8e8e8 0 0 0 0.8px;
+  display: flex; align-items: stretch; flex-shrink: 0; position: relative; z-index: 1;
+}
+
+/* 首页Tab(固定左侧) */
+.tab-home {
+  width: 47px; height: 40px; display: flex; align-items: center; justify-content: center;
+  cursor: pointer; position: relative; flex-shrink: 0; z-index: 1;
+}
+.tab-home .tab-home-title {
+  width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+  border-radius: 10px 10px 0 0; transition: background .2s;
+}
+.tab-home svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 4; stroke-linejoin: round; color: rgba(0,0,0,.65); }
+.tab-home:hover .tab-home-title { background: rgba(0,0,0,.025); }
+.tab-home:hover svg { color: rgba(0,0,0,.65); }
+.tab-home.active .tab-home-title { background: #eaeefd; }
+.tab-home.active svg { color: #2f54eb; }
+
+/* Tab滚动区域 */
+.tab-body { flex: 1; display: flex; align-items: stretch; overflow-x: auto; }
+.tab-body::-webkit-scrollbar { height: 0; }
+
+/* Tab项 - 圆角样式 */
+.tab-item {
+  display: flex; align-items: center; justify-content: center;
+  height: 40px; padding: 0; font-size: 14px; cursor: pointer; white-space: nowrap;
+  color: rgba(0,0,0,.65); transition: color .2s; flex-shrink: 0;
+  position: relative; background: transparent;
+  border-radius: 10px 10px 0 0;
+}
+.tab-item .tab-title {
+  height: 100%; display: flex; align-items: center; gap: 6px;
+  padding: 0 14px; border-radius: inherit; transition: background .2s;
+}
+.tab-item:hover { color: rgba(0,0,0,.65); z-index: 3; }
+.tab-item:hover .tab-title { background: rgba(0,0,0,.025); }
+.tab-item.active { color: #2f54eb; z-index: 4; }
+.tab-item.active .tab-title { background: #eaeefd; }
+
+/* Tab项图标 */
+.tab-icon { width: 16px; height: 16px; display: inline-flex; align-items: center; margin-right: 4px; vertical-align: -2px; }
+.tab-icon svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 4; stroke-linejoin: round; }
+
+/* 关闭按钮 */
+.tab-close {
+  width: 14px; height: 14px; display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; font-size: 12px; line-height: 1; opacity: 0; transition: opacity .15s;
+  margin-left: 2px;
+}
+.tab-item:hover .tab-close, .tab-item.active .tab-close { opacity: 1; }
+.tab-close:hover { background: rgba(0,0,0,.08); }
+
+/* 右侧更多按钮 */
+.tab-more {
+  width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; cursor: pointer; color: rgba(0,0,0,.45); transition: background .2s;
+}
+.tab-more:hover { background: rgba(0,0,0,.04); }
+.tab-more svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 4; }
+
+/* ==================== 主内容 ==================== */
+.main-content { flex: 1; overflow-y: auto; padding: 16px; background: #f5f5f5; }
+.main-content::-webkit-scrollbar { width: 6px; }
+.main-content::-webkit-scrollbar-thumb { background: #d6d6d6; border-radius: 3px; }
+.main-content.no-pad { padding: 0; }
+
+/* ==================== 工作台仪表盘 ==================== */
+.welcome-card { background: #fff; border-radius: 8px; padding: 24px 28px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; }
+.welcome-left { display: flex; align-items: center; gap: 16px; }
+.welcome-avatar { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #667eea, #764ba2); overflow: hidden; }
+.welcome-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.welcome-text h3 { font-size: 18px; font-weight: 500; color: rgba(0,0,0,.88); }
+.welcome-text p { font-size: 13px; color: rgba(0,0,0,.45); margin-top: 4px; }
+.welcome-stats { display: flex; gap: 40px; }
+.stat-item { text-align: center; }
+.stat-item .label { font-size: 13px; color: rgba(0,0,0,.45); }
+.stat-item .value { font-size: 22px; font-weight: 600; color: rgba(0,0,0,.88); margin-top: 2px; }
+.quick-nav { display: grid; grid-template-columns: repeat(8, 1fr); gap: 12px; margin-bottom: 16px; }
+.quick-nav-item { background: #fff; border-radius: 8px; padding: 16px 8px; text-align: center; cursor: pointer; transition: box-shadow .3s; }
+.quick-nav-item:hover { box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+.quick-nav-item .qi-icon { width: 36px; height: 36px; border-radius: 8px; margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; }
+.quick-nav-item .qi-icon svg { width: 20px; height: 20px; stroke-width: 3; stroke-linejoin: round; fill: none; }
+.quick-nav-item .qi-label { font-size: 13px; color: rgba(0,0,0,.6); }
+.dashboard-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.dashboard-grid-2 { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+.card { background: #fff; border-radius: 8px; overflow: hidden; }
+.card-header { padding: 14px 20px; font-size: 15px; font-weight: 500; color: rgba(0,0,0,.88); border-bottom: 1px solid #f5f5f5; display: flex; justify-content: space-between; align-items: center; }
+.card-header .more-btn { cursor: pointer; color: rgba(0,0,0,.3); font-size: 18px; }
+.card-body { padding: 12px 20px; }
+.timeline-item { display: flex; align-items: flex-start; padding: 8px 0; gap: 12px; font-size: 13px; color: rgba(0,0,0,.7); }
+.timeline-dot { width: 8px; height: 8px; border-radius: 50%; background: #d9d9d9; margin-top: 5px; flex-shrink: 0; }
+.timeline-dot.blue { background: #2f54eb; }
+.timeline-time { color: rgba(0,0,0,.4); white-space: nowrap; margin-right: 8px; min-width: 36px; }
+.task-table { width: 100%; font-size: 13px; border-collapse: collapse; }
+.task-table th { text-align: left; padding: 10px 12px; color: rgba(0,0,0,.5); font-weight: 500; background: #fafafa; }
+.task-table td { padding: 10px 12px; border-bottom: 1px solid #f9f9f9; }
+.status-tag { padding: 2px 8px; border-radius: 4px; font-size: 12px; }
+.status-tag.not-started { background: #f5f5f5; color: #909399; }
+.status-tag.in-progress { background: #e6f7ff; color: #1890ff; }
+.status-tag.done { background: #f6ffed; color: #52c41a; }
+.goal-ring { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; min-height: 200px; }
+.ring-chart { width: 120px; height: 120px; border-radius: 50%; border: 8px solid #e8e8e8; position: relative; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+.ring-chart::before { content: ''; position: absolute; inset: -8px; border-radius: 50%; border: 8px solid transparent; border-top-color: #2f54eb; border-right-color: #2f54eb; transform: rotate(45deg); }
+.ring-value { font-size: 28px; font-weight: 600; color: rgba(0,0,0,.88); }
+.ring-label { font-size: 13px; color: rgba(0,0,0,.45); }
+.member-item { display: flex; align-items: center; padding: 8px 0; gap: 10px; }
+.member-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 500; overflow: hidden; }
+.member-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.member-info { flex: 1; }
+.member-name { font-size: 13px; color: rgba(0,0,0,.88); }
+.member-role { font-size: 12px; color: rgba(0,0,0,.4); }
+.member-status { font-size: 12px; }
+.member-status.online { color: #52c41a; }
+.member-status.offline { color: #d9d9d9; }
+.progress-table { width: 100%; font-size: 13px; border-collapse: collapse; }
+.progress-table th { text-align: left; padding: 12px; color: rgba(0,0,0,.5); font-weight: 500; background: #fafafa; }
+.progress-table td { padding: 12px; border-bottom: 1px solid #f9f9f9; }
+.progress-table a { color: #2f54eb; }
+.progress-bar-bg { height: 6px; background: #f0f0f0; border-radius: 3px; width: 80px; }
+.progress-bar-fill { height: 100%; border-radius: 3px; background: #2f54eb; }
+</style>
+</head>
+<body>
+<div class="layout">
+  <!-- ===== 一级侧栏(80px) ===== -->
+  <div class="side-primary" id="sidePrimary"></div>
+
+  <!-- ===== 二级侧栏(160px) ===== -->
+  <div class="side-secondary" id="sideSecondary"></div>
+
+  <!-- ===== 主区域 ===== -->
+  <div class="main-area">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-left">
+        <div class="header-tool" id="toggleSecondaryBtn" title="折叠/展开菜单" onclick="toggleSecondaryCollapse()">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="4"><path d="M3 7H45"/><path d="M3 41H45"/><path d="M19 18H44"/><path d="M19 30H44"/><path d="M3 24 13 16V32Z" fill="currentColor" stroke="none"/></svg>
+        </div>
+        <div class="header-tool" title="刷新" onclick="refreshCurrentTab()">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M42 30C40 35 34 43 24 43 14 43 5 34 5 24 5 14 14 5 24 5 31 5 36 9 40 14M40 6V14L32 14"/></svg>
+        </div>
+      </div>
+      <div class="breadcrumb" id="breadcrumb">
+        <span>Dashboard</span><span class="bc-sep">/</span><span class="bc-current">工作台</span><span class="bc-sep">/</span>
+      </div>
+      <div class="header-spacer"></div>
+      <div class="header-right">
+        <div class="header-tool" title="全屏">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17V7H17"/><path d="M31 7H41V17"/><path d="M41 31V41H31"/><path d="M17 41H7V31"/></svg>
+        </div>
+        <div class="header-tool" title="语言">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3.5"><path d="M24 45C29 45 34 36 34 24 34 12 29 3 24 3 19 3 14 12 14 24 14 36 19 45 24 45M3 24H45M24 3V45M9 10C14 15 18 16 24 16 30 16 34 15 39 10M39 38C34 33 30 32 24 32 18 32 14 33 9 38M24 45C35 45 45 35 45 24 45 13 36 3 24 3 13 3 3 13 3 24 3 35 13 45 24 45Z"/></svg>
+        </div>
+        <div class="header-tool" title="通知" style="position:relative;">
+          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><path d="M10 40V20C10 12 16 6 24 6 32 6 38 12 38 20V40M7 40H41M19 40C19 44 21 46 24 46 27 46 29 44 29 40M24 6V2"/></svg>
+          <span class="noti-badge">13</span>
+        </div>
+        <div class="user-tool">
+          <div class="user-avatar"><img src="https://cdn.eleadmin.com/20200610/avatar.jpg" onerror="this.style.display='none';this.parentElement.style.background='#e6f7ff';this.parentElement.innerHTML='管';" style="width:100%;height:100%;object-fit:cover;"/></div>
+          <span class="user-name">管理员</span>
+          <span class="user-arrow"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M10 17 24 31 38 17"/></svg></span>
+        </div>
+        <div class="header-tool" title="设置" style="position:relative;">
+          <svg viewBox="0 0 48 48" fill="currentColor" stroke="none"><circle cx="24" cy="8" r="4"/><circle cx="24" cy="24" r="4"/><circle cx="24" cy="40" r="4"/></svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tab标签栏 -->
+    <div class="tab-bar" id="tabBar"></div>
+
+    <!-- 主内容 -->
+    <div class="main-content" id="mainContent"></div>
+  </div>
+</div>
+
+<script>
+/* ==================== SVG图标(stroke风格，与原站一致) ==================== */
+const I = {
+  dashboard: '<svg viewBox="0 0 48 48"><rect x="4" y="4" width="17" height="20" rx="2"/><rect x="27" y="4" width="17" height="12" rx="2"/><rect x="4" y="28" width="17" height="16" rx="2"/><rect x="27" y="20" width="17" height="24" rx="2"/></svg>',
+  system: '<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="8"/><path d="M24 4v4M24 40v4M4 24h4M40 24h4M10 10l3 3M35 35l3 3M38 10l-3 3M13 35l-3 3"/></svg>',
+  form: '<svg viewBox="0 0 48 48"><rect x="6" y="4" width="36" height="40" rx="3"/><path d="M16 16h16M16 24h10M16 32h16"/></svg>',
+  list: '<svg viewBox="0 0 48 48"><path d="M3 7h42M3 19h42M3 31h42M3 43h42"/></svg>',
+  result: '<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="20"/><path d="M15 25l6 6 12-14"/></svg>',
+  exception: '<svg viewBox="0 0 48 48"><path d="M24 6L4 42h40L24 6z"/><path d="M24 20v10M24 34v2"/></svg>',
+  user: '<svg viewBox="0 0 48 48"><circle cx="24" cy="16" r="8"/><path d="M8 42c0-8 7-14 16-14s16 6 16 14"/></svg>',
+  extension: '<svg viewBox="0 0 48 48"><rect x="4" y="4" width="16" height="16" rx="3"/><rect x="28" y="4" width="16" height="16" rx="3"/><rect x="4" y="28" width="16" height="16" rx="3"/><rect x="28" y="28" width="16" height="16" rx="3"/></svg>',
+  iframe: '<svg viewBox="0 0 48 48"><rect x="4" y="6" width="40" height="36" rx="3"/><path d="M4 14h40"/><circle cx="10" cy="10" r="1.5" fill="currentColor" stroke="none"/><circle cx="16" cy="10" r="1.5" fill="currentColor" stroke="none"/></svg>',
+  demo: '<svg viewBox="0 0 48 48"><polygon points="24,4 30,18 44,20 34,30 36,44 24,38 12,44 14,30 4,20 18,18"/></svg>',
+  auth: '<svg viewBox="0 0 48 48"><path d="M24 4L8 12v12c0 11 7 21 16 24 9-3 16-13 16-24V12L24 4z"/><path d="M17 24l5 5 10-10"/></svg>',
+  home: '<svg viewBox="0 0 48 48"><path d="M6 24L24 6l18 18"/><path d="M12 22v18h10V30h4v10h10V22"/></svg>',
+  users: '<svg viewBox="0 0 48 48"><circle cx="18" cy="14" r="7"/><circle cx="34" cy="16" r="5"/><path d="M4 38c0-7 6-12 14-12s14 5 14 12"/><path d="M32 26c5 0 10 3 10 8"/></svg>',
+  role: '<svg viewBox="0 0 48 48"><path d="M24 4L8 12v12c0 11 7 21 16 24 9-3 16-13 16-24V12L24 4z"/></svg>',
+  menu: '<svg viewBox="0 0 48 48"><path d="M3 7h42M3 24h42M3 41h42"/></svg>',
+  org: '<svg viewBox="0 0 48 48"><rect x="14" y="4" width="20" height="12" rx="2"/><rect x="4" y="32" width="16" height="12" rx="2"/><rect x="28" y="32" width="16" height="12" rx="2"/><path d="M24 16v8M24 24H12v8M24 24h12v8"/></svg>',
+  dict: '<svg viewBox="0 0 48 48"><rect x="8" y="4" width="32" height="40" rx="3"/><path d="M16 14h16M16 22h8M16 30h16"/></svg>',
+  file: '<svg viewBox="0 0 48 48"><path d="M12 4h16l12 12v28H12V4z"/><path d="M28 4v12h12"/></svg>',
+  loginLog: '<svg viewBox="0 0 48 48"><path d="M20 6H12a4 4 0 00-4 4v28a4 4 0 004 4h8"/><path d="M30 16l10 8-10 8"/><path d="M40 24H18"/></svg>',
+  operLog: '<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="18"/><path d="M24 14v12l8 4"/></svg>',
+  collapse: '<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="4"><path d="M3 7H45"/><path d="M3 41H45"/><path d="M19 18H44"/><path d="M19 30H44"/><path d="M3 24 13 16V32Z" fill="currentColor" stroke="none"/></svg>',
+  page: '<svg viewBox="0 0 48 48"><rect x="8" y="4" width="32" height="40" rx="3"/><path d="M16 16h16M16 24h10"/></svg>',
+  arrowDown: '<svg viewBox="0 0 48 48"><path d="M12 18l12 12 12-12"/></svg>',
+  more: '<svg viewBox="0 0 48 48"><circle cx="24" cy="10" r="3"/><circle cx="24" cy="24" r="3"/><circle cx="24" cy="38" r="3"/></svg>'
+};
+
+/* ==================== 菜单数据 ==================== */
+const menuData = [
+  { key:'dashboard', label:'Dashboard', icon:'dashboard', children:[
+    {key:'workplace',label:'工作台',icon:'home'},
+    {key:'analysis',label:'分析页',icon:'dashboard',dot:true},
+    {key:'monitor',label:'监控页',icon:'page'}
+  ]},
+  { key:'system', label:'系统管理', icon:'system', children:[
+    {key:'user',label:'用户管理',icon:'users',href:'system-user.html'},
+    {key:'role',label:'角色管理',icon:'role',href:'system-role.html'},
+    {key:'menu',label:'菜单管理',icon:'menu',href:'system-menu.html'},
+    {key:'organization',label:'机构管理',icon:'org',href:'system-organization.html'},
+    {key:'dictionary',label:'字典管理',icon:'dict',href:'system-dictionary.html'},
+    {key:'file',label:'文件管理',icon:'file',href:'system-file.html'},
+    {key:'login-record',label:'登录日志',icon:'loginLog',href:'system-login-record.html'},
+    {key:'operation-record',label:'操作日志',icon:'operLog',href:'system-operation-record.html'}
+  ]},
+  { key:'form', label:'表单页面', icon:'form', children:[
+    {key:'basic',label:'基础表单',icon:'page'},{key:'complex',label:'复杂表单',icon:'page'},
+    {key:'step',label:'分步表单',icon:'page'},{key:'build',label:'表单构建',icon:'page'},{key:'list-build',label:'列表构建',icon:'page'}
+  ]},
+  { key:'list', label:'列表页面', icon:'list', children:[
+    {key:'basic',label:'基础列表',icon:'page'},{key:'tree',label:'左树右表',icon:'page'},
+    {key:'advanced',label:'复杂列表',icon:'page'},
+    {key:'card',label:'卡片列表',icon:'page',hasArrow:true,expanded:false,children:[{key:'card-project',label:'项目列表',icon:'page'},{key:'card-app',label:'应用列表',icon:'page'},{key:'card-article',label:'文章列表',icon:'page'}]},
+    {key:'route',label:'复杂路由',icon:'page',hasArrow:true,expanded:false,children:[{key:'route-male',label:'男用户',icon:'user'},{key:'route-female',label:'女用户',icon:'user'}]}
+  ]},
+  { key:'result', label:'结果页面', icon:'result', children:[{key:'success',label:'成功页',icon:'page'},{key:'fail',label:'失败页',icon:'page'}]},
+  { key:'exception', label:'异常页面', icon:'exception', children:[{key:'403',label:'403',icon:'page'},{key:'404',label:'404',icon:'page'},{key:'500',label:'500',icon:'page'}]},
+  { key:'profile', label:'个人中心', icon:'user', children:[{key:'info',label:'我的资料',icon:'page'},{key:'message',label:'我的消息',icon:'page'}]},
+  { key:'extension', label:'扩展组件', icon:'extension', badge:'New', children:[{key:'ai',label:'AI对话',icon:'page'},{key:'table',label:'高级表格',icon:'page'}]},
+  { key:'iframe', label:'内嵌页面', icon:'iframe', children:[{key:'official',label:'官网',icon:'page'},{key:'doc',label:'文档',icon:'page'}]},
+  { key:'demo', label:'功能演示', icon:'demo', children:[] },
+  { key:'auth', label:'获取授权', icon:'auth', children:[] }
+];
+
+/* ==================== 状态 ==================== */
+let curPrimary = 'dashboard', curSecondary = 'workplace';
+let primaryCollapsed = false, secondaryCollapsed = false;
+let tabs = [{key:'dashboard-workplace',label:'工作台',primary:'dashboard',secondary:'workplace',fixed:true}];
+let activeTab = 'dashboard-workplace';
+
+/* ==================== 渲染一级菜单 ==================== */
+function renderPrimary() {
+  const el = document.getElementById('sidePrimary');
+  let html = `<div class="side-logo"><svg viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" fill="url(#lg)"/><path d="M13 11h5v18h-5z M20 11h5v8h-5z M20 21h7v8h-7z" fill="#fff" opacity="0.9"/><defs><linearGradient id="lg" x1="0" y1="0" x2="40" y2="40"><stop offset="0%" stop-color="#4e8ef7"/><stop offset="100%" stop-color="#f46b45"/></linearGradient></defs></svg></div>`;
+  html += '<div class="side-primary-menus">';
+  menuData.forEach(m => {
+    let badge = m.badge ? `<span class="sp-badge">${m.badge}</span>` : '';
+    let dot = m.dot ? '<span class="sp-dot"></span>' : '';
+    html += `<div class="side-primary-item ${m.key===curPrimary?'active':''}" onclick="clickPrimary('${m.key}')">${badge}${dot}<span class="sp-icon">${I[m.icon]||''}</span><span class="sp-label">${m.label}</span></div>`;
+  });
+  html += '</div>';
+  html += `<div class="side-primary-bottom"><div class="side-collapse-btn" onclick="togglePrimaryCollapse()" title="折叠侧栏">${I.collapse}</div></div>`;
+  el.innerHTML = html;
+}
+
+/* ==================== 渲染二级菜单 ==================== */
+function renderSecondary() {
+  const m = menuData.find(x=>x.key===curPrimary);
+  const el = document.getElementById('sideSecondary');
+  if (!m||!m.children||!m.children.length) { el.classList.add('collapsed'); return; }
+  if (secondaryCollapsed) { el.classList.add('collapsed'); return; }
+  el.classList.remove('collapsed');
+  let html = `<div class="side-secondary-title">Ele Admin Plus</div><div class="side-secondary-menus">`;
+  m.children.forEach(c => {
+    const isActive = c.key===curSecondary;
+    const hasSub = c.children&&c.children.length;
+    const isExp = c.expanded;
+    let dot = c.dot ? '<span class="ss-dot">●</span>' : '';
+    html += `<div class="ss-item ${isActive?'active':''} ${isExp?'expanded':''}" onclick="${hasSub?`toggleGroup('${c.key}')`:`clickSecondary('${c.key}')`}"><span class="ss-icon">${I[c.icon]||I.page}</span><span>${c.label}</span>${dot}${hasSub?'<span class="ss-arrow"><svg viewBox="0 0 48 48"><path d="M10 17 24 31 38 17"/></svg></span>':''}</div>`;
+    if (hasSub) {
+      html += `<div class="ss-group" style="${isExp?'':'display:none'}">`;
+      c.children.forEach(sub => {
+        html += `<div class="ss-sub-item ${sub.key===curSecondary?'active':''}" onclick="clickSecondary('${sub.key}')"><span class="ss-icon">${I[sub.icon]||I.page}</span><span>${sub.label}</span></div>`;
+      });
+      html += '</div>';
+    }
+  });
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+/* ==================== 渲染Tab栏 ==================== */
+function renderTabs() {
+  const el = document.getElementById('tabBar');
+  const homeActive = tabs[0] && activeTab === tabs[0].key;
+  let html = `<div class="tab-home ${homeActive?'active':''}" onclick="switchTab('${tabs[0]?.key}')" title="首页"><div class="tab-home-title">${I.home}</div></div>`;
+  html += '<div class="tab-body">';
+  tabs.forEach(t => {
+    if (t.fixed) return;
+    const isActive = t.key === activeTab;
+    html += `<div class="tab-item ${isActive?'active':''}" onclick="switchTab('${t.key}')">`;
+    html += `<div class="tab-title"><span class="tab-icon">${I[t.icon]||I.page}</span>${t.label}<span class="tab-close" onclick="event.stopPropagation();closeTab('${t.key}')">×</span></div>`;  
+    html += `</div>`;
+  });
+  html += '</div>';
+  html += `<div class="tab-more" title="更多"><svg viewBox="0 0 48 48"><path d="M10 17 24 31 38 17"/></svg></div>`;
+  el.innerHTML = html;
+}
+
+/* ==================== 渲染面包屑 ==================== */
+function renderBreadcrumb() {
+  const p = menuData.find(x=>x.key===curPrimary);
+  let cLabel = curSecondary;
+  if (p&&p.children) {
+    const c = p.children.find(x=>x.key===curSecondary);
+    if (c) cLabel = c.label;
+    else p.children.forEach(c2 => { if(c2.children) { const t=c2.children.find(x=>x.key===curSecondary); if(t) cLabel=t.label; }});
+  }
+  document.getElementById('breadcrumb').innerHTML = `<span>${p?p.label:''}</span><span class="bc-sep">/</span><span class="bc-current">${cLabel}</span><span class="bc-sep">/</span>`;
+}
+
+/* ==================== 渲染内容 ==================== */
+function renderContent() {
+  const p = menuData.find(x=>x.key===curPrimary);
+  let child = null;
+  if (p&&p.children) { child=p.children.find(c=>c.key===curSecondary); if(!child) p.children.forEach(c2=>{if(c2.children){const t=c2.children.find(x=>x.key===curSecondary);if(t)child=t;}}); }
+  const mc = document.getElementById('mainContent');
+  if (child&&child.href) { mc.className='main-content no-pad'; mc.innerHTML=`<iframe src="${child.href}" style="width:100%;height:100%;border:none;"></iframe>`; }
+  else if (curPrimary==='dashboard'&&curSecondary==='workplace') { mc.className='main-content'; mc.innerHTML=getWorkplaceHTML(); }
+  else { mc.className='main-content'; mc.innerHTML=`<div style="display:flex;align-items:center;justify-content:center;height:100%;color:rgba(0,0,0,.3);font-size:15px;background:#fff;border-radius:8px;">${child?child.label:curSecondary} - 页面内容区域</div>`; }
+  document.title = `${child?child.label:'工作台'} - Ele Admin Plus`;
+}
+
+/* ==================== 交互逻辑 ==================== */
+function clickPrimary(key) {
+  curPrimary = key;
+  const m = menuData.find(x=>x.key===key);
+  secondaryCollapsed = false;
+  renderPrimary(); renderSecondary();
+  /* Dashboard默认选中第一个子菜单并打开Tab，其它一级菜单只展开侧栏等待用户手动选择 */
+  if (key === 'dashboard' && m&&m.children&&m.children.length) {
+    curSecondary = m.children[0].key;
+    addTab(); renderBreadcrumb(); renderContent();
+  }
+}
+function clickSecondary(key) {
+  curSecondary = key; renderSecondary(); addTab(); renderBreadcrumb(); renderContent();
+}
+function toggleGroup(key) {
+  const m = menuData.find(x=>x.key===curPrimary);
+  if(!m) return;
+  const c = m.children.find(x=>x.key===key);
+  if(c) c.expanded = !c.expanded;
+  renderSecondary();
+}
+function togglePrimaryCollapse() {
+  primaryCollapsed = !primaryCollapsed;
+  document.getElementById('sidePrimary').classList.toggle('collapsed', primaryCollapsed);
+}
+function toggleSecondaryCollapse() {
+  secondaryCollapsed = !secondaryCollapsed;
+  renderSecondary();
+}
+/* 刷新当前激活Tab的内容 */
+function refreshCurrentTab() {
+  const mc = document.getElementById('mainContent');
+  const iframe = mc.querySelector('iframe');
+  if (iframe) { iframe.contentWindow.location.reload(); }
+  else { renderContent(); }
+}
+function addTab() {
+  const k = `${curPrimary}-${curSecondary}`;
+  const p = menuData.find(x=>x.key===curPrimary);
+  let label = curSecondary, icon = 'page';
+  if(p&&p.children){const c=p.children.find(x=>x.key===curSecondary);if(c){label=c.label;icon=c.icon||'page';}else p.children.forEach(c2=>{if(c2.children){const t=c2.children.find(x=>x.key===curSecondary);if(t){label=t.label;icon=t.icon||'page';}}});}
+  if(!tabs.find(t=>t.key===k)) tabs.push({key:k,label,icon,primary:curPrimary,secondary:curSecondary});
+  activeTab = k; renderTabs();
+}
+function switchTab(key) {
+  const t = tabs.find(x=>x.key===key); if(!t) return;
+  activeTab=key; curPrimary=t.primary; curSecondary=t.secondary;
+  renderPrimary(); renderSecondary(); renderTabs(); renderBreadcrumb(); renderContent();
+}
+function closeTab(key) {
+  if(tabs.length<=1) return;
+  const idx = tabs.findIndex(t=>t.key===key);
+  if(tabs[idx].fixed) return;
+  tabs.splice(idx,1);
+  if(activeTab===key) { const ni=Math.min(idx,tabs.length-1); switchTab(tabs[ni].key); }
+  else renderTabs();
+}
+
+/* ==================== 工作台HTML ==================== */
+function getWorkplaceHTML() {
+  return `<div class="welcome-card"><div class="welcome-left"><div class="welcome-avatar" style="background:#e6f7ff;display:flex;align-items:center;justify-content:center;font-size:22px;color:#2f54eb;font-weight:600;">管</div><div class="welcome-text"><h3>早安, 管理员, 开始您一天的工作吧!</h3><p>今日多云转阴, 18℃ ~ 22℃, 出门记得穿外套哦~</p></div></div><div class="welcome-stats"><div class="stat-item"><div class="label">项目数</div><div class="value">3</div></div><div class="stat-item"><div class="label">待办项</div><div class="value">6 / 24</div></div><div class="stat-item"><div class="label">消息</div><div class="value">1,689</div></div></div></div>
+  <div class="quick-nav"><div class="quick-nav-item"><div class="qi-icon" style="background:#e6f4ff"><svg viewBox="0 0 48 48" stroke="#1890ff">${I.users.replace(/<svg[^>]*>/,'').replace('</svg>','')}</svg></div><div class="qi-label">用户</div></div><div class="quick-nav-item"><div class="qi-icon" style="background:#e6fffb"><svg viewBox="0 0 48 48" stroke="#13c2c2">${I.dashboard.replace(/<svg[^>]*>/,'').replace('</svg>','')}</svg></div><div class="qi-label">分析</div></div><div class="quick-nav-item"><div class="qi-icon" style="background:#fff7e6"><svg viewBox="0 0 48 48" stroke="#faad14">${I.list.replace(/<svg[^>]*>/,'').replace('</svg>','')}</svg></div><div class="qi-label">项目</div></div><div class="quick-nav-item"><div class="qi-icon" style="background:#fff1f0"><svg viewBox="0 0 48 48" stroke="#ff4d4f">${I.form.replace(/<svg[^>]*>/,'').replace('</svg>','')}</svg></div><div class="qi-label">订单</div></div><div class="quick-nav-item"><div class="qi-icon" style="background:#f6ffed"><svg viewBox="0 0 48 48" stroke="#52c41a">${I.file.replace(/<svg[^>]*>/,'').replace('</svg>','')}</svg></div><div class="qi-label">票据</div></div><div class="quick-nav-item"><div class="qi-icon" style="background:#f9f0ff"><svg viewBox="0 0 48 48" stroke="#722ed1">${I.result.replace(/<svg[^>]*>/,'').replace('</svg>','')}</svg></div><div class="qi-label">消息</div></div><div class="quick-nav-item"><div class="qi-icon" style="background:#e6fffb"><svg viewBox="0 0 48 48" stroke="#13c2c2">${I.dict.replace(/<svg[^>]*>/,'').replace('</svg>','')}</svg></div><div class="qi-label">标签</div></div><div class="quick-nav-item"><div class="qi-icon" style="background:#fff0f6"><svg viewBox="0 0 48 48" stroke="#eb2f96">${I.system.replace(/<svg[^>]*>/,'').replace('</svg>','')}</svg></div><div class="qi-label">配置</div></div></div>
+  <div class="dashboard-grid"><div class="card"><div class="card-header">最新动态 <span class="more-btn">⋮</span></div><div class="card-body"><div class="timeline-item"><span class="timeline-time">20:30</span><span class="timeline-dot blue"></span>SunSmile 解决了bug 登录提示操作失败</div><div class="timeline-item"><span class="timeline-time">19:30</span><span class="timeline-dot"></span>Jasmine 解决了bug 按钮颜色与设计不符</div><div class="timeline-item"><span class="timeline-time">18:30</span><span class="timeline-dot blue"></span>项目经理 指派了任务 解决项目一的bug</div><div class="timeline-item"><span class="timeline-time">17:30</span><span class="timeline-dot"></span>项目经理 指派了任务 解决项目二的bug</div><div class="timeline-item"><span class="timeline-time">16:30</span><span class="timeline-dot blue"></span>项目经理 指派了任务 解决项目三的bug</div><div class="timeline-item"><span class="timeline-time">15:30</span><span class="timeline-dot"></span>项目经理 指派了任务 解决项目四的bug</div><div class="timeline-item"><span class="timeline-time">14:30</span><span class="timeline-dot"></span>项目经理 指派了任务 解决项目五的bug</div><div class="timeline-item"><span class="timeline-time">12:30</span><span class="timeline-dot"></span>项目经理 指派了任务 解决项目六的bug</div></div></div>
+  <div class="card"><div class="card-header">我的任务 <span class="more-btn">⋮</span></div><div class="card-body" style="padding:0"><table class="task-table"><thead><tr><th>优先级</th><th>任务名称</th><th>状态</th></tr></thead><tbody><tr><td>1</td><td>解决项目一的bug</td><td><span class="status-tag not-started">未开始</span></td></tr><tr><td>2</td><td>解决项目二的bug</td><td><span class="status-tag not-started">未开始</span></td></tr><tr><td>3</td><td>解决项目三的bug</td><td><span class="status-tag in-progress">进行中</span></td></tr><tr><td>3</td><td>解决项目四的bug</td><td><span class="status-tag in-progress">进行中</span></td></tr><tr><td>3</td><td>解决项目五的bug</td><td><span class="status-tag done">已完成</span></td></tr><tr><td>3</td><td>解决项目六的bug</td><td><span class="status-tag done">已完成</span></td></tr></tbody></table></div></div>
+  <div class="card"><div class="card-header">本月目标 <span class="more-btn">⋮</span></div><div class="card-body"><div class="goal-ring"><div class="ring-chart"><span class="ring-value">285</span></div><div class="ring-label">恭喜, 本月目标已达标!</div></div></div></div></div>
+  <div class="dashboard-grid-2"><div class="card"><div class="card-header">项目进度 <span class="more-btn">⋮</span></div><div class="card-body" style="padding:0"><table class="progress-table"><thead><tr><th>#</th><th>项目名称</th><th>开始时间</th><th>结束时间</th><th>状态</th><th>进度</th></tr></thead><tbody><tr><td>1</td><td><a href="#">项目0000000001</a></td><td>2020-03-01</td><td>2020-06-01</td><td><span class="status-tag in-progress">进行中</span></td><td><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:30%"></div></div></td></tr><tr><td>2</td><td><a href="#">项目0000000002</a></td><td>2020-03-01</td><td>2020-08-01</td><td><span class="status-tag in-progress">进行中</span></td><td><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:10%"></div></div></td></tr><tr><td>3</td><td><a href="#">项目0000000003</a></td><td>2020-01-01</td><td>2020-05-01</td><td><span class="status-tag done">已完成</span></td><td><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:60%"></div></div></td></tr><tr><td>4</td><td><a href="#">项目0000000004</a></td><td>2020-06-01</td><td>2020-10-01</td><td><span class="status-tag done">已完成</span></td><td><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:100%"></div></div></td></tr></tbody></table></div></div>
+  <div class="card"><div class="card-header">小组成员 <span class="more-btn">⋮</span></div><div class="card-body"><div class="member-item"><div class="member-avatar" style="background:#e6f7ff;color:#1890ff">S</div><div class="member-info"><div class="member-name">SunSmile</div><div class="member-role">UI设计师、交互专家</div></div><span class="member-status online">在线</span></div><div class="member-item"><div class="member-avatar" style="background:#f6ffed;color:#52c41a">你</div><div class="member-info"><div class="member-name">你的名字很好听</div><div class="member-role">前端工程师</div></div><span class="member-status online">在线</span></div><div class="member-item"><div class="member-avatar" style="background:#fff7e6;color:#faad14">全</div><div class="member-info"><div class="member-name">全村人的希望</div><div class="member-role">前端工程师</div></div><span class="member-status online">在线</span></div><div class="member-item"><div class="member-avatar" style="background:#f9f0ff;color:#722ed1">J</div><div class="member-info"><div class="member-name">Jasmine</div><div class="member-role">产品经理、项目经理</div></div><span class="member-status offline">离线</span></div><div class="member-item"><div class="member-avatar" style="background:#fff1f0;color:#ff4d4f">酷</div><div class="member-info"><div class="member-name">酷酷的大叔</div><div class="member-role">组长、后端工程师</div></div><span class="member-status offline">离线</span></div></div></div></div>`;
+}
+
+/* ==================== 初始化 ==================== */
+renderPrimary(); renderSecondary(); renderTabs(); renderBreadcrumb(); renderContent();
+</script>
+</body>
+</html>

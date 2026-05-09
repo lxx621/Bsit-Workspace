@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>操作日志</title>
+<link rel="stylesheet" href="common.css">
+</head>
+<body style="background:#f7f7f9;">
+<div class="content-panel">
+  <div class="search-bar">
+    <div class="search-field"><label>用户账号</label><input type="text" placeholder="用户账号" class="input-field"></div>
+    <div class="search-field"><label>操作模块</label><input type="text" placeholder="操作模块" class="input-field"></div>
+    <div class="search-field">
+      <label>操作时间</label>
+      <div style="display:flex;gap:4px;align-items:center;">
+        <input type="datetime-local" class="input-field" style="min-width:160px">
+        <span style="color:rgba(0,0,0,.36)">-</span>
+        <input type="datetime-local" class="input-field" style="min-width:160px">
+      </div>
+    </div>
+    <div class="search-actions">
+      <button class="btn btn-primary">搜索</button>
+      <button class="btn btn-default">重置</button>
+    </div>
+  </div>
+  <div class="toolbar">
+    <button class="btn btn-default">导出</button>
+    <div class="toolbar-right"><button class="btn btn-icon">🔄</button><button class="btn btn-icon">⚙️</button></div>
+  </div>
+  <div class="table-container">
+    <table class="data-table">
+      <thead><tr>
+        <th class="col-index">#</th>
+        <th>账号</th><th>用户名</th><th>操作模块</th><th>操作功能</th><th>请求地址</th><th>请求方式</th><th>状态</th><th>耗时</th><th>操作时间</th><th>操作</th>
+      </tr></thead>
+      <tbody>
+        <tr><td>1</td><td>admin</td><td>管理员</td><td>登录日志</td><td>分页查询登录日志</td><td>/api/system/login-record/page</td><td><span class="tag tag-primary">GET</span></td><td><span class="tag tag-success">正常</span></td><td>0.003s</td><td>2026-05-09 15:06:10</td><td><a class="link-btn" onclick="openDialog('detailDialog')">详情</a></td></tr>
+        <tr><td>2</td><td>admin</td><td>管理员</td><td>文件上传下载</td><td>分页查询文件</td><td>/api/file/page</td><td><span class="tag tag-primary">GET</span></td><td><span class="tag tag-success">正常</span></td><td>0.003s</td><td>2026-05-09 15:05:53</td><td><a class="link-btn" onclick="openDialog('detailDialog')">详情</a></td></tr>
+        <tr><td>3</td><td>admin</td><td>管理员</td><td>字典管理</td><td>查询全部字典</td><td>/api/system/dictionary</td><td><span class="tag tag-primary">GET</span></td><td><span class="tag tag-success">正常</span></td><td>0.001s</td><td>2026-05-09 15:05:43</td><td><a class="link-btn" onclick="openDialog('detailDialog')">详情</a></td></tr>
+        <tr><td>4</td><td>admin</td><td>管理员</td><td>字典数据管理</td><td>分页查询字典数据</td><td>/api/system/dictionary-data/page</td><td><span class="tag tag-primary">GET</span></td><td><span class="tag tag-success">正常</span></td><td>0.002s</td><td>2026-05-09 15:05:43</td><td><a class="link-btn" onclick="openDialog('detailDialog')">详情</a></td></tr>
+        <tr><td>5</td><td>admin</td><td>管理员</td><td>组织机构管理</td><td>查询全部组织机构</td><td>/api/system/organization</td><td><span class="tag tag-primary">GET</span></td><td><span class="tag tag-success">正常</span></td><td>0.002s</td><td>2026-05-09 15:05:35</td><td><a class="link-btn" onclick="openDialog('detailDialog')">详情</a></td></tr>
+        <tr><td>6</td><td>admin</td><td>管理员</td><td>菜单管理</td><td>查询全部菜单</td><td>/api/system/menu</td><td><span class="tag tag-primary">GET</span></td><td><span class="tag tag-success">正常</span></td><td>0.003s</td><td>2026-05-09 15:05:33</td><td><a class="link-btn" onclick="openDialog('detailDialog')">详情</a></td></tr>
+        <tr><td>7</td><td>admin</td><td>管理员</td><td>角色管理</td><td>分页查询角色</td><td>/api/system/role/page</td><td><span class="tag tag-primary">GET</span></td><td><span class="tag tag-success">正常</span></td><td>0.001s</td><td>2026-05-09 15:04:59</td><td><a class="link-btn" onclick="openDialog('detailDialog')">详情</a></td></tr>
+        <tr><td>8</td><td>admin</td><td>管理员</td><td>用户管理</td><td>分页查询用户</td><td>/api/system/user/page</td><td><span class="tag tag-primary">GET</span></td><td><span class="tag tag-success">正常</span></td><td>0.007s</td><td>2026-05-09 15:04:27</td><td><a class="link-btn" onclick="openDialog('detailDialog')">详情</a></td></tr>
+        <tr><td>9</td><td>admin</td><td>管理员</td><td>用户管理</td><td>查询全部用户</td><td>/api/system/user</td><td><span class="tag tag-primary">GET</span></td><td><span class="tag tag-success">正常</span></td><td>0.005s</td><td>2026-05-09 15:04:27</td><td><a class="link-btn" onclick="openDialog('detailDialog')">详情</a></td></tr>
+        <tr><td>10</td><td>admin</td><td>管理员</td><td>登录认证</td><td>用户登录</td><td>/api/login</td><td><span class="tag tag-warning">POST</span></td><td><span class="tag tag-success">正常</span></td><td>0.012s</td><td>2026-05-09 15:04:20</td><td><a class="link-btn" onclick="openDialog('detailDialog')">详情</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="pagination">
+    <span class="page-total">共 8579 条</span>
+    <button class="page-btn" disabled>‹</button>
+    <button class="page-btn active">1</button>
+    <button class="page-btn">2</button>
+    <button class="page-btn">3</button>
+    <button class="page-btn">...</button>
+    <button class="page-btn">429</button>
+    <button class="page-btn">›</button>
+    <select class="page-size"><option>20条/页</option><option>50条/页</option><option>100条/页</option></select>
+  </div>
+</div>
+
+<!-- 详情弹窗 -->
+<div class="dialog-overlay" id="detailDialog">
+  <div class="dialog" style="width:700px;">
+    <div class="dialog-header"><span class="dialog-title">操作详情</span><span class="dialog-close" onclick="closeDialog('detailDialog')">×</span></div>
+    <div class="dialog-body">
+      <div class="form-row"><label class="form-label">操作人</label><div class="form-control" style="line-height:32px;">admin (管理员)</div></div>
+      <div class="form-row"><label class="form-label">操作模块</label><div class="form-control" style="line-height:32px;">登录日志</div></div>
+      <div class="form-row"><label class="form-label">操作功能</label><div class="form-control" style="line-height:32px;">分页查询登录日志</div></div>
+      <div class="form-row"><label class="form-label">请求地址</label><div class="form-control" style="line-height:32px;">/api/system/login-record/page</div></div>
+      <div class="form-row"><label class="form-label">请求方式</label><div class="form-control" style="line-height:32px;"><span class="tag tag-primary">GET</span></div></div>
+      <div class="form-row"><label class="form-label">请求参数</label><div class="form-control"><pre style="background:#f5f5f5;padding:12px;border-radius:6px;font-size:13px;overflow-x:auto;margin:0;">{
+  "page": 1,
+  "limit": 20,
+  "username": "",
+  "nickname": ""
+}</pre></div></div>
+      <div class="form-row"><label class="form-label">状态</label><div class="form-control" style="line-height:32px;"><span class="tag tag-success">正常</span></div></div>
+      <div class="form-row"><label class="form-label">耗时</label><div class="form-control" style="line-height:32px;">0.003s</div></div>
+      <div class="form-row"><label class="form-label">操作时间</label><div class="form-control" style="line-height:32px;">2026-05-09 15:06:10</div></div>
+    </div>
+    <div class="dialog-footer"><button class="btn btn-default" onclick="closeDialog('detailDialog')">关闭</button></div>
+  </div>
+</div>
+<script src="common.js"></script>
+</body>
+</html>

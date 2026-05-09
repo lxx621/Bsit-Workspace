@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>文件管理</title>
+<link rel="stylesheet" href="common.css">
+</head>
+<body style="background:#f7f7f9;">
+<div class="content-panel">
+  <div class="search-bar">
+    <div class="search-field"><label>文件名称</label><input type="text" placeholder="文件名称" class="input-field"></div>
+    <div class="search-field"><label>文件路径</label><input type="text" placeholder="文件路径" class="input-field"></div>
+    <div class="search-field"><label>上传人</label><input type="text" placeholder="上传人" class="input-field"></div>
+    <div class="search-actions">
+      <button class="btn btn-primary">搜索</button>
+      <button class="btn btn-default">重置</button>
+    </div>
+  </div>
+  <div class="toolbar">
+    <button class="btn btn-primary">↑ 上传</button>
+    <button class="btn btn-danger">删除</button>
+    <div class="toolbar-right"><button class="btn btn-icon">🔄</button><button class="btn btn-icon">⚙️</button></div>
+  </div>
+  <div class="table-container">
+    <table class="data-table">
+      <thead><tr>
+        <th class="col-check"><input type="checkbox"></th>
+        <th class="col-index">#</th>
+        <th>文件名称</th><th>文件路径</th><th>文件大小</th><th>上传人</th><th>上传时间</th><th class="col-action">操作</th>
+      </tr></thead>
+      <tbody>
+        <tr><td><input type="checkbox"></td><td>1</td><td>eleadmin-pro-copyright.jpg</td><td><a class="link-btn" href="#">20220722/b7bac0f9...jpg</a></td><td>148.41KB</td><td>管理员</td><td>2022-07-22 13:57:25</td>
+          <td class="actions"><a class="link-btn">下载</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr><td><input type="checkbox"></td><td>2</td><td>eleadmin-copyright.jpg</td><td><a class="link-btn" href="#">20220722/881ef0f8...jpg</a></td><td>77.44KB</td><td>管理员</td><td>2022-07-22 13:57:23</td>
+          <td class="actions"><a class="link-btn">下载</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr><td><input type="checkbox"></td><td>3</td><td>archive.json</td><td><a class="link-btn" href="#">20220722/fab7f40d...json</a></td><td>1.95KB</td><td>管理员</td><td>2022-07-22 13:57:19</td>
+          <td class="actions"><a class="link-btn">下载</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr><td><input type="checkbox"></td><td>4</td><td>document.json</td><td><a class="link-btn" href="#">20220722/e988a114...json</a></td><td>1.64KB</td><td>管理员</td><td>2022-07-22 13:57:16</td>
+          <td class="actions"><a class="link-btn">下载</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr><td><input type="checkbox"></td><td>5</td><td>20200708224450.docx</td><td><a class="link-btn" href="#">20220722/4a4f2df9...docx</a></td><td>2.47MB</td><td>管理员</td><td>2022-07-22 13:55:58</td>
+          <td class="actions"><a class="link-btn">下载</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr><td><input type="checkbox"></td><td>6</td><td>20200708224450.pdf</td><td><a class="link-btn" href="#">20220722/21a93c26...pdf</a></td><td>820.29KB</td><td>管理员</td><td>2022-07-22 13:55:55</td>
+          <td class="actions"><a class="link-btn">下载</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="pagination">
+    <span class="page-total">共 48 条</span>
+    <button class="page-btn" disabled>‹</button>
+    <button class="page-btn active">1</button>
+    <button class="page-btn">2</button>
+    <button class="page-btn">3</button>
+    <button class="page-btn">›</button>
+    <select class="page-size"><option>20条/页</option><option>50条/页</option><option>100条/页</option></select>
+  </div>
+</div>
+<script src="common.js"></script>
+</body>
+</html>

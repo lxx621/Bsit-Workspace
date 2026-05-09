@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>角色管理</title>
+<link rel="stylesheet" href="common.css">
+</head>
+<body style="background:#f7f7f9;">
+<div class="content-panel">
+  <div class="search-bar">
+    <div class="search-field"><label>角色名称</label><input type="text" placeholder="角色名称" class="input-field"></div>
+    <div class="search-field"><label>角色标识</label><input type="text" placeholder="角色标识" class="input-field"></div>
+    <div class="search-actions">
+      <button class="btn btn-primary">搜索</button>
+      <button class="btn btn-default">重置</button>
+    </div>
+  </div>
+  <div class="toolbar">
+    <button class="btn btn-primary" onclick="openDialog('addRoleDialog')">+ 添加</button>
+    <button class="btn btn-danger">删除</button>
+    <div class="toolbar-right">
+      <button class="btn btn-icon">🔄</button>
+      <button class="btn btn-icon">⚙️</button>
+    </div>
+  </div>
+  <div class="table-container">
+    <table class="data-table">
+      <thead><tr>
+        <th class="col-check"><input type="checkbox"></th>
+        <th class="col-index">#</th>
+        <th>角色名称</th><th>角色标识</th><th>备注</th><th>创建时间</th><th class="col-action">操作</th>
+      </tr></thead>
+      <tbody>
+        <tr><td><input type="checkbox"></td><td>1</td><td>管理员</td><td>admin</td><td>管理员</td><td>2020-02-26 15:18:37</td>
+          <td class="actions"><a class="link-btn">修改</a><a class="link-btn" onclick="openDialog('permDialog')">分配权限</a><a class="link-btn" style="color:#ff4d4f;">删除</a></td></tr>
+        <tr><td><input type="checkbox"></td><td>2</td><td>普通用户</td><td>user</td><td>普通用户</td><td>2020-02-26 15:18:52</td>
+          <td class="actions"><a class="link-btn">修改</a><a class="link-btn" onclick="openDialog('permDialog')">分配权限</a><a class="link-btn" style="color:#ff4d4f;">删除</a></td></tr>
+        <tr><td><input type="checkbox"></td><td>3</td><td>游客</td><td>guest</td><td>游客</td><td>2020-02-26 15:19:49</td>
+          <td class="actions"><a class="link-btn">修改</a><a class="link-btn" onclick="openDialog('permDialog')">分配权限</a><a class="link-btn" style="color:#ff4d4f;">删除</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="pagination">
+    <span class="page-total">共 3 条</span>
+    <button class="page-btn" disabled>‹</button>
+    <button class="page-btn active">1</button>
+    <button class="page-btn" disabled>›</button>
+    <select class="page-size"><option>20条/页</option></select>
+  </div>
+</div>
+
+<!-- 添加角色弹窗 -->
+<div class="dialog-overlay" id="addRoleDialog">
+  <div class="dialog" style="width:500px;">
+    <div class="dialog-header"><span class="dialog-title">添加角色</span><span class="dialog-close" onclick="closeDialog('addRoleDialog')">×</span></div>
+    <div class="dialog-body">
+      <div class="form-row"><label class="form-label required">角色名称</label><div class="form-control"><input type="text" class="input-field" style="width:100%" placeholder="请输入角色名称"></div></div>
+      <div class="form-row"><label class="form-label required">角色标识</label><div class="form-control"><input type="text" class="input-field" style="width:100%" placeholder="请输入角色标识"></div></div>
+      <div class="form-row"><label class="form-label">备注</label><div class="form-control"><textarea class="input-field" rows="3" style="width:100%;resize:vertical" placeholder="请输入备注"></textarea></div></div>
+    </div>
+    <div class="dialog-footer"><button class="btn btn-default" onclick="closeDialog('addRoleDialog')">取消</button><button class="btn btn-primary" onclick="closeDialog('addRoleDialog')">保存</button></div>
+  </div>
+</div>
+
+<!-- 分配权限弹窗 -->
+<div class="dialog-overlay" id="permDialog">
+  <div class="dialog" style="width:500px;">
+    <div class="dialog-header"><span class="dialog-title">分配权限</span><span class="dialog-close" onclick="closeDialog('permDialog')">×</span></div>
+    <div class="dialog-body" style="max-height:400px;overflow-y:auto;">
+      <div class="tree-container" style="padding:0;">
+        <div class="tree-node expanded"><span class="tree-toggle" onclick="toggleTree(this)">▼</span><label><input type="checkbox" checked> Dashboard</label>
+          <div class="tree-children">
+            <div class="tree-node"><span class="tree-indent"></span><label><input type="checkbox" checked> 工作台</label></div>
+            <div class="tree-node"><span class="tree-indent"></span><label><input type="checkbox" checked> 分析页</label></div>
+            <div class="tree-node"><span class="tree-indent"></span><label><input type="checkbox" checked> 监控页</label></div>
+          </div>
+        </div>
+        <div class="tree-node expanded"><span class="tree-toggle" onclick="toggleTree(this)">▼</span><label><input type="checkbox"> 系统管理</label>
+          <div class="tree-children">
+            <div class="tree-node expanded"><span class="tree-toggle" onclick="toggleTree(this)">▼</span><label><input type="checkbox"> 用户管理</label>
+              <div class="tree-children">
+                <div class="tree-node"><span class="tree-indent"></span><label><input type="checkbox" checked> 查询用户</label></div>
+                <div class="tree-node"><span class="tree-indent"></span><label><input type="checkbox"> 添加用户</label></div>
+                <div class="tree-node"><span class="tree-indent"></span><label><input type="checkbox"> 修改用户</label></div>
+                <div class="tree-node"><span class="tree-indent"></span><label><input type="checkbox"> 删除用户</label></div>
+                <div class="tree-node"><span class="tree-indent"></span><label><input type="checkbox" checked> 用户详情</label></div>
+              </div>
+            </div>
+            <div class="tree-node expanded"><span class="tree-toggle" onclick="toggleTree(this)">▼</span><label><input type="checkbox"> 角色管理</label>
+              <div class="tree-children">
+                <div class="tree-node"><span class="tree-indent"></span><label><input type="checkbox" checked> 查询角色</label></div>
+                <div class="tree-node"><span class="tree-indent"></span><label><input type="checkbox"> 添加角色</label></div>
+                <div class="tree-node"><span class="tree-indent"></span><label><input type="checkbox"> 修改角色</label></div>
+                <div class="tree-node"><span class="tree-indent"></span><label><input type="checkbox"> 删除角色</label></div>
+              </div>
+            </div>
+            <div class="tree-node"><span class="tree-indent"></span><label><input type="checkbox" checked> 登录日志</label></div>
+            <div class="tree-node"><span class="tree-indent"></span><label><input type="checkbox" checked> 操作日志</label></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="dialog-footer"><button class="btn btn-default" onclick="closeDialog('permDialog')">取消</button><button class="btn btn-primary" onclick="closeDialog('permDialog')">保存</button></div>
+  </div>
+</div>
+
+<script src="common.js"></script>
+</body>
+</html>

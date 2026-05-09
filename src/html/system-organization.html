@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>机构管理</title>
+<link rel="stylesheet" href="common.css">
+</head>
+<body style="background:#f7f7f9;">
+<div class="content-panel">
+  <div class="search-bar">
+    <div class="search-field"><label>机构名称</label><input type="text" placeholder="机构名称" class="input-field"></div>
+    <div class="search-field"><label>机构类型</label>
+      <select class="input-field select-field"><option value="">请选择</option><option>公司</option><option>部门</option><option>小组</option></select>
+    </div>
+    <div class="search-actions">
+      <button class="btn btn-primary">搜索</button>
+      <button class="btn btn-default">重置</button>
+    </div>
+  </div>
+  <div class="toolbar">
+    <button class="btn btn-primary" onclick="openDialog('addOrgDialog')">+ 添加</button>
+    <button class="btn btn-default" onclick="expandAllTreeTable()">展开全部</button>
+    <button class="btn btn-default" onclick="collapseAllTreeTable()">折叠全部</button>
+    <div class="toolbar-right"><button class="btn btn-icon">🔄</button><button class="btn btn-icon">⚙️</button></div>
+  </div>
+  <div class="table-container">
+    <table class="data-table">
+      <thead><tr><th>机构名称</th><th>机构类型</th><th>排序号</th><th>创建时间</th><th class="col-action">操作</th></tr></thead>
+      <tbody>
+        <tr data-level="0"><td><span class="tree-table-toggle" onclick="toggleTreeTable(this,0)">▼</span> XXX公司</td><td><span class="tag tag-primary">公司</span></td><td>1</td><td>2020-03-15 09:12:51</td><td class="actions"><a class="link-btn">添加</a><a class="link-btn">修改</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr data-level="1"><td><span class="tree-table-indent"></span><span class="tree-table-toggle" onclick="toggleTreeTable(this,1)">▼</span> 研发部</td><td><span class="tag tag-success">部门</span></td><td>2</td><td>2020-03-15 09:12:51</td><td class="actions"><a class="link-btn">添加</a><a class="link-btn">修改</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr data-level="2"><td><span class="tree-table-indent"></span><span class="tree-table-indent"></span><span class="tree-table-indent"></span>研发一组</td><td><span class="tag tag-info">小组</span></td><td>3</td><td>2020-03-15 09:12:51</td><td class="actions"><a class="link-btn">添加</a><a class="link-btn">修改</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr data-level="2"><td><span class="tree-table-indent"></span><span class="tree-table-indent"></span><span class="tree-table-indent"></span>研发二组</td><td><span class="tag tag-info">小组</span></td><td>4</td><td>2020-03-15 09:12:51</td><td class="actions"><a class="link-btn">添加</a><a class="link-btn">修改</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr data-level="2"><td><span class="tree-table-indent"></span><span class="tree-table-indent"></span><span class="tree-table-indent"></span>研发三组</td><td><span class="tag tag-info">小组</span></td><td>5</td><td>2020-03-15 09:12:51</td><td class="actions"><a class="link-btn">添加</a><a class="link-btn">修改</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr data-level="2"><td><span class="tree-table-indent"></span><span class="tree-table-indent"></span><span class="tree-table-indent"></span>研发四组</td><td><span class="tag tag-info">小组</span></td><td>6</td><td>2020-03-15 09:12:51</td><td class="actions"><a class="link-btn">添加</a><a class="link-btn">修改</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr data-level="1"><td><span class="tree-table-indent"></span><span class="tree-table-indent"></span>测试部</td><td><span class="tag tag-success">部门</span></td><td>7</td><td>2020-03-15 09:12:51</td><td class="actions"><a class="link-btn">添加</a><a class="link-btn">修改</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr data-level="1"><td><span class="tree-table-indent"></span><span class="tree-table-indent"></span>设计部</td><td><span class="tag tag-success">部门</span></td><td>8</td><td>2020-03-15 09:12:51</td><td class="actions"><a class="link-btn">添加</a><a class="link-btn">修改</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr data-level="1"><td><span class="tree-table-indent"></span><span class="tree-table-indent"></span>市场部</td><td><span class="tag tag-success">部门</span></td><td>9</td><td>2020-03-15 09:12:51</td><td class="actions"><a class="link-btn">添加</a><a class="link-btn">修改</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+        <tr data-level="1"><td><span class="tree-table-indent"></span><span class="tree-table-indent"></span>运维部</td><td><span class="tag tag-success">部门</span></td><td>10</td><td>2021-10-15 09:12:51</td><td class="actions"><a class="link-btn">添加</a><a class="link-btn">修改</a><a class="link-btn" style="color:#ff4d4f">删除</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 添加机构弹窗 -->
+<div class="dialog-overlay" id="addOrgDialog">
+  <div class="dialog" style="width:560px;">
+    <div class="dialog-header"><span class="dialog-title">添加机构</span><span class="dialog-close" onclick="closeDialog('addOrgDialog')">×</span></div>
+    <div class="dialog-body">
+      <div class="form-row"><label class="form-label">上级机构</label><div class="form-control"><select class="input-field select-field" style="width:100%"><option>请选择上级机构</option><option>XXX公司</option><option>研发部</option></select></div></div>
+      <div class="form-row"><label class="form-label required">机构名称</label><div class="form-control"><input type="text" class="input-field" style="width:100%" placeholder="请输入机构名称"></div></div>
+      <div class="form-row"><label class="form-label required">机构全称</label><div class="form-control"><input type="text" class="input-field" style="width:100%" placeholder="请输入机构全称"></div></div>
+      <div class="form-row"><label class="form-label">机构代码</label><div class="form-control"><input type="text" class="input-field" style="width:100%" placeholder="请输入机构代码"></div></div>
+      <div class="form-row"><label class="form-label required">机构类型</label><div class="form-control"><select class="input-field select-field" style="width:100%"><option>请选择</option><option>公司</option><option>部门</option><option>小组</option></select></div></div>
+      <div class="form-row"><label class="form-label required">排序号</label><div class="form-control"><input type="number" class="input-field" style="width:100%" value="0"></div></div>
+      <div class="form-row"><label class="form-label">备注</label><div class="form-control"><textarea class="input-field" rows="3" style="width:100%;resize:vertical" placeholder="请输入备注"></textarea></div></div>
+    </div>
+    <div class="dialog-footer"><button class="btn btn-default" onclick="closeDialog('addOrgDialog')">取消</button><button class="btn btn-primary" onclick="closeDialog('addOrgDialog')">保存</button></div>
+  </div>
+</div>
+<script src="common.js"></script>
+</body>
+</html>
