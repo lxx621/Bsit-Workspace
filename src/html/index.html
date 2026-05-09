@@ -187,10 +187,14 @@ a { text-decoration: none; color: inherit; }
 .user-tool { position: relative; }
 .user-dropdown {
   display: none; position: absolute; top: 100%; right: 0; margin-top: 6px;
-  background: #fff; border-radius: 8px; box-shadow: 0 6px 16px rgba(0,0,0,.12);
+  background: #fff; border-radius: 8px;
+  box-shadow: 0 6px 16px rgba(0,0,0,.08), 0 3px 6px -4px rgba(0,0,0,.12), 0 9px 28px 8px rgba(0,0,0,.05);
   min-width: 150px; padding: 4px 0; z-index: 999;
 }
 .user-dropdown.show { display: block; }
+/* hover自动显示下拉菜单 */
+.user-tool:hover .user-dropdown { display: block; }
+.user-tool:hover .user-arrow { transform: rotate(180deg); }
 .user-dropdown .ud-item {
   display: flex; align-items: center; gap: 8px; padding: 8px 16px;
   font-size: 14px; color: rgba(0,0,0,.65); cursor: pointer; transition: background .15s, color .15s;
