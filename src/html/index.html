@@ -19,7 +19,10 @@ a { text-decoration: none; color: inherit; }
   display: flex; flex-direction: column; align-items: center; flex-shrink: 0;
   z-index: 20; transition: width .3s;
 }
-.side-primary.collapsed { width: 64px; }
+.side-primary.collapsed { width: 54px; }
+.side-primary.collapsed .side-primary-menus { padding: 4px 6px; }
+.side-primary.collapsed .side-primary-item { width: 42px; height: 40px; padding: 0; gap: 0; }
+.side-primary.collapsed .sp-icon svg { width: 16px; height: 16px; }
 .side-primary::-webkit-scrollbar { width: 0; }
 
 .side-logo {
@@ -101,7 +104,7 @@ a { text-decoration: none; color: inherit; }
 .ss-item .ss-dot { color: #ff4d4f; font-size: 10px; margin-left: 4px; }
 
 /* 三级菜单 */
-.ss-group { padding-left: 0; }
+.ss-group { padding-left: 0; background: rgba(0,0,0,.02); }
 .ss-sub-item {
   display: flex; align-items: center; padding: 0 16px 0 40px; height: 40px; gap: 8px;
   cursor: pointer; font-size: 14px; color: rgba(0,0,0,.55);
