@@ -210,11 +210,21 @@ a { text-decoration: none; color: inherit; }
 .tab-scroll-btn {
   width: 28px; height: 40px; display: none; align-items: center; justify-content: center;
   flex-shrink: 0; cursor: pointer; color: rgba(0,0,0,.6); transition: color .2s;
+  position: relative;
 }
 .tab-scroll-btn:not(.disabled):hover { color: rgba(0,0,0,.88); }
 .tab-scroll-btn.disabled { cursor: not-allowed; color: rgba(0,0,0,.25); }
 .tab-scroll-btn svg { width: 14px; height: 14px; fill: currentColor; stroke: none; }
 .tab-bar.scrollable .tab-scroll-btn { display: flex; }
+/* 滚动按钮投影（非disabled时显示） */
+.tab-scroll-btn::before {
+  content: ''; width: 10px; position: absolute; top: 0; bottom: 0;
+  transition: box-shadow .2s; pointer-events: none; z-index: 1;
+}
+.tab-scroll-left::before { right: -10px; }
+.tab-scroll-right::before { left: -10px; }
+.tab-scroll-left:not(.disabled)::before { box-shadow: inset 10px 0 10px -10px rgba(0,0,0,.15); }
+.tab-scroll-right:not(.disabled)::before { box-shadow: inset -10px 0 10px -10px rgba(0,0,0,.15); }
 
 /* Tab项 - 圆角样式 */
 .tab-item {
