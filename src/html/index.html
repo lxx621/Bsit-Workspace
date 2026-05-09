@@ -153,6 +153,9 @@ a { text-decoration: none; color: inherit; }
 
 /* 面包屑 */
 .breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 14px; color: rgba(0,0,0,.45); flex-shrink: 0; margin-left: 4px; }
+.breadcrumb .bc-home { display: flex; align-items: center; cursor: pointer; color: rgba(0,0,0,.45); transition: color .2s; }
+.breadcrumb .bc-home:hover { color: rgba(0,0,0,.88); }
+.breadcrumb .bc-home svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 4; stroke-linejoin: round; }
 .breadcrumb .bc-sep { color: rgba(0,0,0,.25); }
 .breadcrumb .bc-current { color: rgba(0,0,0,.65); }
 
@@ -326,7 +329,7 @@ a { text-decoration: none; color: inherit; }
         </div>
       </div>
       <div class="breadcrumb" id="breadcrumb">
-        <span>Dashboard</span><span class="bc-sep">/</span><span class="bc-current">工作台</span>
+        <span class="bc-home" onclick="goHome()" title="首页"><svg viewBox="0 0 48 48"><path d="M19 43V29H29V43M9 43V25H3L24 4 45 25H39V43Z"/></svg></span><span class="bc-sep">/</span><span>Dashboard</span><span class="bc-sep">/</span><span class="bc-current">工作台</span>
       </div>
       <div class="header-spacer"></div>
       <div class="header-right">
@@ -509,7 +512,9 @@ function renderBreadcrumb() {
       });
     }
   }
-  let html = parts.map((s, i) => i < parts.length - 1
+  /* 首页图标 + 分隔符 + 路径 */
+  let html = `<span class="bc-home" onclick="goHome()" title="首页"><svg viewBox="0 0 48 48"><path d="M19 43V29H29V43M9 43V25H3L24 4 45 25H39V43Z"/></svg></span><span class="bc-sep">/</span>`;
+  html += parts.map((s, i) => i < parts.length - 1
     ? `<span>${s}</span><span class="bc-sep">/</span>`
     : `<span class="bc-current">${s}</span>`
   ).join('');
@@ -567,8 +572,18 @@ function toggleSecondaryCollapse() {
 function refreshCurrentTab() {
   const mc = document.getElementById('mainContent');
   const iframe = mc.querySelector('iframe');
-  if (iframe) { iframe.contentWindow.location.reload(); }
-  else { renderContent(); }
+  if (iframe) {
+    try { iframe.contentWindow.location.reload(); } catch(e) { iframe.src = iframe.src; }
+  } else {
+    /* 非iframe页面重新渲染内容 */
+    mc.innerHTML = '';
+    setTimeout(() => renderContent(), 50);
+  }
+}
+/* 点击面包屑首页图标跳转到Dashboard工作台 */
+function goHome() {
+  curPrimary = 'dashboard'; curSecondary = 'workplace';
+  renderPrimary(); renderSecondary(); addTab(); renderBreadcrumb(); renderContent();
 }
 function addTab() {
   const k = `${curPrimary}-${curSecondary}`;
