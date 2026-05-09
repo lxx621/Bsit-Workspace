@@ -205,8 +205,15 @@ a { text-decoration: none; color: inherit; }
 .tab-home.active svg { color: #2f54eb; }
 
 /* Tab滚动区域 */
-.tab-body { flex: 1; display: flex; align-items: stretch; overflow-x: auto; }
-.tab-body::-webkit-scrollbar { height: 0; }
+.tab-body { flex: 1; display: flex; align-items: stretch; overflow-x: hidden; position: relative; }
+/* Tab左右滚动按钮 */
+.tab-scroll-btn {
+  width: 28px; height: 40px; display: none; align-items: center; justify-content: center;
+  flex-shrink: 0; cursor: pointer; color: rgba(0,0,0,.6); transition: color .2s;
+}
+.tab-scroll-btn:hover { color: rgba(0,0,0,.88); }
+.tab-scroll-btn svg { width: 14px; height: 14px; fill: currentColor; stroke: none; }
+.tab-bar.scrollable .tab-scroll-btn { display: flex; }
 
 /* Tab项 - 圆角样式 */
 .tab-item {
@@ -480,18 +487,26 @@ function renderSecondary() {
 function renderTabs() {
   const el = document.getElementById('tabBar');
   const homeActive = tabs[0] && activeTab === tabs[0].key;
+  /* 左箭头SVG (chevron-left) */
+  const chevL = '<svg viewBox="0 0 1024 1024"><path d="M609.408 149.376 277.76 489.6a32 32 0 0 0 0 44.672l331.648 340.352a29.12 29.12 0 0 0 41.728 0 30.59 30.59 0 0 0 0-42.752L339.264 511.936l311.872-319.872a30.59 30.59 0 0 0 0-42.688 29.12 29.12 0 0 0-41.728 0z"/></svg>';
+  /* 右箭头SVG (chevron-right) */
+  const chevR = '<svg viewBox="0 0 1024 1024"><path d="M340.864 149.312a30.59 30.59 0 0 0 0 42.752L652.736 512 340.864 831.872a30.59 30.59 0 0 0 0 42.752 29.12 29.12 0 0 0 41.728 0L714.24 534.336a32 32 0 0 0 0-44.672L382.592 149.376a29.12 29.12 0 0 0-41.728 0z"/></svg>';
   let html = `<div class="tab-home ${homeActive?'active':''}" onclick="switchTab('${tabs[0]?.key}')" title="首页"><div class="tab-home-title">${I.home}</div></div>`;
-  html += '<div class="tab-body">';
+  html += `<div class="tab-scroll-btn tab-scroll-left" onclick="scrollTabs(-1)">${chevL}</div>`;
+  html += '<div class="tab-body" id="tabBody">';
   tabs.forEach(t => {
     if (t.fixed) return;
     const isActive = t.key === activeTab;
-    html += `<div class="tab-item ${isActive?'active':''}" onclick="switchTab('${t.key}')">`;
+    html += `<div class="tab-item ${isActive?'active':''}" data-tab="${t.key}" onclick="switchTab('${t.key}')">`;
     html += `<div class="tab-title"><span class="tab-icon">${I[t.icon]||I.page}</span>${t.label}<span class="tab-close" onclick="event.stopPropagation();closeTab('${t.key}')">×</span></div>`;  
     html += `</div>`;
   });
   html += '</div>';
+  html += `<div class="tab-scroll-btn tab-scroll-right" onclick="scrollTabs(1)">${chevR}</div>`;
   html += `<div class="tab-more" title="更多"><svg viewBox="0 0 48 48"><path d="M10 17 24 31 38 17"/></svg></div>`;
   el.innerHTML = html;
+  /* 检测tab是否溢出，决定是否显示左右滚动按钮 */
+  checkTabOverflow();
 }
 
 /* ==================== 渲染面包屑 ==================== */
@@ -567,6 +582,27 @@ function toggleSecondaryCollapse() {
   secondaryCollapsed = !secondaryCollapsed;
   renderSecondary();
 }
+/* Tab滚动：检测是否溢出，溢出时显示左右按钮 */
+function checkTabOverflow() {
+  const bar = document.getElementById('tabBar');
+  const body = document.getElementById('tabBody');
+  if (!bar || !body) return;
+  const isOverflow = body.scrollWidth > body.clientWidth;
+  bar.classList.toggle('scrollable', isOverflow);
+}
+/* Tab滚动：点击左右按钮平滑滚动 */
+function scrollTabs(dir) {
+  const body = document.getElementById('tabBody');
+  if (!body) return;
+  body.scrollBy({ left: dir * 200, behavior: 'smooth' });
+}
+/* Tab滚动：确保激活的tab可见 */
+function scrollActiveTabIntoView() {
+  const body = document.getElementById('tabBody');
+  if (!body) return;
+  const active = body.querySelector('.tab-item.active');
+  if (active) active.scrollIntoView({ inline: 'nearest', behavior: 'smooth' });
+}
 /* 刷新当前激活Tab的内容 */
 function refreshCurrentTab() {
   const mc = document.getElementById('mainContent');
@@ -591,11 +627,13 @@ function addTab() {
   if(p&&p.children){const c=p.children.find(x=>x.key===curSecondary);if(c){label=c.label;icon=c.icon||'page';}else p.children.forEach(c2=>{if(c2.children){const t=c2.children.find(x=>x.key===curSecondary);if(t){label=t.label;icon=t.icon||'page';}}});}
   if(!tabs.find(t=>t.key===k)) tabs.push({key:k,label,icon,primary:curPrimary,secondary:curSecondary});
   activeTab = k; renderTabs();
+  setTimeout(scrollActiveTabIntoView, 50);
 }
 function switchTab(key) {
   const t = tabs.find(x=>x.key===key); if(!t) return;
   activeTab=key; curPrimary=t.primary; curSecondary=t.secondary;
   renderPrimary(); renderSecondary(); renderTabs(); renderBreadcrumb(); renderContent();
+  setTimeout(scrollActiveTabIntoView, 50);
 }
 function closeTab(key) {
   if(tabs.length<=1) return;
@@ -619,6 +657,7 @@ function getWorkplaceHTML() {
 
 /* ==================== 初始化 ==================== */
 renderPrimary(); renderSecondary(); renderTabs(); renderBreadcrumb(); renderContent();
+window.addEventListener('resize', checkTabOverflow);
 </script>
 </body>
 </html>
