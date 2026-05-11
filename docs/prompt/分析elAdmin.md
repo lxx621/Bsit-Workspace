@@ -79,3 +79,26 @@ Page: /user/message
    selector: #app > div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(4) > div:nth-of-type(3)
    text: "13"
    html: <div class="ele-admin-tool" data-ai-id="el-186"><div data-v-7ba3c13c="" class="el-tooltip__trigger" style="display: flex; align-items: center; height: 100%;" data-ai-id="el-187"><div data-v-7ba3c13c="
+
+
+
+要与原版的菜单图标相同
+Page: /extension/upload
+
+1. .ele-menu-trigger <div>
+   selector: #app > div > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1) > div > ul > li:nth-of-type(1) > div
+   html: <div class="ele-menu-trigger" data-ai-id="el-4"><a href="/dashboard/workplace" class="ele-menu-link" data-ai-id="el-5"></a></div>
+
+Page: /extension/upload
+
+1. .ele-menu-trigger <div>
+   selector: #app > div > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1) > div > ul > li:nth-of-type(2) > div:nth-of-type(2)
+   html: <div class="ele-menu-trigger" data-ai-id="el-16"><a href="/dashboard/analysis" class="ele-menu-link" data-ai-id="el-17"></a></div>      
+
+Page: /extension/upload
+
+1. .ele-menu-trigger <div>
+   selector: #app > div > div:nth-of-type(1) > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(1) > div > ul > li:nth-of-type(3) > div
+   html: <div class="ele-menu-trigger" data-ai-id="el-25"><a href="/dashboard/monitor" class="ele-menu-link" data-ai-id="el-26"></a></div>   
+
+还有就是个人中心下面二级菜单的图标也要与原版一样   

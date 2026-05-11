@@ -656,6 +656,147 @@ a { text-decoration: none; color: inherit; }
 .active-bar-label { display: flex; justify-content: space-between; font-size: 13px; color: rgba(0,0,0,.65); margin-bottom: 6px; }
 .active-bar-bg { height: 10px; background: #f5f5f5; border-radius: 5px; overflow: hidden; }
 .active-bar-fill { height: 100%; border-radius: 5px; }
+
+/* ==================== 我的资料页样式 ==================== */
+.profile-page { display: flex; gap: 16px; padding: 0 4px; }
+.profile-side { width: 340px; flex-shrink: 0; background: #fff; border-radius: 8px; padding: 32px 24px; }
+.profile-body { flex: 1; background: #fff; border-radius: 8px; min-width: 0; }
+/* 左侧个人信息 */
+.profile-avatar-wrap { text-align: center; margin-bottom: 16px; }
+.profile-avatar {
+  width: 100px; height: 100px; border-radius: 50%; border: 3px solid #f0f0f0;
+  display: inline-block; overflow: hidden; position: relative;
+  background: #e6f7ff; color: #2f54eb; font-size: 36px; font-weight: 600;
+  line-height: 100px; text-align: center;
+}
+.profile-avatar-upload {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 28px; background: rgba(0,0,0,.45);
+  display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; transition: opacity .2s;
+}
+.profile-avatar-wrap:hover .profile-avatar-upload { opacity: 1; }
+.profile-avatar-upload svg { width: 16px; height: 16px; color: #fff; }
+.profile-name { font-size: 18px; font-weight: 500; color: rgba(0,0,0,.88); margin-top: 8px; }
+.profile-desc { font-size: 13px; color: rgba(0,0,0,.35); margin-top: 4px; }
+/* 信息列表 */
+.profile-info-list { margin-top: 20px; }
+.profile-info-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-size: 14px; color: rgba(0,0,0,.65); }
+.profile-info-item svg { width: 16px; height: 16px; flex-shrink: 0; color: rgba(0,0,0,.35); }
+.profile-divider { border: none; border-top: 1px dashed #f0f0f0; margin: 16px 0; }
+.profile-tags-title { font-size: 14px; font-weight: 500; color: rgba(0,0,0,.88); margin-bottom: 12px; }
+.profile-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.profile-tag {
+  font-size: 12px; padding: 2px 10px; border-radius: 4px;
+  background: #fafafa; border: 1px solid #d9d9d9; color: rgba(0,0,0,.65);
+}
+/* 右侧tab */
+.profile-tabs { display: flex; gap: 24px; padding: 16px 24px; border-bottom: 1px solid #f5f5f5; }
+.profile-tab { font-size: 15px; color: rgba(0,0,0,.55); cursor: pointer; padding: 6px 0; position: relative; }
+.profile-tab.active { color: #2f54eb; font-weight: 500; }
+.profile-tab.active::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 2px; background: #2f54eb; border-radius: 1px; }
+/* 基本信息表单 */
+.profile-form { max-width: 580px; padding: 28px 16px 16px 0; }
+.profile-form-item { display: flex; align-items: flex-start; margin-bottom: 20px; }
+.profile-form-label {
+  width: 100px; text-align: right; padding-right: 12px; font-size: 14px;
+  color: rgba(0,0,0,.65); line-height: 32px; flex-shrink: 0;
+}
+.profile-form-label .req { color: #ff4d4f; margin-right: 4px; }
+.profile-form-control { flex: 1; }
+.profile-form-input {
+  width: 100%; height: 32px; border: 1px solid #d9d9d9; border-radius: 6px;
+  padding: 0 11px; font-size: 14px; outline: none; transition: border-color .2s;
+  box-sizing: border-box;
+}
+.profile-form-input:focus { border-color: #2f54eb; }
+.profile-form-textarea {
+  width: 100%; min-height: 80px; border: 1px solid #d9d9d9; border-radius: 6px;
+  padding: 6px 11px; font-size: 14px; outline: none; resize: vertical;
+  transition: border-color .2s; box-sizing: border-box; font-family: inherit;
+}
+.profile-form-textarea:focus { border-color: #2f54eb; }
+.profile-form-select {
+  width: 100%; height: 32px; border: 1px solid #d9d9d9; border-radius: 6px;
+  padding: 0 8px; font-size: 14px; outline: none; background: #fff;
+  cursor: pointer; appearance: auto; box-sizing: border-box;
+}
+.profile-form-phone { display: flex; gap: 8px; }
+.profile-form-phone .profile-form-input:first-child { width: 80px; flex-shrink: 0; }
+.profile-form-btn {
+  padding: 6px 20px; background: #2f54eb; color: #fff; border: none;
+  border-radius: 6px; font-size: 14px; cursor: pointer; transition: opacity .15s;
+}
+.profile-form-btn:hover { opacity: .85; }
+/* 账号绑定 */
+.account-bind-list { padding: 24px; }
+.account-bind-item {
+  display: flex; align-items: center; padding: 16px 0;
+  border-bottom: 1px solid #f5f5f5;
+}
+.account-bind-item:last-child { border-bottom: none; }
+.account-bind-icon {
+  width: 40px; height: 40px; border-radius: 50%; display: flex;
+  align-items: center; justify-content: center; flex-shrink: 0; margin-right: 16px;
+}
+.account-bind-icon svg { width: 22px; height: 22px; }
+.account-bind-info { flex: 1; }
+.account-bind-title { font-size: 14px; font-weight: 500; color: rgba(0,0,0,.88); }
+.account-bind-desc { font-size: 13px; color: rgba(0,0,0,.45); margin-top: 2px; }
+.account-bind-action { color: #2f54eb; font-size: 14px; cursor: pointer; flex-shrink: 0; }
+
+/* ==================== 我的消息页样式 ==================== */
+.message-page { display: flex; gap: 0; padding: 0 4px; }
+.message-side { width: 180px; flex-shrink: 0; background: #fff; border-radius: 8px 0 0 8px; padding: 8px 0; }
+.message-body { flex: 1; background: #fff; border-radius: 0 8px 8px 0; border-left: 1px solid #f5f5f5; min-width: 0; }
+.msg-menu-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 20px; font-size: 14px; color: rgba(0,0,0,.65);
+  cursor: pointer; transition: all .15s;
+}
+.msg-menu-item:hover { background: rgba(0,0,0,.02); }
+.msg-menu-item.active { color: #2f54eb; background: rgba(47,84,235,.04); font-weight: 500; }
+.msg-menu-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 18px; height: 18px; border-radius: 9px; background: #ff4d4f;
+  color: #fff; font-size: 11px; padding: 0 5px; font-weight: 400;
+}
+/* 消息表格顶部工具栏 */
+.msg-toolbar { display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-bottom: 1px solid #f5f5f5; }
+.msg-btn-primary {
+  padding: 5px 16px; background: #2f54eb; color: #fff; border: none;
+  border-radius: 6px; font-size: 13px; cursor: pointer;
+}
+.msg-btn-danger {
+  padding: 5px 16px; background: #ff4d4f; color: #fff; border: none;
+  border-radius: 6px; font-size: 13px; cursor: pointer;
+}
+/* 消息表格 */
+.msg-table { width: 100%; border-collapse: collapse; }
+.msg-table th {
+  text-align: left; padding: 10px 16px; font-size: 13px; font-weight: 500;
+  color: rgba(0,0,0,.65); background: #fafafa; border-bottom: 1px solid #f0f0f0;
+}
+.msg-table td {
+  padding: 10px 16px; font-size: 13px; color: rgba(0,0,0,.65);
+  border-bottom: 1px solid #f5f5f5;
+}
+.msg-table td input[type="checkbox"], .msg-table th input[type="checkbox"] {
+  width: 15px; height: 15px; cursor: pointer; accent-color: #2f54eb;
+}
+.msg-status-unread { color: #ff4d4f; }
+.msg-status-read { color: rgba(0,0,0,.35); }
+.msg-action-link { color: #2f54eb; cursor: pointer; margin-right: 8px; font-size: 13px; }
+.msg-action-link:hover { text-decoration: underline; }
+/* 分页 */
+.msg-pagination {
+  display: flex; align-items: center; justify-content: flex-end;
+  gap: 8px; padding: 12px 20px; font-size: 13px; color: rgba(0,0,0,.55);
+}
+.msg-page-btn {
+  width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+  border: 1px solid #d9d9d9; border-radius: 4px; font-size: 12px; cursor: pointer; background: #fff;
+}
+.msg-page-btn.active { border-color: #2f54eb; color: #2f54eb; }
+.msg-page-btn:disabled { opacity: .4; cursor: not-allowed; }
 </style>
 </head>
 <body>
@@ -946,6 +1087,8 @@ function renderContent() {
   else if (curPrimary==='dashboard'&&curSecondary==='workplace') { mc.className='main-content'; mc.innerHTML=getWorkplaceHTML(); }
   else if (curPrimary==='dashboard'&&curSecondary==='analysis') { mc.className='main-content'; mc.innerHTML=getAnalysisHTML(); }
   else if (curPrimary==='dashboard'&&curSecondary==='monitor') { mc.className='main-content'; mc.innerHTML=getMonitorHTML(); }
+  else if (curPrimary==='profile'&&curSecondary==='info') { mc.className='main-content'; mc.innerHTML=getProfileHTML(); initProfileTabs(); }
+  else if (curPrimary==='profile'&&curSecondary==='message') { mc.className='main-content'; mc.innerHTML=getMessageHTML(); initMessageTabs(); }
   else { mc.className='main-content'; mc.innerHTML=`<div style="display:flex;align-items:center;justify-content:center;height:100%;color:rgba(0,0,0,.3);font-size:15px;background:#fff;border-radius:8px;">${child?child.label:curSecondary} - 页面内容区域</div>`; }
   document.title = `${child?child.label:'工作台'} - Ele Admin Plus`;
 }
@@ -1429,6 +1572,177 @@ function getMonitorHTML() {
     </div>
   </div>
 </div>`;
+}
+
+/* ==================== 我的资料页HTML ==================== */
+function getProfileHTML() {
+  return `<div class="profile-page">
+  <!-- 左侧个人信息卡片 -->
+  <div class="profile-side">
+    <div class="profile-avatar-wrap">
+      <div class="profile-avatar">管
+        <div class="profile-avatar-upload"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M32 40.5C33 41 34 41 35 41 41 41 46 37 46 31 46 25 42 20 37 19 37 12 32 6 24 6 16 6 11 12 11 19 6 20 2 25 2 31 2 37 7 41 13 41 14 41 15 41 16 40.5"/><path d="M24 38V21M17 28 24 21 31 28"/></svg></div>
+      </div>
+    </div>
+    <div style="text-align:center">
+      <div class="profile-name">管理员</div>
+      <div class="profile-desc">遗其欲，则心静！</div>
+    </div>
+    <div class="profile-info-list">
+      <div class="profile-info-item"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"><path d="M42 44C42 34 34 26 24 26 14 26 6 34 6 44M24 26C29.5 26 35 21 35 15 35 9 30 4 24 4 18 4 13 9 13 15 13 21 18.5 26 24 26Z"/></svg>资深前端工程师</div>
+      <div class="profile-info-item"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"><path d="M7 43 7 5H28V43M28 17H41V43M1 43H47M28 34H36M28 26H36"/><path d="M13 33H22M13 24H22M13 15H22"/></svg>某某公司 - 研发部 - 某某组</div>
+      <div class="profile-info-item"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linejoin="round"><path d="M24 46C25 46 43 33 43 21 43 10 35 2 24 2 13 2 5 10 5 21 5 33 23 46 24 46Z"/><path d="M24 28C20 28 17 25 17 21S20 14 24 14 31 17 31 21 28 28 24 28Z"/></svg>中国 • 浙江省 • 杭州市</div>
+      <div class="profile-info-item"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"><path d="M10 44H38V13L24 2 10 13Z"/><path d="M24 25C21 25 19 23 19 20S21 15 24 15 29 17 29 20 27 25 24 25Z"/></svg>JavaScript、HTML、CSS</div>
+    </div>
+    <hr class="profile-divider">
+    <div class="profile-tags-title">标签</div>
+    <div class="profile-tags">
+      <span class="profile-tag">很有想法的</span>
+      <span class="profile-tag">专注设计</span>
+      <span class="profile-tag">辣~</span>
+      <span class="profile-tag">大长腿</span>
+      <span class="profile-tag">川妹子</span>
+      <span class="profile-tag">海纳百川</span>
+    </div>
+  </div>
+  <!-- 右侧tab内容区 -->
+  <div class="profile-body">
+    <div class="profile-tabs">
+      <div class="profile-tab active" data-tab="basic" onclick="switchProfileTab('basic',this)">基本信息</div>
+      <div class="profile-tab" data-tab="account" onclick="switchProfileTab('account',this)">账号绑定</div>
+    </div>
+    <div id="profileTabContent">
+      <!-- 默认显示基本信息 -->
+    </div>
+  </div>
+</div>`;
+}
+
+/* 我的资料 - 基本信息表单HTML */
+function getProfileBasicHTML() {
+  return `<div class="profile-form">
+    <div class="profile-form-item"><div class="profile-form-label"><span class="req">*</span>昵称</div><div class="profile-form-control"><input class="profile-form-input" value="管理员"></div></div>
+    <div class="profile-form-item"><div class="profile-form-label"><span class="req">*</span>性别</div><div class="profile-form-control"><select class="profile-form-select"><option>男</option><option selected>女</option></select></div></div>
+    <div class="profile-form-item"><div class="profile-form-label"><span class="req">*</span>邮箱</div><div class="profile-form-control"><input class="profile-form-input" value="eleadmin@eclouds.com"></div></div>
+    <div class="profile-form-item"><div class="profile-form-label">个人简介</div><div class="profile-form-control"><textarea class="profile-form-textarea">遗其欲，则心静！</textarea></div></div>
+    <div class="profile-form-item"><div class="profile-form-label">街道地址</div><div class="profile-form-control"><input class="profile-form-input" placeholder="请输入街道地址"></div></div>
+    <div class="profile-form-item"><div class="profile-form-label">联系电话:</div><div class="profile-form-control"><div class="profile-form-phone"><input class="profile-form-input" value="0752"><input class="profile-form-input" placeholder="请输入联系电话"></div></div></div>
+    <div class="profile-form-item"><div class="profile-form-label"></div><div class="profile-form-control"><button class="profile-form-btn" onclick="event.preventDefault()">保存更改</button></div></div>
+  </div>`;
+}
+
+/* 我的资料 - 账号绑定HTML */
+function getProfileAccountHTML() {
+  return `<div class="account-bind-list">
+    <div class="account-bind-item"><div class="account-bind-icon" style="background:#e6f4ff"><svg viewBox="0 0 48 48" fill="none" stroke="#1890ff" stroke-width="4"><rect x="6" y="6" width="36" height="36" rx="4"/><path d="M18 24h12M24 18v12"/></svg></div><div class="account-bind-info"><div class="account-bind-title">密保手机</div><div class="account-bind-desc">已绑定手机: 12345678901</div></div><span class="account-bind-action">去修改</span></div>
+    <div class="account-bind-item"><div class="account-bind-icon" style="background:#e6f4ff"><svg viewBox="0 0 48 48" fill="none" stroke="#1890ff" stroke-width="4"><path d="M6 12H42V38H6Z"/><path d="M6 12 24 26 42 12"/></svg></div><div class="account-bind-info"><div class="account-bind-title">密保邮箱</div><div class="account-bind-desc">已绑定邮箱: eleadmin@eclouds.com</div></div><span class="account-bind-action">去修改</span></div>
+    <div class="account-bind-item"><div class="account-bind-icon" style="background:#fff7e6"><svg viewBox="0 0 48 48" fill="none" stroke="#faad14" stroke-width="4"><circle cx="24" cy="24" r="20"/><path d="M24 14V24"/><circle cx="24" cy="32" r="2" fill="#faad14" stroke="none"/></svg></div><div class="account-bind-info"><div class="account-bind-title">密保问题</div><div class="account-bind-desc">未设置密保问题</div></div><span class="account-bind-action">去设置</span></div>
+    <div class="account-bind-item"><div class="account-bind-icon" style="background:#e8f5ff"><svg viewBox="0 0 48 48" fill="#1890ff" stroke="none"><path d="M24 4C13 4 4 13 4 24s9 20 20 20 20-9 20-20S35 4 24 4zm8.5 12.5l-3-2.5-8 9-4-3.5-3 2.5 7 6.5 11-12z"/></svg></div><div class="account-bind-info"><div class="account-bind-title">绑定QQ</div><div class="account-bind-desc">当前未绑定QQ账号</div></div><span class="account-bind-action">去绑定</span></div>
+    <div class="account-bind-item"><div class="account-bind-icon" style="background:#f6ffed"><svg viewBox="0 0 48 48" fill="#52c41a" stroke="none"><path d="M24 4C13 4 4 13 4 24s9 20 20 20 20-9 20-20S35 4 24 4zm5 25c-1 3-4 5-8 5s-6-1-7-3l2-2c1 1 3 2 5 2 3 0 5-1 6-3 0-2-1-3-4-3h-3v-3h3c2 0 4-1 4-3 0-2-2-3-4-3-2 0-4 1-5 2l-2-2c2-2 4-3 7-3 4 0 7 2 7 5 0 2-1 4-3 5 2 0 4 2 4 5z"/></svg></div><div class="account-bind-info"><div class="account-bind-title">绑定微信</div><div class="account-bind-desc">当前未绑定微信账号</div></div><span class="account-bind-action">去绑定</span></div>
+    <div class="account-bind-item"><div class="account-bind-icon" style="background:#e6f7ff"><svg viewBox="0 0 48 48" fill="#1890ff" stroke="none"><path d="M24 4C13 4 4 13 4 24s9 20 20 20 20-9 20-20S35 4 24 4zm0 8c5 0 9 4 9 9s-4 9-9 9-9-4-9-9 4-9 9-9zm0 24c-5 0-9-2-12-6 0-4 8-6 12-6s12 2 12 6c-3 4-7 6-12 6z"/></svg></div><div class="account-bind-info"><div class="account-bind-title">绑定支付宝</div><div class="account-bind-desc">当前未绑定支付宝账号</div></div><span class="account-bind-action">去绑定</span></div>
+  </div>`;
+}
+
+/* 初始化我的资料页Tab内容 */
+function initProfileTabs() {
+  const ct = document.getElementById('profileTabContent');
+  if (ct) ct.innerHTML = getProfileBasicHTML();
+}
+
+/* 切换我的资料页Tab */
+function switchProfileTab(tab, el) {
+  document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const ct = document.getElementById('profileTabContent');
+  if (!ct) return;
+  ct.innerHTML = tab === 'basic' ? getProfileBasicHTML() : getProfileAccountHTML();
+}
+
+/* ==================== 我的消息页HTML ==================== */
+/* 消息数据 */
+const msgData = {
+  notice: {
+    label: '系统通知', badge: 2,
+    cols: ['通知标题','通知时间','状态'],
+    btnPrimary: '批量确认', btnDanger: '删除通知',
+    rows: Array.from({length:10}, (_,i) => ({
+      id: i+1, title: 'EleAdmin新版本发布, 欢迎体验', time: '2020-07-24 11:35',
+      status: i < 2 ? '未确认' : '已确认', unread: i < 2
+    }))
+  },
+  letter: {
+    label: '用户私信', badge: 3,
+    cols: ['私信内容','发送时间','状态'],
+    btnPrimary: '标记已读', btnDanger: '删除消息',
+    rows: Array.from({length:10}, (_,i) => ({
+      id: i+1, title: 'Jasmine给你发来了一条私信', time: '2020-07-24 11:35',
+      status: i < 3 ? '未读' : '已读', unread: i < 3
+    }))
+  },
+  todo: {
+    label: '待办事项', badge: 4,
+    cols: ['待办内容','结束时间','状态'],
+    btnPrimary: '批量完成', btnDanger: '删除待办',
+    rows: Array.from({length:10}, (_,i) => ({
+      id: i+1, title: '你有两条任务待完成, 不要忘...', time: '2020-07-24 11:35',
+      status: i < 4 ? '未完成' : '已完成', unread: i < 4
+    }))
+  }
+};
+let curMsgTab = 'notice';
+
+function getMessageHTML() {
+  /* 左侧菜单 */
+  let sideHTML = '';
+  ['notice','letter','todo'].forEach(k => {
+    const d = msgData[k];
+    sideHTML += `<div class="msg-menu-item${k===curMsgTab?' active':''}" onclick="switchMsgTab('${k}')"><span>${d.label}</span><span class="msg-menu-badge">${d.badge}</span></div>`;
+  });
+
+  return `<div class="message-page">
+  <div class="message-side">${sideHTML}</div>
+  <div class="message-body" id="msgBody"></div>
+</div>`;
+}
+
+/* 渲染消息表格内容 */
+function renderMsgTable() {
+  const d = msgData[curMsgTab];
+  if (!d) return;
+  const body = document.getElementById('msgBody');
+  if (!body) return;
+
+  let rowsHTML = '';
+  d.rows.forEach(r => {
+    const statusCls = r.unread ? 'msg-status-unread' : 'msg-status-read';
+    rowsHTML += `<tr><td><input type="checkbox"></td><td>${r.id}</td><td>${r.title}</td><td>${r.time}</td><td><span class="${statusCls}">${r.status}</span></td><td><span class="msg-action-link">确认</span><span class="msg-action-link" style="color:#ff4d4f">删除</span></td></tr>`;
+  });
+
+  body.innerHTML = `
+    <div class="msg-toolbar">
+      <button class="msg-btn-primary">${d.btnPrimary}</button>
+      <button class="msg-btn-danger">${d.btnDanger}</button>
+    </div>
+    <table class="msg-table">
+      <thead><tr><th style="width:40px"><input type="checkbox"></th><th style="width:50px"></th><th>${d.cols[0]}</th><th style="width:160px">${d.cols[1]}</th><th style="width:80px">${d.cols[2]}</th><th style="width:120px">操作</th></tr></thead>
+      <tbody>${rowsHTML}</tbody>
+    </table>
+    <div class="msg-pagination"><span>共 ${d.rows.length} 条</span><button class="msg-page-btn" disabled>&lt;</button><button class="msg-page-btn active">1</button><button class="msg-page-btn" disabled>&gt;</button></div>`;
+}
+
+/* 初始化消息页内容 */
+function initMessageTabs() {
+  renderMsgTable();
+}
+
+/* 切换消息Tab */
+function switchMsgTab(tab) {
+  curMsgTab = tab;
+  /* 更新左侧菜单active状态 */
+  document.querySelectorAll('.msg-menu-item').forEach(el => {
+    el.classList.toggle('active', el.textContent.includes(msgData[tab].label));
+  });
+  renderMsgTable();
 }
 
 /* ==================== 全屏切换功能 ==================== */
