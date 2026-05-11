@@ -292,9 +292,38 @@ a { text-decoration: none; color: inherit; }
 .tab-more {
   width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
   flex-shrink: 0; cursor: pointer; color: rgba(0,0,0,.45); transition: background .2s;
+  position: relative;
 }
 .tab-more:hover { background: rgba(0,0,0,.04); }
-.tab-more svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 4; }
+.tab-more > svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 4; }
+/* Tab更多下拉菜单 */
+.tab-more-dropdown {
+  position: absolute; top: 100%; right: 0; padding-top: 4px;
+  min-width: 140px; z-index: 999;
+  visibility: hidden; opacity: 0; transform: translateY(4px);
+  transition: opacity .15s ease, transform .15s ease, visibility 0s .15s;
+  pointer-events: none;
+}
+.tab-more-dropdown.show {
+  visibility: visible; opacity: 1; transform: translateY(0);
+  transition: opacity .15s ease, transform .15s ease, visibility 0s 0s;
+  pointer-events: auto;
+}
+.tab-more-dropdown-inner {
+  background: #fff; border-radius: 8px;
+  box-shadow: 0 6px 16px rgba(0,0,0,.08), 0 3px 6px -4px rgba(0,0,0,.12), 0 9px 28px 8px rgba(0,0,0,.05);
+  padding: 4px 0;
+}
+.tab-more-dropdown .tmd-item {
+  display: flex; align-items: center; gap: 8px; padding: 8px 16px;
+  font-size: 14px; color: rgba(0,0,0,.65); cursor: pointer;
+  transition: background .15s, color .15s; white-space: nowrap;
+}
+.tab-more-dropdown .tmd-item:hover { background: rgba(0,0,0,.04); color: rgba(0,0,0,.88); }
+.tab-more-dropdown .tmd-item.disabled { color: rgba(0,0,0,.25); cursor: not-allowed; }
+.tab-more-dropdown .tmd-item.disabled:hover { background: transparent; color: rgba(0,0,0,.25); }
+.tab-more-dropdown .tmd-item svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 4; stroke-linejoin: round; flex-shrink: 0; }
+.tab-more-dropdown .tmd-divider { height: 1px; background: #f0f0f0; margin: 4px 0; }
 
 /* ==================== 主内容 ==================== */
 .main-content { flex: 1; overflow-y: auto; padding: 16px; background: #f5f5f5; }
@@ -562,7 +591,20 @@ function renderTabs() {
   });
   html += '</div>';
   html += `<div class="tab-scroll-btn tab-scroll-right" onclick="scrollTabs(1)">${chevR}</div>`;
-  html += `<div class="tab-more" title="更多"><svg viewBox="0 0 48 48"><path d="M10 17 24 31 38 17"/></svg></div>`;
+  html += `<div class="tab-more" onclick="toggleTabMore(event)" id="tabMore" title="更多">
+    <svg viewBox="0 0 48 48"><path d="M10 17 24 31 38 17"/></svg>
+    <div class="tab-more-dropdown" id="tabMoreDropdown">
+      <div class="tab-more-dropdown-inner">
+        <div class="tmd-item" onclick="tabMoreAction('refresh',event)"><svg viewBox="0 0 48 48" stroke-linecap="round"><path d="M42 30C40 35 34 43 24 43 14 43 5 34 5 24 5 14 14 5 24 5 31 5 36 9 40 14M40 6V14L32 14"/></svg>刷新当前</div>
+        <div class="tmd-divider"></div>
+        <div class="tmd-item" onclick="tabMoreAction('closeCurrent',event)"><svg viewBox="0 0 48 48" stroke-linecap="round"><path d="M14 14L34 34M14 34L34 14"/></svg>关闭当前</div>
+        <div class="tmd-item" onclick="tabMoreAction('closeLeft',event)"><svg viewBox="0 0 48 48" stroke-linecap="round"><path d="M6 6V42M14 24H42M14 24L24 14M14 24L24 34"/></svg>关闭左侧</div>
+        <div class="tmd-item" onclick="tabMoreAction('closeRight',event)"><svg viewBox="0 0 48 48" stroke-linecap="round"><path d="M42 6V42M34 24H6M34 24L24 14M34 24L24 34"/></svg>关闭右侧</div>
+        <div class="tmd-item" onclick="tabMoreAction('closeOther',event)"><svg viewBox="0 0 48 48" stroke-linecap="round"><path d="M14 14L34 34M14 34L34 14"/><rect x="4" y="4" width="40" height="40" rx="3"/></svg>关闭其他</div>
+        <div class="tmd-item" onclick="tabMoreAction('closeAll',event)"><svg viewBox="0 0 48 48" stroke-linecap="round"><path d="M10 10L38 38M10 38L38 10"/></svg>关闭全部</div>
+      </div>
+    </div>
+  </div>`;
   el.innerHTML = html;
   /* 检测tab是否溢出，决定是否显示左右滚动按钮 */
   checkTabOverflow();
@@ -748,6 +790,83 @@ function closeTab(key) {
   if(activeTab===key) { const ni=Math.min(idx,tabs.length-1); switchTab(tabs[ni].key); }
   else renderTabs();
 }
+/* Tab更多下拉菜单：切换显示/隐藏 */
+function toggleTabMore(e) {
+  e.stopPropagation();
+  const dd = document.getElementById('tabMoreDropdown');
+  if (!dd) return;
+  const isOpen = dd.classList.contains('show');
+  dd.classList.toggle('show', !isOpen);
+  /* 根据当前tab状态设置菜单项的disabled */
+  if (!isOpen) updateTabMoreDisabled();
+}
+/* 更新Tab更多菜单项的禁用状态 */
+function updateTabMoreDisabled() {
+  const dd = document.getElementById('tabMoreDropdown');
+  if (!dd) return;
+  const items = dd.querySelectorAll('.tmd-item');
+  const idx = tabs.findIndex(t => t.key === activeTab);
+  const isHome = idx === 0;
+  const nonFixedTabs = tabs.filter(t => !t.fixed);
+  const leftClosable = tabs.slice(1, idx).filter(t => !t.fixed);
+  const rightClosable = tabs.slice(idx + 1).filter(t => !t.fixed);
+  /* 关闭当前：首页tab不可关闭 */
+  items[1]?.classList.toggle('disabled', isHome);
+  /* 关闭左侧：当前tab左侧（不含首页）没有可关闭项 */
+  items[2]?.classList.toggle('disabled', leftClosable.length === 0);
+  /* 关闭右侧：当前tab右侧没有可关闭项 */
+  items[3]?.classList.toggle('disabled', rightClosable.length === 0);
+  /* 关闭其他：只有首页+当前tab，没有其他可关闭项 */
+  items[4]?.classList.toggle('disabled', nonFixedTabs.length <= (isHome ? 0 : 1));
+  /* 关闭全部：没有非固定tab */
+  items[5]?.classList.toggle('disabled', nonFixedTabs.length === 0);
+}
+/* Tab更多菜单：执行操作 */
+function tabMoreAction(action, e) {
+  e.stopPropagation();
+  const item = e.currentTarget;
+  if (item.classList.contains('disabled')) return;
+  /* 关闭下拉菜单 */
+  const dd = document.getElementById('tabMoreDropdown');
+  if (dd) dd.classList.remove('show');
+  const idx = tabs.findIndex(t => t.key === activeTab);
+  switch (action) {
+    case 'refresh':
+      refreshCurrentTab();
+      break;
+    case 'closeCurrent':
+      if (idx > 0) closeTab(activeTab);
+      break;
+    case 'closeLeft':
+      /* 关闭当前tab左侧所有非固定tab */
+      for (let i = idx - 1; i >= 1; i--) {
+        if (!tabs[i].fixed) tabs.splice(i, 1);
+      }
+      renderTabs(); setTimeout(scrollActiveTabIntoView, 50);
+      break;
+    case 'closeRight':
+      /* 关闭当前tab右侧所有非固定tab */
+      tabs.splice(idx + 1);
+      renderTabs(); setTimeout(scrollActiveTabIntoView, 50);
+      break;
+    case 'closeOther':
+      /* 保留首页tab和当前tab */
+      tabs = tabs.filter(t => t.fixed || t.key === activeTab);
+      renderTabs(); setTimeout(scrollActiveTabIntoView, 50);
+      break;
+    case 'closeAll':
+      /* 关闭所有非固定tab，跳回首页 */
+      tabs = tabs.filter(t => t.fixed);
+      if (tabs.length) switchTab(tabs[0].key);
+      else renderTabs();
+      break;
+  }
+}
+/* 点击页面其他区域关闭Tab更多下拉菜单 */
+document.addEventListener('click', function closeTabMoreOnClick() {
+  const dd = document.getElementById('tabMoreDropdown');
+  if (dd) dd.classList.remove('show');
+});
 
 /* ==================== 工作台HTML ==================== */
 function getWorkplaceHTML() {
