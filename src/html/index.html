@@ -490,16 +490,16 @@ a { text-decoration: none; color: inherit; }
 
 /* ==================== 顶部搜索框 ==================== */
 .header-search {
-  display: flex; align-items: center; gap: 6px; padding: 0 12px; height: 32px;
-  background: #f5f5f5; border-radius: 6px; cursor: pointer; margin-right: 6px;
-  transition: background .2s; min-width: 160px; color: rgba(0,0,0,.35); font-size: 13px;
+  display: flex; align-items: center; gap: 4px; padding: 0 10px; height: 32px;
+  background: #fff; border: 1px solid #d9d9d9; border-radius: 32px;
+  cursor: pointer; margin-right: 8px; min-width: 148px;
+  color: rgba(0,0,0,.36); font-size: 14px; transition: border-color .2s;
 }
-.header-search:hover { background: #ebebeb; }
-.header-search svg { width: 14px; height: 14px; flex-shrink: 0; }
+.header-search:hover { border-color: #2f54eb; }
+.header-search svg { width: 14px; height: 14px; flex-shrink: 0; margin-right: 2px; }
 .header-search .hs-text { flex: 1; }
 .header-search .hs-kbd {
-  font-size: 11px; color: rgba(0,0,0,.25); border: 1px solid #d9d9d9;
-  border-radius: 3px; padding: 1px 5px; line-height: 1.4;
+  font-size: 12px; color: rgba(0,0,0,.36);
 }
 /* 搜索弹窗遮罩 */
 .search-modal-mask {
@@ -652,7 +652,7 @@ a { text-decoration: none; color: inherit; }
 .satisfy-row { display: flex; justify-content: center; gap: 20px; font-size: 13px; margin-top: 8px; }
 /* 活跃度 */
 .active-bars { display: flex; flex-direction: column; gap: 16px; margin-top: 8px; }
-.active-bar-item { }
+.active-bar-item { margin-bottom: 0; }
 .active-bar-label { display: flex; justify-content: space-between; font-size: 13px; color: rgba(0,0,0,.65); margin-bottom: 6px; }
 .active-bar-bg { height: 10px; background: #f5f5f5; border-radius: 5px; overflow: hidden; }
 .active-bar-fill { height: 100%; border-radius: 5px; }
@@ -682,6 +682,12 @@ a { text-decoration: none; color: inherit; }
         <span class="bc-home" onclick="goHome()" title="首页"><svg viewBox="0 0 48 48"><path d="M19 43V29H29V43M9 43V25H3L24 4 45 25H39V43Z"/></svg></span><span class="bc-sep">/</span><span>Dashboard</span><span class="bc-sep">/</span><span class="bc-current">工作台</span>
       </div>
       <div class="header-spacer"></div>
+      <!-- 顶部搜索框 -->
+      <div class="header-search" onclick="openSearch()" id="headerSearch">
+        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><path d="M36.3 36.3 45.5 45.5M23 42C33 42 42 33 42 23 42 13 33 4 23 4 13 4 4 13 4 23 4 33 13 42 23 42Z"/></svg>
+        <span class="hs-text">搜索</span>
+        <span class="hs-kbd">Ctrl K</span>
+      </div>
       <div class="header-right">
         <div class="header-tool" id="fullscreenBtn" title="全屏" onclick="toggleFullscreen()">
           <svg id="fullscreenIcon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17V7H17"/><path d="M31 7H41V17"/><path d="M41 31V41H31"/><path d="M17 41H7V31"/></svg>
@@ -938,6 +944,8 @@ function renderContent() {
   const mc = document.getElementById('mainContent');
   if (child&&child.href) { mc.className='main-content no-pad'; mc.innerHTML=`<iframe src="${child.href}" style="width:100%;height:100%;border:none;"></iframe>`; }
   else if (curPrimary==='dashboard'&&curSecondary==='workplace') { mc.className='main-content'; mc.innerHTML=getWorkplaceHTML(); }
+  else if (curPrimary==='dashboard'&&curSecondary==='analysis') { mc.className='main-content'; mc.innerHTML=getAnalysisHTML(); }
+  else if (curPrimary==='dashboard'&&curSecondary==='monitor') { mc.className='main-content'; mc.innerHTML=getMonitorHTML(); }
   else { mc.className='main-content'; mc.innerHTML=`<div style="display:flex;align-items:center;justify-content:center;height:100%;color:rgba(0,0,0,.3);font-size:15px;background:#fff;border-radius:8px;">${child?child.label:curSecondary} - 页面内容区域</div>`; }
   document.title = `${child?child.label:'工作台'} - Ele Admin Plus`;
 }
@@ -1173,6 +1181,256 @@ function getWorkplaceHTML() {
   <div class="card"><div class="card-header">小组成员 <span class="more-btn">⋮</span></div><div class="card-body"><div class="member-item"><div class="member-avatar" style="background:#e6f7ff;color:#1890ff">S</div><div class="member-info"><div class="member-name">SunSmile</div><div class="member-role">UI设计师、交互专家</div></div><span class="member-status online">在线</span></div><div class="member-item"><div class="member-avatar" style="background:#f6ffed;color:#52c41a">你</div><div class="member-info"><div class="member-name">你的名字很好听</div><div class="member-role">前端工程师</div></div><span class="member-status online">在线</span></div><div class="member-item"><div class="member-avatar" style="background:#fff7e6;color:#faad14">全</div><div class="member-info"><div class="member-name">全村人的希望</div><div class="member-role">前端工程师</div></div><span class="member-status online">在线</span></div><div class="member-item"><div class="member-avatar" style="background:#f9f0ff;color:#722ed1">J</div><div class="member-info"><div class="member-name">Jasmine</div><div class="member-role">产品经理、项目经理</div></div><span class="member-status offline">离线</span></div><div class="member-item"><div class="member-avatar" style="background:#fff1f0;color:#ff4d4f">酷</div><div class="member-info"><div class="member-name">酷酷的大叔</div><div class="member-role">组长、后端工程师</div></div><span class="member-status offline">离线</span></div></div></div></div>`;
 }
 
+/* ==================== 分析页HTML ==================== */
+function getAnalysisHTML() {
+  /* 月度销售数据（模拟12个月的柱状图高度百分比） */
+  const barData = [38,28,55,48,32,25,60,72,65,45,75,50];
+  const barMax = Math.max(...barData);
+  const months = ['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+
+  /* 构建柱状图 */
+  let barsHTML = '';
+  barData.forEach((v,i) => {
+    const h = Math.round(v/barMax*200);
+    barsHTML += `<div class="bar-chart-col"><div class="bar" style="height:${h}px" title="${months[i]}: ${v*20}"></div><div class="bar-label">${months[i]}</div></div>`;
+  });
+
+  /* 门店排名数据 */
+  const stores = [
+    {name:'工专路 1 号店', val:'333,001'},{name:'工专路 2 号店', val:'333,002'},
+    {name:'工专路 3 号店', val:'333,003'},{name:'工专路 4 号店', val:'333,004'},
+    {name:'工专路 5 号店', val:'333,005'},{name:'工专路 6 号店', val:'333,006'},
+    {name:'工专路 7 号店', val:'333,007'}
+  ];
+  let rankHTML = stores.map((s,i) =>
+    `<div class="rank-item"><span class="rank-num ${i<3?'top':'normal'}">${i+1}</span><span class="rank-name">${s.name}</span><span class="rank-value">${s.val}</span></div>`
+  ).join('');
+
+  /* 迷你折线图SVG（访问量趋势） */
+  const linePoints = '0,30 20,25 40,20 60,35 80,15 100,28 120,10 140,22 160,18 180,25 200,12 220,20';
+  const areaPoints = linePoints + ' 220,46 0,46';
+
+  /* 迷你柱状图（支付笔数趋势） */
+  const miniBarHeights = [60,80,45,90,55,70,85,40,95,65,75,50,88,42,78,60,92,48,85,55];
+  let miniBarHTML = miniBarHeights.map(h => `<div class="bar" style="height:${h}%"></div>`).join('');
+
+  /* 热门搜索词云 */
+  const hotWords = [
+    {t:'特价',s:28,c:'#ff4d4f'},{t:'牛肉面',s:16,c:'#1890ff'},{t:'花呗',s:14,c:'#faad14'},
+    {t:'充值',s:20,c:'#52c41a'},{t:'冲泡杯',s:12,c:'#722ed1'},{t:'红烧肉',s:18,c:'#eb2f96'},
+    {t:'信用卡',s:22,c:'#2f54eb'},{t:'砂锅',s:13,c:'#13c2c2'},{t:'拖鞋',s:15,c:'#f5222d'},
+    {t:'矿泉水',s:17,c:'#fa8c16'},{t:'代金券',s:24,c:'#a0d911'},{t:'品质生活',s:11,c:'#1890ff'},
+    {t:'咖啡',s:19,c:'#ff7a45'},{t:'面包',s:14,c:'#597ef7'},{t:'鲜花',s:16,c:'#f759ab'},
+    {t:'打折',s:21,c:'#36cfc9'},{t:'酸奶',s:13,c:'#ffc53d'},{t:'水果',s:15,c:'#ff4d4f'},
+    {t:'翻新手机',s:11,c:'#9254de'},{t:'外卖',s:18,c:'#40a9ff'}
+  ];
+  let cloudHTML = '<div style="display:flex;flex-wrap:wrap;gap:8px 12px;justify-content:center;padding:8px 0;">';
+  hotWords.forEach(w => { cloudHTML += `<span style="font-size:${w.s}px;color:${w.c};cursor:default;line-height:1.6">${w.t}</span>`; });
+  cloudHTML += '</div>';
+
+  return `<div class="analysis-page">
+  <!-- 顶部4个统计卡片 -->
+  <div class="analysis-stats">
+    <div class="stat-card">
+      <div class="stat-card-header"><span class="stat-card-title">总销售额</span><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="4" style="width:16px;height:16px;color:rgba(0,0,0,.25)"><circle cx="24" cy="24" r="20"/><path d="M24 14V24"/><circle cx="24" cy="32" r="2" fill="currentColor" stroke="none"/></svg></div>
+      <div class="stat-card-value">¥ 126,560</div>
+      <div class="stat-card-footer"><span>日同比12% <span class="stat-up">▲</span></span><span>周同比11% <span class="stat-down">▼</span></span></div>
+      <div style="font-size:13px;color:rgba(0,0,0,.55);margin-top:10px;padding-top:10px;border-top:1px solid #f5f5f5;">日销售额 ¥12,423</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-header"><span class="stat-card-title">访问量</span><span class="stat-card-tag blue">月</span></div>
+      <div class="stat-card-value">8,846</div>
+      <div class="stat-card-chart"><svg class="mini-line" viewBox="0 0 220 46" preserveAspectRatio="none"><polygon class="area" points="${areaPoints}"/><polyline points="${linePoints}"/></svg></div>
+      <div style="font-size:13px;color:rgba(0,0,0,.55);padding-top:10px;border-top:1px solid #f5f5f5;">日访问量 1,234</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-header"><span class="stat-card-title">支付笔数</span><span class="stat-card-tag red">周</span></div>
+      <div class="stat-card-value">6,560</div>
+      <div class="stat-card-chart"><div class="mini-bars">${miniBarHTML}</div></div>
+      <div style="font-size:13px;color:rgba(0,0,0,.55);padding-top:10px;border-top:1px solid #f5f5f5;">转化率 60%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-header"><span class="stat-card-title">活动运营效果</span><span class="stat-card-tag green">日</span></div>
+      <div class="stat-card-value">78%</div>
+      <div class="stat-card-chart" style="display:flex;align-items:center"><div class="stat-progress" style="flex:1"><div class="stat-progress-fill" style="width:78%"></div></div></div>
+      <div class="stat-card-footer"><span>日同比12% <span class="stat-up">▲</span></span><span>周同比11% <span class="stat-down">▼</span></span></div>
+    </div>
+  </div>
+  <!-- 销售额卡片 -->
+  <div class="sales-card">
+    <div class="sales-card-header">
+      <div class="sales-tabs"><div class="sales-tab active">销售额</div><div class="sales-tab">访问量</div></div>
+      <div class="sales-period">
+        <div class="sales-period-btn">今天</div>
+        <div class="sales-period-btn active">本周</div>
+        <div class="sales-period-btn">本月</div>
+        <div class="sales-period-btn">本年</div>
+      </div>
+    </div>
+    <div class="sales-card-body">
+      <div class="sales-chart-area">
+        <div class="sales-chart-title">销售量趋势</div>
+        <div class="sales-chart">
+          <div class="bar-chart">${barsHTML}</div>
+        </div>
+      </div>
+      <div class="sales-rank">
+        <div class="sales-rank-title">门店销售额排名</div>
+        ${rankHTML}
+      </div>
+    </div>
+  </div>
+  <!-- 底部两栏 -->
+  <div class="analysis-bottom">
+    <div class="card">
+      <div class="card-header">最近1小时访问情况</div>
+      <div style="display:flex;gap:24px;margin-bottom:12px;">
+        <div><span style="font-size:13px;color:rgba(0,0,0,.45)">浏览量</span> <b style="font-size:18px;margin-left:4px;">158</b></div>
+        <div><span style="font-size:13px;color:rgba(0,0,0,.45)">访问量</span> <b style="font-size:18px;margin-left:4px;">95</b></div>
+      </div>
+      <svg viewBox="0 0 500 120" style="width:100%;height:120px;" preserveAspectRatio="none">
+        <polyline points="0,80 30,70 60,55 90,65 120,45 150,60 180,35 210,50 240,30 270,55 300,40 330,25 360,45 390,35 420,50 450,30 480,40 500,35" fill="none" stroke="#2f54eb" stroke-width="2"/>
+        <polygon points="0,80 30,70 60,55 90,65 120,45 150,60 180,35 210,50 240,30 270,55 300,40 330,25 360,45 390,35 420,50 450,30 480,40 500,35 500,120 0,120" fill="rgba(47,84,235,.06)"/>
+      </svg>
+    </div>
+    <div class="card">
+      <div class="card-header">热门搜索</div>
+      ${cloudHTML}
+    </div>
+  </div>
+</div>`;
+}
+
+/* ==================== 监控页HTML ==================== */
+function getMonitorHTML() {
+  /* 省份数据 */
+  const provinces = [
+    {name:'浙江',val:62310},{name:'上海',val:59190},{name:'广东',val:55891},
+    {name:'北京',val:51919},{name:'山东',val:39231},{name:'湖北',val:37109},
+    {name:'江苏',val:35911},{name:'四川',val:31020}
+  ];
+  const pMax = Math.max(...provinces.map(p=>p.val));
+  let provHTML = provinces.map(p => {
+    const pct = Math.round(p.val/pMax*100);
+    return `<div class="province-item"><span class="province-name">${p.name}</span><div class="province-bar-bg"><div class="province-bar" style="width:${pct}%"></div></div><span class="province-val">${p.val.toLocaleString()}</span></div>`;
+  }).join('');
+
+  /* 评分分布数据 */
+  const ratings = [{star:5,count:368,pct:54},{star:4,count:256,pct:37},{star:3,count:49,pct:7},{star:2,count:14,pct:2},{star:1,count:0,pct:0}];
+  let ratingBarsHTML = ratings.map(r =>
+    `<div class="rating-bar-row"><span class="rb-label">${r.star}</span><div class="rb-bg"><div class="rb-fill" style="width:${r.pct}%;background:${r.star>=4?'#faad14':'#d9d9d9'}"></div></div><span class="rb-val">${r.count} 人</span></div>`
+  ).join('');
+
+  /* 在线人数动态值 */
+  const onlineNum = Math.floor(Math.random() * 500) + 200;
+  const now = new Date();
+  const timeStr = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0') + ':' + now.getSeconds().toString().padStart(2,'0');
+
+  return `<div class="monitor-page">
+  <!-- 顶部4个统计卡片 -->
+  <div class="monitor-stats">
+    <div class="m-stat-card">
+      <div class="m-stat-icon" style="background:#e6f4ff"><svg viewBox="0 0 48 48" fill="none" stroke="#1890ff" stroke-width="4"><circle cx="24" cy="16" r="8"/><path d="M8 42c0-9 7-16 16-16s16 7 16 16"/></svg></div>
+      <div class="m-stat-value">21.2 k</div>
+      <div class="m-stat-label">总访问人数</div>
+      <div class="m-stat-avatars" style="margin-top:10px">
+        <div style="width:28px;height:28px;border-radius:50%;background:#e6f7ff;display:flex;align-items:center;justify-content:center;font-size:11px;color:#1890ff;border:2px solid #fff">S</div>
+        <div style="width:28px;height:28px;border-radius:50%;background:#f6ffed;display:flex;align-items:center;justify-content:center;font-size:11px;color:#52c41a;margin-left:-6px;border:2px solid #fff">J</div>
+        <div style="width:28px;height:28px;border-radius:50%;background:#fff7e6;display:flex;align-items:center;justify-content:center;font-size:11px;color:#faad14;margin-left:-6px;border:2px solid #fff">全</div>
+        <div class="m-more">+2</div>
+      </div>
+    </div>
+    <div class="m-stat-card">
+      <div class="m-stat-icon" style="background:#fffbe6"><svg viewBox="0 0 48 48" fill="none" stroke="#faad14" stroke-width="4"><circle cx="24" cy="24" r="8" fill="#faad14" stroke="none"/><path d="M24 4v8M24 36v8M4 24h8M36 24h8M10 10l6 6M32 32l6 6M10 38l6-6M32 16l6-6"/></svg></div>
+      <div class="m-stat-value">1.6 k</div>
+      <div class="m-stat-label">点击量(近30天)</div>
+      <div class="m-stat-footer"><span class="stat-up">▲ 110.5%</span></div>
+    </div>
+    <div class="m-stat-card">
+      <div class="m-stat-icon" style="background:#fff1f0"><svg viewBox="0 0 48 48" fill="none" stroke="#ff4d4f" stroke-width="4"><rect x="8" y="8" width="32" height="32" rx="4"/><path d="M16 16h16M16 24h10"/></svg></div>
+      <div class="m-stat-value">826.0</div>
+      <div class="m-stat-label">到达量(近30天)</div>
+      <div class="m-stat-footer"><span class="stat-down">▼ 15.5%</span></div>
+    </div>
+    <div class="m-stat-card">
+      <div class="m-stat-icon" style="background:#f6ffed"><svg viewBox="0 0 48 48" fill="none" stroke="#52c41a" stroke-width="4"><path d="M12 24l-6 6 6 6M36 24l6-6-6-6M18 12h12M18 36h12"/></svg></div>
+      <div class="m-stat-value">28.8 %</div>
+      <div class="m-stat-label">转化率(近30天)</div>
+      <div class="m-stat-footer"><span class="stat-up">▲ 65.8%</span></div>
+    </div>
+  </div>
+  <!-- 中间行：用户分布 + 在线人数 -->
+  <div class="monitor-mid">
+    <div class="card">
+      <div class="card-header">用户分布</div>
+      <div style="display:flex;gap:24px;">
+        <div style="flex:1;display:flex;align-items:center;justify-content:center;min-height:240px;">
+          <svg viewBox="0 0 400 300" style="width:100%;max-width:360px;height:auto;">
+            <rect x="0" y="0" width="400" height="300" fill="#fafafa" rx="8"/>
+            <text x="200" y="80" text-anchor="middle" font-size="14" fill="rgba(0,0,0,.15)">中国地图</text>
+            <text x="200" y="110" text-anchor="middle" font-size="11" fill="rgba(0,0,0,.1)">(数据可视化区域)</text>
+            <!-- 简化省份色块 -->
+            <rect x="270" y="60" width="60" height="40" rx="4" fill="rgba(47,84,235,.3)"/><text x="300" y="85" text-anchor="middle" font-size="9" fill="#2f54eb">黑龙江</text>
+            <rect x="280" y="105" width="50" height="35" rx="4" fill="rgba(47,84,235,.2)"/><text x="305" y="127" text-anchor="middle" font-size="9" fill="#2f54eb">吉林</text>
+            <rect x="260" y="105" width="30" height="35" rx="4" fill="rgba(47,84,235,.15)"/><text x="275" y="127" text-anchor="middle" font-size="8" fill="#2f54eb">辽宁</text>
+            <rect x="220" y="90" width="45" height="40" rx="4" fill="rgba(47,84,235,.12)"/><text x="242" y="115" text-anchor="middle" font-size="9" fill="#2f54eb">内蒙古</text>
+            <rect x="120" y="100" width="80" height="60" rx="4" fill="rgba(47,84,235,.08)"/><text x="160" y="135" text-anchor="middle" font-size="10" fill="#2f54eb">新疆</text>
+            <rect x="230" y="135" width="40" height="35" rx="4" fill="rgba(47,84,235,.4)"/><text x="250" y="157" text-anchor="middle" font-size="9" fill="#fff">北京</text>
+            <rect x="240" y="170" width="50" height="40" rx="4" fill="rgba(47,84,235,.35)"/><text x="265" y="195" text-anchor="middle" font-size="9" fill="#fff">山东</text>
+            <rect x="200" y="170" width="45" height="40" rx="4" fill="rgba(47,84,235,.25)"/><text x="222" y="195" text-anchor="middle" font-size="9" fill="#2f54eb">河南</text>
+            <rect x="270" y="200" width="50" height="45" rx="4" fill="rgba(47,84,235,.45)"/><text x="295" y="227" text-anchor="middle" font-size="9" fill="#fff">浙江</text>
+            <rect x="240" y="210" width="35" height="40" rx="4" fill="rgba(47,84,235,.38)"/><text x="257" y="235" text-anchor="middle" font-size="9" fill="#fff">湖北</text>
+            <rect x="280" y="245" width="45" height="35" rx="4" fill="rgba(47,84,235,.42)"/><text x="302" y="267" text-anchor="middle" font-size="9" fill="#fff">广东</text>
+            <rect x="300" y="200" width="40" height="30" rx="4" fill="rgba(47,84,235,.4)"/><text x="320" y="219" text-anchor="middle" font-size="9" fill="#fff">上海</text>
+          </svg>
+        </div>
+        <div style="width:200px;flex-shrink:0;">
+          <div class="province-list">${provHTML}</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">在线人数</div>
+      <div class="online-count-card">
+        <div class="online-time" id="monitorTime">${timeStr}</div>
+        <div class="online-number" id="monitorOnline">${onlineNum}</div>
+        <div class="online-label">在线总人数</div>
+        <div class="online-update"><span class="dot"></span> 7 秒后更新</div>
+      </div>
+    </div>
+  </div>
+  <!-- 底部三栏 -->
+  <div class="monitor-bottom">
+    <div class="card">
+      <div class="card-header">用户评价</div>
+      <div class="rating-score">4.5</div>
+      <div class="rating-label">很棒</div>
+      <div class="rating-bars">${ratingBarsHTML}</div>
+    </div>
+    <div class="card">
+      <div class="card-header">用户满意度</div>
+      <div class="satisfy-number">856</div>
+      <div class="satisfy-row">
+        <span style="color:#52c41a">正面评论 82%</span>
+        <span style="color:rgba(0,0,0,.25)">|</span>
+        <span style="color:#ff4d4f">负面评论 9%</span>
+      </div>
+      <div style="margin-top:16px;">
+        <div class="stat-progress" style="height:10px"><div class="stat-progress-fill" style="width:82%;background:#52c41a;border-radius:5px 0 0 5px"></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">用户活跃度</div>
+      <div class="active-bars">
+        <div class="active-bar-item"><div class="active-bar-label"><span>活跃率</span><span>70%</span></div><div class="active-bar-bg"><div class="active-bar-fill" style="width:70%;background:#2f54eb"></div></div></div>
+        <div class="active-bar-item"><div class="active-bar-label"><span>留存率</span><span>60%</span></div><div class="active-bar-bg"><div class="active-bar-fill" style="width:60%;background:#52c41a"></div></div></div>
+        <div class="active-bar-item"><div class="active-bar-label"><span>跳出率</span><span>35%</span></div><div class="active-bar-bg"><div class="active-bar-fill" style="width:35%;background:#faad14"></div></div></div>
+      </div>
+    </div>
+  </div>
+</div>`;
+}
+
 /* ==================== 全屏切换功能 ==================== */
 /* 全屏展开图标的SVG路径（四个角箭头向外） */
 const FULLSCREEN_EXPAND = '<path d="M7 17V7H17"/><path d="M31 7H41V17"/><path d="M41 31V41H31"/><path d="M17 41H7V31"/>';
@@ -1314,10 +1572,72 @@ document.addEventListener('click', function() {
   if (panel) panel.classList.remove('show');
 });
 
+/* ==================== 搜索框功能 ==================== */
+/* 打开搜索弹窗 */
+function openSearch() {
+  document.getElementById('searchModal').classList.add('show');
+  setTimeout(() => document.getElementById('searchInput').focus(), 100);
+  renderSearchResults('');
+}
+/* 关闭搜索弹窗 */
+function closeSearch() {
+  document.getElementById('searchModal').classList.remove('show');
+  document.getElementById('searchInput').value = '';
+}
+/* 搜索菜单并渲染结果 */
+function renderSearchResults(keyword) {
+  const body = document.getElementById('searchResults');
+  if (!body) return;
+  const kw = keyword.trim().toLowerCase();
+  let html = '';
+  menuData.forEach(group => {
+    if (!group.children || !group.children.length) return;
+    const matches = [];
+    group.children.forEach(c => {
+      if (!kw || c.label.toLowerCase().includes(kw) || group.label.toLowerCase().includes(kw)) {
+        matches.push(c);
+      }
+      if (c.children) c.children.forEach(sub => {
+        if (!kw || sub.label.toLowerCase().includes(kw)) matches.push(sub);
+      });
+    });
+    if (matches.length) {
+      html += `<div class="sm-group-title">${group.label}</div>`;
+      matches.forEach(m => {
+        html += `<div class="sm-item" onclick="searchJump('${group.key}','${m.key}')"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="4">${(I[m.icon]||I.page).replace(/<svg[^>]*>/,'').replace(/<\/svg>/,'')}</svg>${m.label}</div>`;
+      });
+    }
+  });
+  if (!html) html = '<div style="padding:24px;text-align:center;color:rgba(0,0,0,.25);font-size:14px;">无匹配结果</div>';
+  body.innerHTML = html;
+}
+/* 搜索结果跳转 */
+function searchJump(primary, secondary) {
+  closeSearch();
+  curPrimary = primary; curSecondary = secondary;
+  renderPrimary(); renderSecondary(); addTab(); renderBreadcrumb(); renderContent();
+}
+/* 监听 Ctrl+K 快捷键打开搜索 */
+document.addEventListener('keydown', function(e) {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); openSearch(); }
+  if (e.key === 'Escape') closeSearch();
+});
+
 /* ==================== 初始化 ==================== */
 renderPrimary(); renderSecondary(); renderTabs(); renderBreadcrumb(); renderContent();
 renderNotiList();
 window.addEventListener('resize', checkTabOverflow);
 </script>
+<!-- 搜索弹窗 -->
+<div class="search-modal-mask" id="searchModal" onclick="closeSearch()">
+  <div class="search-modal" onclick="event.stopPropagation()">
+    <div class="search-modal-input">
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><path d="M36.3 36.3 45.5 45.5M23 42C33 42 42 33 42 23 42 13 33 4 23 4 13 4 4 13 4 23 4 33 13 42 23 42Z"/></svg>
+      <input id="searchInput" type="text" placeholder="搜索菜单..." oninput="renderSearchResults(this.value)">
+      <span class="sm-close" onclick="closeSearch()">ESC</span>
+    </div>
+    <div class="search-modal-body" id="searchResults"></div>
+  </div>
+</div>
 </body>
 </html>
