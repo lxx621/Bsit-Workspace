@@ -42,3 +42,40 @@
 
 使用指定工具打开浏览器，访问目标网页 https://plus.eleadmin.com/login 
 该页面已自动预填充用户名"admin"、密码"admin"及验证码信息，直接点击登录按钮以进入系统后台首页。
+
+
+---
+
+
+
+原版参考：使用指定工具打开浏览器，访问目标网页 https://plus.eleadmin.com/login 
+该页面已自动预填充用户名"admin"、密码"admin"及验证码信息，直接点击登录按钮以进入系统后台首页。
+
+当代需要修改/添加的页面路径：src\html
+
+先查看原版功能，再进行修改
+
+TODO 1: 实现全屏按钮的全屏/恢复功能
+参考原版按钮：
+Page: /user/message
+
+1. <svg> <svg>
+   selector: #app > div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(4) > div:nth-of-type(1) > i > svg
+   html: <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" style="stroke-width: 4;" data-ai-id="el-28"><path d="M7 17V7H17" data-ai-id
+
+TODO 2: 实现语言切换图标点击后的下拉列表显示功能，暂时只做下拉显示，不做选择后的语言切换。
+参考原版按钮：
+Page: /user/message
+
+1. .ele-admin-tool <div>
+   selector: #app > div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(4) > div:nth-of-type(2)
+   html: <div class="ele-admin-tool" data-ai-id="el-180"><div class="el-dropdown ele-dropdown-trigger" style="line-height: inherit;" data-ai-id="el-181"><div id="el-id-6171-19" role="button" tabindex="0" class
+
+TODO 3: 实现通知按钮的点击显示功能
+参考原版按钮：
+Page: /user/message
+
+1. .ele-admin-tool <div>
+   selector: #app > div > div:nth-of-type(2) > div:nth-of-type(1) > div:nth-of-type(4) > div:nth-of-type(3)
+   text: "13"
+   html: <div class="ele-admin-tool" data-ai-id="el-186"><div data-v-7ba3c13c="" class="el-tooltip__trigger" style="display: flex; align-items: center; height: 100%;" data-ai-id="el-187"><div data-v-7ba3c13c="

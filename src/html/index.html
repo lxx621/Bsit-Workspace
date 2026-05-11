@@ -385,6 +385,108 @@ a { text-decoration: none; color: inherit; }
 .progress-table a { color: #2f54eb; }
 .progress-bar-bg { height: 6px; background: #f0f0f0; border-radius: 3px; width: 80px; }
 .progress-bar-fill { height: 100%; border-radius: 3px; background: #2f54eb; }
+
+/* ==================== 语言下拉菜单 ==================== */
+.lang-tool { position: relative; }
+.lang-dropdown {
+  position: absolute; top: 100%; right: 0; padding-top: 6px;
+  min-width: 150px; z-index: 999;
+  visibility: hidden; opacity: 0;
+  transform: translateY(4px);
+  transition: opacity .15s ease, transform .15s ease, visibility 0s .15s;
+  pointer-events: none;
+}
+.lang-dropdown.show {
+  visibility: visible; opacity: 1;
+  transform: translateY(0);
+  transition: opacity .15s ease, transform .15s ease, visibility 0s 0s;
+  pointer-events: auto;
+}
+.lang-dropdown-inner {
+  background: #fff; border-radius: 8px;
+  box-shadow: 0 6px 16px rgba(0,0,0,.08), 0 3px 6px -4px rgba(0,0,0,.12), 0 9px 28px 8px rgba(0,0,0,.05);
+  padding: 4px 0;
+}
+.lang-dropdown .ld-item {
+  display: flex; align-items: center; gap: 10px; padding: 8px 16px;
+  font-size: 14px; color: rgba(0,0,0,.65); cursor: pointer;
+  transition: background .15s, color .15s; white-space: nowrap;
+}
+.lang-dropdown .ld-item:hover { background: rgba(0,0,0,.04); color: #2f54eb; }
+.lang-dropdown .ld-item.active { color: #2f54eb; font-weight: 500; }
+.lang-dropdown .ld-item .ld-code {
+  display: inline-block; width: 24px; font-size: 12px; font-weight: 600;
+  color: rgba(0,0,0,.45); text-transform: uppercase;
+}
+.lang-dropdown .ld-item.active .ld-code { color: #2f54eb; }
+
+/* ==================== 通知弹出面板 ==================== */
+.noti-tool { position: relative; }
+.noti-panel {
+  position: absolute; top: 100%; right: -60px; padding-top: 6px;
+  width: 336px; z-index: 999;
+  visibility: hidden; opacity: 0;
+  transform: translateY(4px);
+  transition: opacity .15s ease, transform .15s ease, visibility 0s .15s;
+  pointer-events: none;
+}
+.noti-panel.show {
+  visibility: visible; opacity: 1;
+  transform: translateY(0);
+  transition: opacity .15s ease, transform .15s ease, visibility 0s 0s;
+  pointer-events: auto;
+}
+.noti-panel-inner {
+  background: #fff; border-radius: 8px;
+  box-shadow: 0 6px 16px rgba(0,0,0,.08), 0 3px 6px -4px rgba(0,0,0,.12), 0 9px 28px 8px rgba(0,0,0,.05);
+  overflow: hidden;
+}
+/* 通知面板Tab */
+.noti-tabs {
+  display: flex; border-bottom: 1px solid #f0f0f0;
+}
+.noti-tab {
+  flex: 1; text-align: center; padding: 12px 0; font-size: 14px;
+  color: rgba(0,0,0,.65); cursor: pointer; position: relative;
+  transition: color .2s;
+}
+.noti-tab:hover { color: rgba(0,0,0,.88); }
+.noti-tab.active { color: #2f54eb; font-weight: 500; }
+.noti-tab.active::after {
+  content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 40px; height: 2px; background: #2f54eb; border-radius: 1px;
+}
+/* 通知列表 */
+.noti-list { max-height: 320px; overflow-y: auto; }
+.noti-list::-webkit-scrollbar { width: 4px; }
+.noti-list::-webkit-scrollbar-thumb { background: #e0e0e0; border-radius: 2px; }
+.noti-item {
+  display: flex; gap: 12px; padding: 14px 16px;
+  cursor: pointer; transition: background .15s;
+}
+.noti-item:hover { background: rgba(0,0,0,.02); }
+.noti-item + .noti-item { border-top: 1px solid #f8f8f8; }
+.noti-item-avatar {
+  width: 36px; height: 36px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; color: #fff;
+}
+.noti-item-content { flex: 1; min-width: 0; }
+.noti-item-title {
+  font-size: 14px; color: rgba(0,0,0,.88); line-height: 1.5;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.noti-item-time { font-size: 12px; color: rgba(0,0,0,.35); margin-top: 4px; }
+/* 通知面板底部 */
+.noti-footer {
+  display: flex; border-top: 1px solid #f0f0f0;
+}
+.noti-footer-btn {
+  flex: 1; text-align: center; padding: 12px 0; font-size: 14px;
+  color: rgba(0,0,0,.65); cursor: pointer; transition: background .15s;
+}
+.noti-footer-btn:hover { background: rgba(0,0,0,.02); color: rgba(0,0,0,.88); }
+.noti-footer-btn + .noti-footer-btn { border-left: 1px solid #f0f0f0; }
 </style>
 </head>
 <body>
@@ -412,15 +514,38 @@ a { text-decoration: none; color: inherit; }
       </div>
       <div class="header-spacer"></div>
       <div class="header-right">
-        <div class="header-tool" title="全屏">
-          <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17V7H17"/><path d="M31 7H41V17"/><path d="M41 31V41H31"/><path d="M17 41H7V31"/></svg>
+        <div class="header-tool" id="fullscreenBtn" title="全屏" onclick="toggleFullscreen()">
+          <svg id="fullscreenIcon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17V7H17"/><path d="M31 7H41V17"/><path d="M41 31V41H31"/><path d="M17 41H7V31"/></svg>
         </div>
-        <div class="header-tool" title="语言">
+        <div class="header-tool lang-tool" title="语言" onclick="toggleLangMenu(event)" id="langTool">
           <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3.5"><path d="M24 45C29 45 34 36 34 24 34 12 29 3 24 3 19 3 14 12 14 24 14 36 19 45 24 45M3 24H45M24 3V45M9 10C14 15 18 16 24 16 30 16 34 15 39 10M39 38C34 33 30 32 24 32 18 32 14 33 9 38M24 45C35 45 45 35 45 24 45 13 36 3 24 3 13 3 3 13 3 24 3 35 13 45 24 45Z"/></svg>
+          <!-- 语言下拉菜单 -->
+          <div class="lang-dropdown" id="langDropdown">
+            <div class="lang-dropdown-inner">
+              <div class="ld-item active" onclick="selectLang('zh-CN',event)"><span class="ld-code">CN</span>简体中文</div>
+              <div class="ld-item" onclick="selectLang('zh-HK',event)"><span class="ld-code">HK</span>繁體中文</div>
+              <div class="ld-item" onclick="selectLang('en-US',event)"><span class="ld-code">US</span>English</div>
+            </div>
+          </div>
         </div>
-        <div class="header-tool" title="通知" style="position:relative;">
+        <div class="header-tool noti-tool" title="通知" onclick="toggleNotiPanel(event)" id="notiTool">
           <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><path d="M10 40V20C10 12 16 6 24 6 32 6 38 12 38 20V40M7 40H41M19 40C19 44 21 46 24 46 27 46 29 44 29 40M24 6V2"/></svg>
           <span class="noti-badge">13</span>
+          <!-- 通知弹出面板 -->
+          <div class="noti-panel" id="notiPanel">
+            <div class="noti-panel-inner">
+              <div class="noti-tabs" id="notiTabs">
+                <div class="noti-tab active" data-tab="notice" onclick="switchNotiTab('notice',event)">通知 (5)</div>
+                <div class="noti-tab" data-tab="letter" onclick="switchNotiTab('letter',event)">私信 (4)</div>
+                <div class="noti-tab" data-tab="todo" onclick="switchNotiTab('todo',event)">待办 (4)</div>
+              </div>
+              <div class="noti-list" id="notiList"></div>
+              <div class="noti-footer">
+                <div class="noti-footer-btn" onclick="event.stopPropagation()">清空通知</div>
+                <div class="noti-footer-btn" onclick="event.stopPropagation()">查看更多</div>
+              </div>
+            </div>
+          </div>
         </div>
         <div class="user-tool" onclick="toggleUserMenu(event)" id="userTool">
           <div class="user-avatar"><img src="https://cdn.eleadmin.com/20200610/avatar.jpg" onerror="this.style.display='none';this.parentElement.style.background='#e6f7ff';this.parentElement.innerHTML='管';" style="width:100%;height:100%;object-fit:cover;"/></div>
@@ -879,8 +1004,136 @@ function getWorkplaceHTML() {
   <div class="card"><div class="card-header">小组成员 <span class="more-btn">⋮</span></div><div class="card-body"><div class="member-item"><div class="member-avatar" style="background:#e6f7ff;color:#1890ff">S</div><div class="member-info"><div class="member-name">SunSmile</div><div class="member-role">UI设计师、交互专家</div></div><span class="member-status online">在线</span></div><div class="member-item"><div class="member-avatar" style="background:#f6ffed;color:#52c41a">你</div><div class="member-info"><div class="member-name">你的名字很好听</div><div class="member-role">前端工程师</div></div><span class="member-status online">在线</span></div><div class="member-item"><div class="member-avatar" style="background:#fff7e6;color:#faad14">全</div><div class="member-info"><div class="member-name">全村人的希望</div><div class="member-role">前端工程师</div></div><span class="member-status online">在线</span></div><div class="member-item"><div class="member-avatar" style="background:#f9f0ff;color:#722ed1">J</div><div class="member-info"><div class="member-name">Jasmine</div><div class="member-role">产品经理、项目经理</div></div><span class="member-status offline">离线</span></div><div class="member-item"><div class="member-avatar" style="background:#fff1f0;color:#ff4d4f">酷</div><div class="member-info"><div class="member-name">酷酷的大叔</div><div class="member-role">组长、后端工程师</div></div><span class="member-status offline">离线</span></div></div></div></div>`;
 }
 
+/* ==================== 全屏切换功能 ==================== */
+/* 全屏展开图标的SVG路径 */
+const FULLSCREEN_EXPAND = '<path d="M7 17V7H17"/><path d="M31 7H41V17"/><path d="M41 31V41H31"/><path d="M17 41H7V31"/>';
+/* 全屏压缩图标的SVG路径 */
+const FULLSCREEN_COMPRESS = '<path d="M17 7V17H7"/><path d="M31 7V17H41"/><path d="M31 41V31H41"/><path d="M17 41V31H7"/>';
+let isFullscreen = false;
+
+/* 切换全屏/退出全屏 */
+function toggleFullscreen() {
+  if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+    /* 进入全屏 */
+    const el = document.documentElement;
+    if (el.requestFullscreen) el.requestFullscreen();
+    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+  } else {
+    /* 退出全屏 */
+    if (document.exitFullscreen) document.exitFullscreen();
+    else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+  }
+}
+
+/* 监听全屏状态变化，更新图标 */
+function updateFullscreenIcon() {
+  const icon = document.getElementById('fullscreenIcon');
+  const btn = document.getElementById('fullscreenBtn');
+  if (!icon) return;
+  isFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement);
+  icon.innerHTML = isFullscreen ? FULLSCREEN_COMPRESS : FULLSCREEN_EXPAND;
+  btn.title = isFullscreen ? '退出全屏' : '全屏';
+}
+document.addEventListener('fullscreenchange', updateFullscreenIcon);
+document.addEventListener('webkitfullscreenchange', updateFullscreenIcon);
+
+/* ==================== 语言下拉菜单功能 ==================== */
+/* 切换语言下拉菜单的显示/隐藏 */
+function toggleLangMenu(e) {
+  e.stopPropagation();
+  const dd = document.getElementById('langDropdown');
+  const notiPanel = document.getElementById('notiPanel');
+  /* 关闭通知面板 */
+  if (notiPanel) notiPanel.classList.remove('show');
+  dd.classList.toggle('show');
+}
+
+/* 选择语言（仅视觉切换active状态，不做实际切换） */
+function selectLang(lang, e) {
+  e.stopPropagation();
+  document.querySelectorAll('.ld-item').forEach(item => item.classList.remove('active'));
+  e.currentTarget.classList.add('active');
+  document.getElementById('langDropdown').classList.remove('show');
+}
+
+/* 点击页面其他区域关闭语言下拉 */
+document.addEventListener('click', function() {
+  const dd = document.getElementById('langDropdown');
+  if (dd) dd.classList.remove('show');
+});
+
+/* ==================== 通知面板功能 ==================== */
+/* 通知数据 */
+const notiData = {
+  notice: [
+    { avatar: '#4e88f7', title: '你收到了一封14份新周报', time: '2020-07-27 18:30:18' },
+    { avatar: '#f56c6c', title: '许经理同意了你的请假申请', time: '2020-07-27 09:08:36' },
+    { avatar: '#19be6b', title: '陈总邀请你参加视频会议', time: '2020-07-26 18:30:01' },
+    { avatar: '#ff9900', title: '你推荐的刘诗雨已通过第三轮面试', time: '2020-07-25 16:38:46' },
+    { avatar: '#4e88f7', title: '你的6月加班奖金已发放', time: '2020-07-25 11:03:31' }
+  ],
+  letter: [
+    { avatar: '#4e88f7', title: 'SunSmile: 项目文档已发送，请查收', time: '2020-07-27 15:20:00' },
+    { avatar: '#f56c6c', title: '项目经理: 下午3点会议室开会', time: '2020-07-27 10:15:33' },
+    { avatar: '#19be6b', title: 'Jasmine: 设计稿已更新到最新版本', time: '2020-07-26 09:45:12' },
+    { avatar: '#ff9900', title: '全村人的希望: 接口文档有更新', time: '2020-07-25 14:22:08' }
+  ],
+  todo: [
+    { avatar: '#2f54eb', title: '完成项目一的前端页面开发', time: '截止: 2020-08-01' },
+    { avatar: '#ff9900', title: '修复用户反馈的登录Bug', time: '截止: 2020-07-30' },
+    { avatar: '#f56c6c', title: '编写项目二的技术方案文档', time: '截止: 2020-07-29' },
+    { avatar: '#19be6b', title: '完成月度代码审查报告', time: '截止: 2020-07-28' }
+  ]
+};
+let currentNotiTab = 'notice';
+
+/* 切换通知面板的显示/隐藏 */
+function toggleNotiPanel(e) {
+  e.stopPropagation();
+  const panel = document.getElementById('notiPanel');
+  const langDd = document.getElementById('langDropdown');
+  /* 关闭语言下拉 */
+  if (langDd) langDd.classList.remove('show');
+  const isOpen = panel.classList.contains('show');
+  panel.classList.toggle('show', !isOpen);
+  if (!isOpen) renderNotiList();
+}
+
+/* 切换通知Tab */
+function switchNotiTab(tab, e) {
+  e.stopPropagation();
+  currentNotiTab = tab;
+  document.querySelectorAll('.noti-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  renderNotiList();
+}
+
+/* 渲染通知列表 */
+function renderNotiList() {
+  const list = document.getElementById('notiList');
+  if (!list) return;
+  const items = notiData[currentNotiTab] || [];
+  /* 通知项的首字母图标 */
+  const iconMap = { notice: ['周','假','会','面','奖'], letter: ['S','经','J','全'], todo: ['前','修','文','审'] };
+  const icons = iconMap[currentNotiTab] || [];
+  list.innerHTML = items.map((item, i) =>
+    `<div class="noti-item" onclick="event.stopPropagation()">` +
+    `<div class="noti-item-avatar" style="background:${item.avatar}">${icons[i] || '通'}</div>` +
+    `<div class="noti-item-content">` +
+    `<div class="noti-item-title">${item.title}</div>` +
+    `<div class="noti-item-time">${item.time}</div>` +
+    `</div></div>`
+  ).join('');
+}
+
+/* 点击页面其他区域关闭通知面板 */
+document.addEventListener('click', function() {
+  const panel = document.getElementById('notiPanel');
+  if (panel) panel.classList.remove('show');
+});
+
 /* ==================== 初始化 ==================== */
 renderPrimary(); renderSecondary(); renderTabs(); renderBreadcrumb(); renderContent();
+renderNotiList();
 window.addEventListener('resize', checkTabOverflow);
 </script>
 </body>
