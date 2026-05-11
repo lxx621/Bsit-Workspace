@@ -1005,37 +1005,51 @@ function getWorkplaceHTML() {
 }
 
 /* ==================== 全屏切换功能 ==================== */
-/* 全屏展开图标的SVG路径 */
+/* 全屏展开图标的SVG路径（四个角箭头向外） */
 const FULLSCREEN_EXPAND = '<path d="M7 17V7H17"/><path d="M31 7H41V17"/><path d="M41 31V41H31"/><path d="M17 41H7V31"/>';
-/* 全屏压缩图标的SVG路径 */
+/* 全屏压缩图标的SVG路径（四个角箭头向内） */
 const FULLSCREEN_COMPRESS = '<path d="M17 7V17H7"/><path d="M31 7V17H41"/><path d="M31 41V31H41"/><path d="M17 41V31H7"/>';
 let isFullscreen = false;
 
+/* 更新全屏按钮图标和提示文字 */
+function setFullscreenIcon(fs) {
+  const icon = document.getElementById('fullscreenIcon');
+  const btn = document.getElementById('fullscreenBtn');
+  if (!icon || !btn) return;
+  isFullscreen = fs;
+  icon.innerHTML = fs ? FULLSCREEN_COMPRESS : FULLSCREEN_EXPAND;
+  btn.title = fs ? '退出全屏' : '全屏';
+}
+
 /* 切换全屏/退出全屏 */
 function toggleFullscreen() {
-  if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+  if (!isFullscreen) {
     /* 进入全屏 */
     const el = document.documentElement;
-    if (el.requestFullscreen) el.requestFullscreen();
-    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    const req = el.requestFullscreen ? el.requestFullscreen()
+              : el.webkitRequestFullscreen ? el.webkitRequestFullscreen()
+              : null;
+    /* 立即切换图标，给用户即时反馈 */
+    setFullscreenIcon(true);
+    /* 若全屏请求被拒（如iframe中），回退图标状态 */
+    if (req && req.catch) {
+      req.catch(function() { setFullscreenIcon(false); });
+    }
   } else {
     /* 退出全屏 */
     if (document.exitFullscreen) document.exitFullscreen();
     else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+    setFullscreenIcon(false);
   }
 }
 
-/* 监听全屏状态变化，更新图标 */
-function updateFullscreenIcon() {
-  const icon = document.getElementById('fullscreenIcon');
-  const btn = document.getElementById('fullscreenBtn');
-  if (!icon) return;
-  isFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement);
-  icon.innerHTML = isFullscreen ? FULLSCREEN_COMPRESS : FULLSCREEN_EXPAND;
-  btn.title = isFullscreen ? '退出全屏' : '全屏';
+/* 监听全屏状态变化（如用户按Esc退出全屏），同步图标 */
+function onFullscreenChange() {
+  const realFS = !!(document.fullscreenElement || document.webkitFullscreenElement);
+  setFullscreenIcon(realFS);
 }
-document.addEventListener('fullscreenchange', updateFullscreenIcon);
-document.addEventListener('webkitfullscreenchange', updateFullscreenIcon);
+document.addEventListener('fullscreenchange', onFullscreenChange);
+document.addEventListener('webkitfullscreenchange', onFullscreenChange);
 
 /* ==================== 语言下拉菜单功能 ==================== */
 /* 切换语言下拉菜单的显示/隐藏 */
